@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>uBike</title>
+        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=#{gmBean.gmapkey}" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            function initialize() {
+                if (GBrowserIsCompatible()) {
+                    
+                    var map = new GMap2(document.getElementById("map"));
+                    map.setCenter(new GLatLng(#{it.avgLat}, #{it.avgLon}), 11);
+                    map.setUIToDefault();
+                    map.setMapType(G_HYBRID_MAP);
+                    map.enableGoogleBar();
+
+                    // Add an encoded polyline.
+                    var encodedPoints = "#{it.mapCode}";
+                    var encodedLevels = "#{it.mapLevels}";
+
+                    var encodedPolyline = new GPolyline.fromEncoded({
+                        color: "#3333cc",
+                        weight: 5,
+                        points: encodedPoints,
+                        levels: encodedLevels,
+                        zoomFactor: 32,
+                        numLevels: 4
+                    });
+                    //var start = new GLatLng(#{it.startLat},#{it.startLon});
+                    var start = new GMarker(new GLatLng(#{it.startLat},#{it.startLon}));
+                    var end = new GMarker(new GLatLng(#{it.endLat},#{it.endLon}));
+                    map.addOverlay(start);
+                    map.addOverlay(end);
+                    map.addOverlay(encodedPolyline);
+                }
+                else {
+                    alert('Browser is not compatible !');
+                }
+           }
+        </script>
+    </h:head>
+
+    <h:body onload="initialize()" onunload="GUnload()">
+        <div id="wrapper">
+            <div id="top" class="top">
+                <ui:insert name="top">
+                    <h1>uBike</h1>
+                    <h3>Ubiquitous computing for cyclists</h3>
+                </ui:insert>
+            </div>
+            <div>
+                <div id="left">
+                    <ui:insert name="left">
+                        <h:form id="form">
+                            <rich:panel style="border:1px;width:100%;height:100%;">
+                                <f:facet name="header">
+                                    <h:outputText value="uBike Menu" />
+                                </f:facet>
+                                <rich:panelMenu style="width:98%" itemMode="server" groupMode="ajax"
+                                                groupExpandedLeftIcon="triangleUp"
+                                                groupCollapsedLeftIcon="triangleDown"
+                                                topGroupExpandedRightIcon="chevronUp"
+                                                topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+                                    <rich:panelMenuGroup label="MY DATA" name="my_data" expanded="true">
+                                        <rich:panelMenuItem label="My Profile" action="#{panelMenu.myData}">
+                                            <f:param name="action" value="user-profile"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="Edit Profile" action="#{panelMenu.myData}">
+                                            <f:param name="action" value="edit-profile"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="Edit Password" action="#{panelMenu.myData}">
+                                            <f:param name="action" value="edit-password"/>
+                                        </rich:panelMenuItem>
+                                    </rich:panelMenuGroup>
+
+                                    <rich:panelMenuGroup label="MY BUDDIES" name="my_buddies" expanded="true">
+                                        <rich:panelMenuItem label="Upload GPS Files" action="#{panelMenu.myBuddies}">
+                                            <f:param name="action" value="upload"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="My Trips" action="#{panelMenu.myBuddies}">
+                                            <f:param name="action" value="user-trips"/>
+                                        </rich:panelMenuItem>
+                                    </rich:panelMenuGroup>
+
+                                    <rich:panelMenuGroup label="MY COMMUNITY" name="my_community" expanded="true">
+                                        <rich:panelMenuItem label="My Groups" action="#{panelMenu.myCommunity}">
+                                            <f:param name="action" value="1"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="My Friends" action="#{panelMenu.myCommunity}">
+                                            <f:param name="action" value="2"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="All Groups" action="#{panelMenu.myCommunity}">
+                                            <f:param name="action" value="3"/>
+                                        </rich:panelMenuItem>
+                                        <rich:panelMenuItem label="Create Group" action="#{panelMenu.myCommunity}">
+                                            <f:param name="action" value="4"/>
+                                        </rich:panelMenuItem>
+                                    </rich:panelMenuGroup>
+                                    <rich:panelMenuGroup label="Additional" name="addtional" expanded="true">
+                                        <rich:panelMenuItem label="Logout" action="#{authenticationController.logout}">
+                                            <f:param name="action" value="1"/>
+                                        </rich:panelMenuItem>
+                                    </rich:panelMenuGroup>
+                                </rich:panelMenu>
+                            </rich:panel>
+                        </h:form>
+                    </ui:insert>
+                </div>
+                <div id="content" class="left_content">
+                    <ui:insert name="content">Content</ui:insert>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="../template-ubike.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+    <ui:define name="content">
+        <rich:panel style="border:0;width:80%;text-align:center">
+            <h:form>
+                <rich:panel>
+                    <f:facet name="header">
+                        <h:outputText value="uBike Edit Profile" />
+                    </f:facet>
+                    <f:view>
+                        <h:outputText value="#{editProfileBean.error}" style="font-weight:bold;color:#FF0000"/><br/>
+                        <h:panelGrid columns="3" style="text-align:center">
+
+                            <h:outputLabel value="Address :" />
+                            <h:inputTextarea id="addr" value="#{editProfileBean.address}" rows="4" cols="28">
+                                <rich:ajaxValidator event="onblur" />
+                            </h:inputTextarea>
+                            <rich:message for="addr" style="color:#FF0000"/>
+
+                            <h:outputLabel value="Phone :"/>
+                            <h:inputText id="ph" value="#{editProfileBean.phone}" size="30">
+                                <rich:ajaxValidator event="onblur" />
+                            </h:inputText>
+                            <rich:message for="ph" style="color:#FF0000"/>
+
+                            <h:outputLabel value="E-mail :" />
+                            <h:inputText id="email" value="#{editProfileBean.email}" size="30">
+                                <rich:ajaxValidator event="onblur" />
+                            </h:inputText>
+                            <rich:message for="email" style="color:#FF0000"/>
+
+                            <h:outputLabel value="Group Access :" />
+                            <h:selectBooleanCheckbox id="groupAccess" value="#{editProfileBean.groupAccess}" />
+                            <rich:message for="groupAccess" style="color:#FF0000"/>
+
+                            <h:outputLabel value="Others Access :" />
+                            <h:selectBooleanCheckbox id="otherAccess" value="#{editProfileBean.otherAccess}" />
+                            <rich:message for="otherAccess" style="color:#FF0000"/>
+
+                            <h:outputLabel value="  " />
+                            <h:commandButton value="Send" action="#{editProfileBean.editProfile}"/>
+                            <h:outputLabel value="  " />
+                        </h:panelGrid>
+                    </f:view>
+                </rich:panel>
+            </h:form>
+        </rich:panel>
+    </ui:define>
+</ui:composition>

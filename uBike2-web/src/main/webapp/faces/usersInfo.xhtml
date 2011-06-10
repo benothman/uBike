@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="title"><center>uBike Users Info</center></ui:define>
+    <ui:define name="body">
+        <rich:panel style="border:0px;width:85%;text-align:center">
+            <rich:panel header="uBike users List">
+
+                <center>
+                    <rich:extendedDataTable value="#{dataBean.users}" var="usr" id="usersList"
+                                            style="width:90%; height: 400px"
+                                            rowClasses="odd-row, even-row"
+                                            styleClass="stable" rows="10"
+                                            frozenColumns="2"selectionMode="none">
+
+                        <f:facet name="header">
+                            <h:outputText value="uBike Users"/>
+                        </f:facet>
+
+                        <rich:column width="5%" sortBy="#{usr.id}">
+                            <f:facet name="header"><h:outputText value="User ID"/></f:facet>
+                            <h:outputText value="#{usr.id}" />
+                        </rich:column>
+
+                        <rich:column width="10%" sortBy="#{usr.account.username}">
+                            <f:facet name="header"><h:outputText value="UserName"/></f:facet>
+                            <h:outputText value="#{usr.account.username}" />
+                        </rich:column>
+                        <rich:column width="10%" sortBy="#{usr.firstName}">
+                            <f:facet name="header"><h:outputText value="Firstname"/></f:facet>
+                            <h:outputText value="#{usr.firstName}" />
+                        </rich:column>
+                        <rich:column width="10%" sortBy="#{usr.lastName}">
+                            <f:facet name="header"><h:outputText value="Lastname"/></f:facet>
+                            <h:outputText value="#{usr.lastName}" />
+                        </rich:column>
+                        <rich:column width="40%">
+                            <f:facet name="header"><h:outputText value="Address"/></f:facet>
+                            <h:outputText value="#{usr.address}" />
+                        </rich:column>
+                        <rich:column width="10%">
+                            <f:facet name="header"><h:outputText value="Phone"/></f:facet>
+                            <h:outputText value="#{usr.phone}" />
+                        </rich:column>
+                        <rich:column width="15%">
+                            <f:facet name="header"><h:outputText value="E-mail"/></f:facet>
+                            <h:outputText value="#{usr.email}" />
+                        </rich:column>
+                    </rich:extendedDataTable>
+                </center>
+            </rich:panel>
+        </rich:panel>
+    </ui:define>
+</ui:composition>

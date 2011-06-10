@@ -1,0 +1,407 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="template-ubike.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <rich:panel style="border:0;width:85%;">
+            <rich:panel header="#{it.account.username}">
+
+                <br />
+                <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:70%">
+                    <span class="quick">Quick</span><span class="look">Look</span>
+                    <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:70%">
+                        <ul class="quickLookItems">
+                            <li>I have spend <span style="color:#FF0000;">#{calendarBean.durStat.generalStat.totalDurationAsString} hours</span> on my bike</li>
+                            <li>I am about <span style="color:#FF0000;">#{calendarBean.distStat.generalStat.totalValue} km</span> </li>
+                            <li>My average speed is about <span style="color:#FF0000;">#{calendarBean.speedStat.generalStat.avgValue} km/h</span>,
+                                #{calendarBean.speedStat.generalStat.avgValue > 20 ? 'not bad but I can do better' : 'I have to improve my level to reach 20km/h!'}</li>
+                        </ul>
+                    </rich:panel>
+                </rich:panel>
+
+                <h:form>
+                    <rich:tabPanel switchType="client" style="width:95%">
+                        <rich:tab header="My Statistics">
+
+                            <h:panelGrid id="panel" columns="2" columnClasses="ecol1, ecol2">
+                                <a4j:outputPanel id="calendar" layout="block">
+                                    <rich:calendar value="#{calendarBean.selectedDate}" valueChangeListener="#{calendarBean.filter}"
+                                                   locale="#{calendarBean.locale}" mode="ajax"
+                                                   popup="#{calendarBean.popup}"
+                                                   datePattern="#{calendarBean.pattern}"
+                                                   showApplyButton="#{calendarBean.showApply}" 
+                                                   cellWidth="24px" cellHeight="22px" style="width:200px">
+                                    </rich:calendar>
+                                </a4j:outputPanel>
+
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="Popup Mode:" />
+                                    <h:selectBooleanCheckbox value="#{calendarBean.popup}">
+                                        <a4j:ajax event="click" render="calendar @this" />
+                                    </h:selectBooleanCheckbox>
+                                    <h:outputText value="Apply Button:" />
+                                    <h:selectBooleanCheckbox value="#{calendarBean.showApply}">
+                                        <a4j:ajax event="click" render="calendar @this" />
+                                    </h:selectBooleanCheckbox>
+                                    <h:outputText value="Select Locale" />
+                                    <h:selectOneRadio value="en/US" valueChangeListener="#{calendarBean.selectLocale}">
+                                        <a4j:ajax event="click" render="calendar @this" />
+                                        <f:selectItem itemLabel="US" itemValue="en/US"/>
+                                        <f:selectItem itemLabel="DE" itemValue="de/DE"/>
+                                        <f:selectItem itemLabel="FR" itemValue="fr/FR"/>
+                                    </h:selectOneRadio>
+
+                                    <h:outputText value="Select Date Pattern:"/>
+                                    <h:selectOneMenu value="#{calendarBean.pattern}">
+                                        <a4j:ajax event="change" render="calendar @this" />
+                                        <f:selectItem itemLabel="d/M/yy HH:mm" itemValue="d/M/yy HH:mm"/>
+                                        <f:selectItem itemLabel="dd/M/yy hh:mm a" itemValue="dd/M/yy hh:mm a"/>
+                                        <f:selectItem itemLabel="d/MMM/y" itemValue="d/MMM/y"/>
+                                        <f:selectItem itemLabel="MMM d, yyyy" itemValue="MMM d, yyyy"/>
+                                    </h:selectOneMenu>
+                                    <br />
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                            <br />
+                            <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:70%">
+                                <a4j:outputPanel ajaxRendered="true">
+                                    <h:graphicImage id="warning" value="/img/warning.bmp" width="20" height="20" />
+                                    <h:outputText value="The statistics are organized for a selected date as follow: selected date, the week, a week before, the month, a month before, the year, a year before and general statistics"
+                                                  style="font-weight:bold;color:#045491;" />
+                                </a4j:outputPanel>
+                            </rich:panel>
+                            <br />
+                            <a4j:outputPanel ajaxRendered="true" id="my_stats">
+                                <center>
+                                    <rich:dataTable value="#{calendarBean.speedStat.stats}" var="stat" 
+                                                    columnClasses="center"
+                                                    style="width:95%"
+                                                    rowClasses="odd-row, even-row"
+                                                    styleClass="stable" rows="10">
+
+                                        <f:facet name="header">
+                                            <h:outputText value="Speed Statistics"/>
+                                        </f:facet>
+
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value=""/></f:facet>
+                                            <h:outputText value="#{stat.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                                            <h:outputText value="#{stat.startDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                                            <h:outputText value="#{stat.endDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                            <h:outputText value="#{stat.count}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Max speed"/></f:facet>
+                                            <h:outputText value="#{stat.maxValue} km/h" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
+                                            <h:outputText value="#{stat.avgValue} km/h" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Min speed"/></f:facet>
+                                            <h:outputText value="#{stat.minValue} km/h" />
+                                        </rich:column>
+
+                                        <f:facet name="footer">
+                                            <rich:columnGroup>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.type}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.startDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.endDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.count}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.maxValue} km/h" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.avgValue} km/h" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{speedStatBean.generalStat.minValue} km/h" />
+                                                </rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+                                    </rich:dataTable>
+                                    <br />
+                                    <rich:dataTable value="#{calendarBean.distStat.stats}" var="stat" 
+                                                    columnClasses="center"
+                                                    style="width:95%"
+                                                    rowClasses="odd-row, even-row"
+                                                    styleClass="stable">
+
+                                        <f:facet name="header">
+                                            <h:outputText value="Distance Statistics"/>
+                                        </f:facet>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value=""/></f:facet>
+                                            <h:outputText value="#{stat.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                                            <h:outputText value="#{stat.startDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                                            <h:outputText value="#{stat.endDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                            <h:outputText value="#{stat.count}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Max distance"/></f:facet>
+                                            <h:outputText value="#{stat.maxValue} km" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Average distance"/></f:facet>
+                                            <h:outputText value="#{stat.avgValue} km" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Min distance"/></f:facet>
+                                            <h:outputText value="#{stat.minValue} km" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Total distance"/></f:facet>
+                                            <h:outputText value="#{stat.totalValue} km" />
+                                        </rich:column>
+
+                                        <f:facet name="footer">
+                                            <rich:columnGroup>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.type}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.startDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.endDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.count}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.maxValue} km" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.avgValue} km" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.minValue} km" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{distStatBean.generalStat.totalValue} km" />
+                                                </rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+
+                                    </rich:dataTable>
+                                    <br />
+                                    <rich:dataTable value="#{calendarBean.durStat.stats}" var="stat"
+                                                    columnClasses="center"
+                                                    style="width:95%"
+                                                    rowClasses="odd-row, even-row"
+                                                    styleClass="stable">
+
+                                        <f:facet name="header">
+                                            <h:outputText value="Duration Statistics"/>
+                                        </f:facet>
+
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value=""/></f:facet>
+                                            <h:outputText value="#{stat.type}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                                            <h:outputText value="#{stat.startDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                                            <h:outputText value="#{stat.endDateAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                            <h:outputText value="#{stat.count}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Max duration"/></f:facet>
+                                            <h:outputText value="#{stat.maxDurationAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Average duration"/></f:facet>
+                                            <h:outputText value="#{stat.avgDurationAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Min duration"/></f:facet>
+                                            <h:outputText value="#{stat.minDurationAsString}" />
+                                        </rich:column>
+                                        <rich:column>
+                                            <f:facet name="header"><h:outputText value="Total duration"/></f:facet>
+                                            <h:outputText value="#{stat.totalDurationAsString}" />
+                                        </rich:column>
+                                        <f:facet name="footer">
+                                            <rich:columnGroup>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.type}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.startDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.endDateAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.count}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.maxDurationAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.avgDurationAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.minDurationAsString}" />
+                                                </rich:column>
+                                                <rich:column>
+                                                    <h:outputText value="#{durStatBean.generalStat.totalDurationAsString}" />
+                                                </rich:column>
+                                            </rich:columnGroup>
+                                        </f:facet>
+                                    </rich:dataTable>
+                                </center>
+                            </a4j:outputPanel>
+                        </rich:tab>
+                        <rich:tab header="Trips">
+                            <center>
+                                <rich:dataTable id="tripList" value="#{dataBean.trips}" var="trip" 
+                                                columnClasses="center"
+                                                style="width:95%"
+                                                rowClasses="odd-row, even-row"
+                                                styleClass="stable" rows="10">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="User Trips"/>
+                                    </f:facet>
+
+                                    <rich:column sortBy="#{trip.id}">
+                                        <f:facet name="header"><h:outputText value="Trip ID"/></f:facet>
+                                        <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{trip.owner.id}/trips/#{trip.id}/">
+                                            <h:outputText value="#{trip.id}" />
+                                        </a>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.startDate}">
+                                        <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                                        <h:outputText value="#{trip.startDateAsString}"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.endDate}">
+                                        <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                                        <h:outputText value="#{trip.endDateAsString}"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.distance}">
+                                        <f:facet name="header"><h:outputText value="Distance"/></f:facet>
+                                        <h:outputText value="#{trip.distance} km"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.duration}">
+                                        <f:facet name="header"><h:outputText value="Duration"/></f:facet>
+                                        <h:outputText value="#{trip.durationAsString}"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.avgSpeed}">
+                                        <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
+                                        <h:outputText value="#{trip.avgSpeed} km/h"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{trip.maxSpeed}">
+                                        <f:facet name="header"><h:outputText value="Maximum speed"/></f:facet>
+                                        <h:outputText value="#{trip.maxSpeed} km/h"/>
+                                    </rich:column>
+
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="ds" for="tripList" />
+                                    </f:facet>
+                                </rich:dataTable>
+                            </center>
+                        </rich:tab>
+                        <rich:tab header="Groups">
+                            <center>
+                                <rich:dataTable value="#{dataBean.members}" var="m" id="userGroups" 
+                                                columnClasses="center"
+                                                style="width:85%"
+                                                rowClasses="odd-row, even-row"
+                                                styleClass="stable" rows="10">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="uBike User MemberShips"/>
+                                    </f:facet>
+
+                                    <rich:column sortBy="#{m.group.name}">
+                                        <f:facet name="header"><h:outputText value="Group name"/></f:facet>
+                                        <a href="#{facesContext.externalContext.requestContextPath}/resources/groups/#{m.group.id}">
+                                            <h:outputText value="#{m.group.name}" />
+                                        </a>
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.role}">
+                                        <f:facet name="header"><h:outputText value="My role"/></f:facet>
+                                        <h:outputText value="#{m.role}"/>
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.date}">
+                                        <f:facet name="header"><h:outputText value="Adhesion date"/></f:facet>
+                                        <h:outputText value="#{m.dateAsString}"/>
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{m.group.activeMembers}">
+                                        <f:facet name="header"><h:outputText value="Active members"/></f:facet>
+                                        <h:outputText value="#{m.group.activeMembers}" />
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{m.group.nonActiveMembers}">
+                                        <f:facet name="header"><h:outputText value="Non active members"/></f:facet>
+                                        <h:outputText value="#{m.group.nonActiveMembers}" />
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{m.group.listSize}">
+                                        <f:facet name="header"><h:outputText value="Total"/></f:facet>
+                                        <h:outputText value="#{m.group.listSize}" />
+                                    </rich:column>
+
+                                    <rich:column>
+                                        <f:facet name="header"><h:outputText value="Active"/></f:facet>
+                                        <h:selectBooleanCheckbox value="#{m.active}" disabled="true" />
+                                    </rich:column>
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="dsm" for="userGroups" />
+                                    </f:facet>
+                                </rich:dataTable>
+                            </center>
+                        </rich:tab>
+                    </rich:tabPanel>
+                </h:form>
+            </rich:panel>
+        </rich:panel>
+    </ui:define>
+</ui:composition>

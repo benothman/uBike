@@ -1,0 +1,149 @@
+
+#wrapper {
+    width: 990px;
+    background-color: #ffffff;
+    font-size: 12px;
+    font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+    color: #000000;
+}
+
+
+#top {
+    position: relative;
+    background-color: #FFFFFF;
+    color: white;
+    height:150px;
+    width: 100%;
+    background: url(../images/ubike-head.jpg) no-repeat;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+#bottom {
+    position: relative;
+    background-color: #c2dfef;
+    padding: 5px;
+    margin: 10px 0px 0px 0px;
+}
+
+#left {
+    float: left;
+    background-color: #ffffff;
+    padding-top: 5px;
+    margin-top:10px;
+    margin-left:100px;
+    width: 200px;
+}
+
+#right {
+    float: right;
+    background-color: #ece3a5;
+    padding: 5px;
+    width: 150px;
+}
+
+.center_content {
+    position: relative;
+    background-color: #dddddd;
+    padding: 5px;
+}
+
+.left_content {
+    background-color: #ffffff;
+    padding: 5px;
+    margin-left: 310px;
+}
+
+.right_content {
+    background-color: #dddddd;
+    padding: 5px;
+    margin: 0px 170px 0px 200px;
+}
+
+#top a:link, #top a:visited {
+    color: white;
+    font-weight : bold;
+    text-decoration: none;
+}
+
+#top a:link:hover, #top a:visited:hover  {
+    color: black;
+    font-weight : bold;
+    text-decoration : underline;
+}
+
+.cols{
+    vertical-align: top;
+}
+
+.ecol1 {
+    vertical-align: top;
+    padding-right : 25px
+}
+.ecol2 {
+    vertical-align: top;
+    border-left: #ACBECE 1px solid;
+    padding-left : 10px
+}
+
+.rich-calendar-tool-btn{
+    font-family: Arial, Verdana;
+}
+
+div.rf-p-hdr {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 4px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+rf-p {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.quick {
+    font-family: Arial, Verdana;
+    font-weight : bold;
+    font-size : 4em;
+    color:navy;
+}
+.look {
+    font-family: Arial, Verdana;
+    font-weight : bold;
+    font-size : 4em;
+    color:orange;
+    padding-left: 10px;
+}
+
+.quickLookItems {
+    background-color:inherit;
+    font-family: Arial, Verdana;
+    font-weight : bold;
+    font-size : 10pt;
+    color:#045491;
+}
+
+.me {
+    background-color:orange;
+}
+
+.other {
+    background-color:inherit;
+}
+
+.even-row {
+    background-color: #FCFFFE;
+}
+
+.odd-row {
+    background-color: #ECF3FE;
+}
+
+.active-row {
+    background-color: #FFEBDA !important;
+    cursor: pointer;
+}

@@ -1,0 +1,253 @@
+ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input{
+    margin:0;
+    padding:0;
+}
+ul{
+    list-style:none;
+}
+fieldset{
+    border:0;
+}
+a img{
+    border:0;
+}
+.clear{
+    clear:both;
+}
+body {
+    background:  transparent url(../images/body_background.jpg) repeat-x center top;
+    background-color:#c2c2c2;
+    font-family:arial, verdana, sans-serif;
+    font-size:12px;
+    color:#666666;
+    margin:0;
+    padding:0;
+}
+p {
+    line-height:170%;
+}
+h1, h2, h3{
+    line-height:40px;
+}
+h2{
+    font-size:18px;
+}
+#wrapper  {
+    width:100%;
+    margin:0pt auto;
+}
+#main {
+    position:relative;
+    width:986px;
+    margin:0pt auto;
+}
+#header  {
+    float:left;
+    width:986px;
+    height:80px;
+}
+#sitename {
+    color:#fff;
+    padding-top:30px;
+    padding-left:13px;
+    font-size:26px;
+}
+#content-wrapper {
+    float:left;
+    width:986px;
+}
+#content  {
+    float:left;
+    background:  transparent url(../images/content_top_background.jpg) no-repeat right top;
+    width:986px;
+}
+#header-image {
+    float:left;
+    background:  transparent url(../images/header_background.jpg) no-repeat right top;
+    padding:13px;
+    _padding:13px 13px 0 13px;
+    width:960px;
+    height:211px;
+}
+.weebly_header {
+    background:  transparent url(%%HEADERIMG%%) no-repeat right top;
+    width:960px;
+    height:224px;  
+}
+#navigation {
+    float:left;
+    background-color:#12283c;
+    width:986px;
+    height:54px;
+    overflow: hidden;
+}
+#nav-left {
+    float:left;
+    background-color:#12283c;
+    width:13px;
+    height:54px;
+}
+#nav-content  ul {
+    float:left;
+    width:940px;
+    height:41px;
+    padding:0 0 0px 0px;
+    margin-left:20px;
+}
+#nav-content  li {
+    float:left;
+    display:inline;
+    font-family:  arial,  verdana, sans-serif;
+    text-align:center;
+    font-size:14px;
+    color:#fff;
+    font-weight:normal;
+    padding:6px 35px 0px 0px;
+    margin-top:12px;
+    margin-right:3px;
+}
+#nav-right {
+    float:left;
+    background-color:#12283c;
+    width:13px;
+    height:54px;
+}
+#nav-bottom {
+    float:left;
+    background: transparent url(../images/below_nav.gif) no-repeat left top;
+    width:986px;
+    height:14px;
+    _margin-bottom:-1px;
+}
+#navigation a:link {
+    color:#fff;
+    font-size:14px;
+    font-weight:normal;
+    text-decoration:none;  
+}
+#navigation a:visited {
+    color:#fff;
+    font-size:14px;
+    font-weight:normal;
+    text-decoration:none;  
+}  
+#navigation a:hover {
+    color:#ccc;
+    font-size:14px;
+    font-weight:normal;
+    text-decoration:none;
+}
+#active a:link {
+    color:#ccc;
+    text-decoration:none;  
+}
+#active a:hover {
+    color:#ccc;
+    text-decoration:none;  
+}
+#active a:visited {
+    color:#ccc;
+    text-decoration:none;  
+}
+a:link,a:hover,a:visited {
+    color:#12283c;
+    font-weight:normal;
+    text-decoration:underline;    
+}
+#content-main  {
+    float:left;
+    background-color:#fff;
+    width:910px;
+    margin-left:13px;
+    _margin-left:7px;
+    padding:0 25px 35px 25px;
+    height:auto !important;
+    min-height:400px;
+}
+img.image-left {
+    margin-right:15px;
+    float:left;
+}
+img.image-right {
+    margin-left:15px;
+    float:right;
+}
+#footer {
+    position:relative;
+    float: left;
+    width:100%;
+    text-align: center;
+}
+#footer-image {
+    background:transparent url(../images/content_btm_background.jpg) no-repeat center top;
+    margin:0pt auto;
+    padding:7px 10px 0 0px;
+    width:979px;
+    height:28px;
+}
+#footer-contents  {
+    margin:0pt auto;
+    text-align:left;
+    font-family:"lucida grande", "lucida sans", arial, sans-serif;
+    color:#333;
+    padding:27px 10px 27px 35px;
+    width:979px;
+}
+
+/****************************** flyout menus  ******************************/
+
+#weebly-menus  .weebly-menu-wrap  {
+    z-index: 5000;
+    margin: 20px 0 0 0;
+}
+
+#weebly-menus  .weebly-menu  {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#weebly-menus  .weebly-menu  li {
+    float: left;
+    clear: left;
+    width: 170px;
+    text-align: left;
+}
+
+#weebly-menus  .weebly-menu  li a {
+    position: relative;
+    display: block;
+    width: 100%;
+    background:  #dedede;
+    border-right:  1px solid #ababab;
+    border-left: 1px solid #ababab;
+    border-bottom: 1px solid #ababab;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: normal;
+    line-height:1;
+    padding:3px;
+    color: #545454;
+}
+
+#weebly-menus .weebly-menu li  a:hover {
+    background:  #999;
+}
+
+#weebly-menus  span.weebly-menu-title  {
+    display: block;
+    padding: 5px 10px;
+}
+
+#weebly-menus  span.weebly-menu-more  {
+    background: transparent url(http://images.weebly.com/weebly/images/submenu_arrow.gif) no-repeat center top;
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    font-family:  Courier;
+    height: 28px;
+    line-height: 28px;
+    padding:1px 0 3px 0;
+}
+

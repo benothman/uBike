@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="template-ubike.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <rich:panel style="border:0;width:85%;text-align:center">
+            <rich:panel header="uBike Trips Details">
+                <center>
+                    <h:form>
+                        <br />
+
+                        <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_left.png"
+                                        onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+
+                        <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_right.png"
+                                        onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        <br/>
+                        <rich:dataTable value="#{dataBean.trips}" var="trip" id="tripList" 
+                                        columnClasses="center"
+                                        rowClasses="odd-row, even-row"
+                                        styleClass="stable" rows="10"
+                                        style="width:95%">
+                            
+                            <f:facet name="header">
+                                <h:outputText value="User Trips"/>
+                            </f:facet>
+
+                            <rich:column sortBy="#{trip.id}">
+                                <f:facet name="header"><h:outputText value="ID"/></f:facet>
+                                <a href="#{facesContext.externalContext.requestContextPath}/resources/trips/#{trip.id}/">
+                                    <h:outputText value="#{trip.id}" />
+                                </a>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.owner.account.userName}">
+                                <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
+                                <a href="#{facesContext.externalContext.requestContextPath}/resources/trips/#{trip.id}/owner/">
+                                    <h:outputText value="#{trip.owner.account.userName}" />
+                                </a>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.startDate}">
+                                <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                                <h:outputText value="#{trip.startDateAsString}"/>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.endDate}">
+                                <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                                <h:outputText value="#{trip.endDateAsString}"/>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.distance}">
+                                <f:facet name="header"><h:outputText value="Distance"/></f:facet>
+                                <h:outputText value="#{trip.distance} km"/>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.duration}">
+                                <f:facet name="header"><h:outputText value="Duration"/></f:facet>
+                                <h:outputText value="#{trip.durationAsString}"/>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.avgSpeed}">
+                                <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
+                                <h:outputText value="#{trip.avgSpeed} km/h"/>
+                            </rich:column>
+
+                            <rich:column sortBy="#{trip.maxSpeed}">
+                                <f:facet name="header"><h:outputText value="Max speed"/></f:facet>
+                                <h:outputText value="#{trip.maxSpeed} km/h"/>
+                            </rich:column>
+
+                            <f:facet name="footer">
+                                <rich:dataScroller id="ds" for="tripList" />
+                            </f:facet>
+                        </rich:dataTable>
+                    </h:form>
+                </center>
+            </rich:panel>
+        </rich:panel>
+    </ui:define>
+</ui:composition>

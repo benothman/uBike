@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.0"
+    xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+
+    <navigation-rule>
+        <from-view-id>/faces/login.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>login-success</from-outcome>
+            <to-view-id>/faces/welcome.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/faces/regist.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>success</from-outcome>
+            <to-view-id>/faces/login.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>login</from-outcome>
+            <to-view-id>/faces/login.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>register</from-outcome>
+            <to-view-id>/faces/regist.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>about</from-outcome>
+            <to-view-id>/faces/about.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>upload</from-outcome>
+            <to-view-id>/faces/upload.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>edit-password</from-outcome>
+            <to-view-id>/faces/private/editPassword.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>edit-profile</from-outcome>
+            <to-view-id>/faces/private/editProfile.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+        
+    <application>
+        <variable-resolver>org.springframework.web.jsf.DelegatingVariableResolver</variable-resolver>
+    </application>
+</faces-config>

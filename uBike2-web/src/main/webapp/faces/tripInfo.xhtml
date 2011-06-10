@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="tripTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+
+        <rich:panel style="border:0;width:85%;text-align:center">
+            <rich:panel header="Trip details">
+                <center>
+                    <rich:dataTable  columnClasses="center"
+                                     rowClasses="odd-row, even-row"
+                                     styleClass="stable" rows="10"
+                                     style="width: 95%">
+
+                        <f:facet name="header">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <h:outputText value="Cyclist" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="Start date" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="End date" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="Total distance" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="Duration" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="Average speed" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="Maximum speed" />
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{it.owner.id}/">
+                                        <h:outputText value="#{it.owner.account.userName}" />
+                                    </a>
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="#{it.startDateAsString}" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="#{it.endDateAsString}" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="#{it.distance} Km" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="#{it.durationAsString}" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="#{it.avgSpeed} Km/h" />
+                                </rich:column>
+                                <rich:column colspan="1">
+                                    <h:outputText value="#{it.maxSpeed} Km/h" />
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                    </rich:dataTable>
+                    <br/><br/>
+                    <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:95%">
+                        <div id="map" style="width: 600px; height: 500px"></div>
+                        <div id="message"></div>
+                    </rich:panel>
+                </center>
+            </rich:panel>
+        </rich:panel>
+    </ui:define>
+</ui:composition>

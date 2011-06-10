@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="template-ubike.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <rich:panel style="border:0;width:85%;text-align:center">
+            <rich:panel header="uBike user groups">
+
+                <center>
+                    <h:form>
+                        <center>
+
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_left.png"
+                                            onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+
+                            <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_right.png"
+                                            onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+
+
+                            <rich:dataTable value="#{dataBean.members}" var="m" id="userGroups" 
+                                            columnClasses="center"
+                                            rowClasses="odd-row, even-row"
+                                            styleClass="stable" rows="10"
+                                            style="width: 90%">
+
+                                <f:facet name="header">
+                                    <h:outputText value="uBike User MemberShips"/>
+                                </f:facet>
+
+                                <rich:column sortBy="#{m.group.name}">
+                                    <f:facet name="header"><h:outputText value="Group name"/></f:facet>
+                                    <a href="#{facesContext.externalContext.requestContextPath}/resources/groups/#{m.group.id}">
+                                        <h:outputText value="#{m.group.name}" />
+                                    </a>
+                                </rich:column>
+                                <rich:column sortBy="#{m.role}">
+                                    <f:facet name="header"><h:outputText value="My role"/></f:facet>
+                                    <h:outputText value="#{m.role}"/>
+                                </rich:column>
+                                <rich:column sortBy="#{m.date}">
+                                    <f:facet name="header"><h:outputText value="Adhesion date"/></f:facet>
+                                    <h:outputText value="#{m.dateAsString}"/>
+                                </rich:column>
+
+                                <rich:column sortBy="#{m.group.activeMembers}">
+                                    <f:facet name="header"><h:outputText value="Active members"/></f:facet>
+                                    <h:outputText value="#{m.group.activeMembers}" />
+                                </rich:column>
+
+                                <rich:column sortBy="#{m.group.nonActiveMembers}">
+                                    <f:facet name="header"><h:outputText value="Non active members"/></f:facet>
+                                    <h:outputText value="#{m.group.nonActiveMembers}" />
+                                </rich:column>
+
+                                <rich:column sortBy="#{m.group.listSize}">
+                                    <f:facet name="header"><h:outputText value="Total"/></f:facet>
+                                    <h:outputText value="#{m.group.listSize}" />
+                                </rich:column>
+
+                                <rich:column>
+                                    <f:facet name="header"><h:outputText value="Active"/></f:facet>
+                                    <h:selectBooleanCheckbox value="#{m.active}" disabled="true" />
+                                </rich:column>
+                                <f:facet name="footer">
+                                    <rich:dataScroller id="ds" for="userGroups"/>
+                                </f:facet>
+                            </rich:dataTable>
+                        </center>
+                    </h:form>
+                </center>
+            </rich:panel>
+        </rich:panel>
+    </ui:define>
+</ui:composition>
