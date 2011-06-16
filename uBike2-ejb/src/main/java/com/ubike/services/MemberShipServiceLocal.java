@@ -21,6 +21,7 @@
 package com.ubike.services;
 
 import com.ubike.model.MemberShip;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -33,4 +34,27 @@ import javax.ejb.Local;
  */
 @Local
 public interface MemberShipServiceLocal extends AbstractService<MemberShip> {
+
+    /**
+     * Count the number of active members of a given group
+     * 
+     * @param groupId the group id
+     * @return the number of the active members of a group
+     */
+    public int countActiveMembers(Long groupId);
+
+    /**
+     * Count the number of non active members of a given group
+     * 
+     * @param groupId the group id
+     * @return the number of the non active members of a group
+     */
+    public int countNonActiveMembers(Long groupId);
+
+    /**
+     * 
+     * @param userId
+     * @return 
+     */
+    public List<MemberShip> getFriends(Long userId);
 }

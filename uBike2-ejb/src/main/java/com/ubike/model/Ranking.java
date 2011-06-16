@@ -20,21 +20,25 @@
  */
 package com.ubike.model;
 
+import com.ubike.util.Metric;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * {@code Ranking}
+ * <p/>
  *
- * @author Benothman
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "RANKINGS")
@@ -45,27 +49,36 @@ public class Ranking implements Serializable {
      */
     public static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
     @Column(name = "RANK")
     private int rank;
     @Column(name = "RANK_VALUE")
     private double value;
-    @ManyToOne(cascade={}, fetch=FetchType.EAGER)
-    @JoinColumn(name = "ID_STAT", referencedColumnName = "ID")
-    private Statistic statistic;
-    @ManyToOne(cascade={}, fetch=FetchType.EAGER)
-    @JoinColumn(name = "ID_USER", referencedColumnName = "ID")
-    private UbikeUser user;
+    @Column(name = "RANK_METRIC", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Metric metric;
 
     /**
-     * 
+     * Create a new instance of {@code Ranking}
      */
     public Ranking() {
     }
 
+    /**
+     * Create a new instance of {@code Ranking}
+     * 
+     * @param rank the rank
+     * @param value the value
+     * @param metric the metric
+     */
+    public Ranking(int rank, double value, Metric metric) {
+        this.rank = rank;
+        this.value = value;
+        this.metric = metric;
+    }
+    
     /**
      * @return the id
      */
@@ -109,30 +122,16 @@ public class Ranking implements Serializable {
     }
 
     /**
-     * @return the statistic
+     * @return the metric
      */
-    public Statistic getStatistic() {
-        return statistic;
+    public Metric getMetric() {
+        return metric;
     }
 
     /**
-     * @param statistic the statistic to set
+     * @param metric the metric to set
      */
-    public void setStatistic(Statistic statistic) {
-        this.statistic = statistic;
-    }
-
-    /**
-     * @return the user
-     */
-    public UbikeUser getUser() {
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser(UbikeUser user) {
-        this.user = user;
+    public void setMetric(Metric metric) {
+        this.metric = metric;
     }
 }

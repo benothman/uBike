@@ -38,7 +38,7 @@ $j(document).ready(function(){
                 },
 										
                 themeName: 	'orange',
-                themePath: 	'layouts/images/jquerybubblepopup-theme'								 
+                themePath: 	'../layouts/images/jquerybubblepopup-theme'								 
             });
         }).blur(function() {
             input.HideBubblePopup();
@@ -68,7 +68,7 @@ $j(document).ready(function(){
             },
 										
             themeName: 	'orange',
-            themePath: 	'layouts/images/jquerybubblepopup-theme'								 
+            themePath: 	'../layouts/images/jquerybubblepopup-theme'								 
         });
 	
     }); //end mouseover event

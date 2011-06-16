@@ -1,251 +1,245 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="template-ubike.xhtml"
+<ui:composition template="template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
     <ui:define name="content">
-        <rich:panel style="border:0;width:85%;text-align:center">
-            <rich:panel header=" uBike Group Details">
+        <ubike:panel header=" uBike Group Details" style="width:99%;">
+            <h:form>
+                <h:panelGrid columns="2" width="100%" columnClasses="top,top">
+                    <rich:dataTable columnClasses="cols"
+                                    rowClasses="odd-row, even-row"
+                                    styleClass="stable" rows="10"
+                                    style="text-align:center">
 
-                <center>
-                    <h:form>
-                        <h:panelGrid columns="2" width="100%" columnClasses="top,top">
-                            <rich:dataTable columnClasses="cols"
+                        <f:facet name="header">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <h:outputText value="Name" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="Description" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="Active members" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="Non active members" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="Total" />
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <rich:columnGroup>
+                                <rich:column>
+                                    <h:outputText value="#{it.name}" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="#{it.description}" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="#{it.activeMembers}" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="#{it.nonActiveMembers}" />
+                                </rich:column>
+                                <rich:column rowspan="1">
+                                    <h:outputText value="#{it.listSize}" />
+                                </rich:column>
+                            </rich:columnGroup>
+                        </f:facet>
+                    </rich:dataTable>
+
+                    <rich:panelMenu  itemMode="ajax" groupMode="ajax"
+                                     groupExpandedLeftIcon="triangleUp"
+                                     groupCollapsedLeftIcon="triangleDown"
+                                     topGroupExpandedRightIcon="chevronUp"
+                                     topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+
+                        <rich:panelMenuGroup label="Group actions" name="my_group" expanded="true">
+                            <rich:panelMenuItem label="Join Group" action="#{joinGroup.join}">
+                                <f:param name="groupId" value="#{it.id}"/>
+                            </rich:panelMenuItem>
+                            <rich:panelMenuItem label="Leave Group" action="#{joinGroup.leave}">
+                                <f:param name="groupId" value="#{it.id}"/>
+                            </rich:panelMenuItem>
+                        </rich:panelMenuGroup>
+                    </rich:panelMenu>
+                </h:panelGrid>
+
+
+
+                <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:70%">
+                    <a4j:outputPanel ajaxRendered="true">
+                        <h:outputText value="#{joinGroup.error}"  style="font-weight:bold;color:#FF0000;" />
+                        <h:outputText value="#{joinGroup.success}" style="font-weight:bold;color:#00FF00;" />
+                    </a4j:outputPanel>
+                </rich:panel>
+
+                
+                
+                
+                <a4j:outputPanel ajaxRendered="true" id="rankings">
+                    <rich:tabPanel switchType="client" style="width:95%">
+                        <rich:tab header="Group Rankings">
+                            <br />
+                            <center>
+                                <rich:dataTable value="#{dataBean.members}" var="m" id="distRank" 
+                                                columnClasses="center"
+                                                rowClasses="odd-row, even-row"
+                                                styleClass="stable"
+                                                style="width:90%"
+                                                rows="10">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="Distance Ranking"/>
+                                    </f:facet>
+
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Rank"/></f:facet>
+                                        <h:outputText value="#{goupBean.distRank}" />
+                                    </rich:column>
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
+                                        <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
+                                            <h:outputText value="#{m.member.account.username}" />
+                                        </a>
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.member.userProfile.totalDistance}" sortOrder="DESCENDING"  styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Distance"/></f:facet>
+                                        <h:outputText value="#{m.member.userProfile.totalDistance} km" />
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                        <h:outputText value="#{m.member.tripsCount}" />
+                                    </rich:column>
+
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="dsRank" for="distRank" />
+                                    </f:facet>
+                                </rich:dataTable>
+
+                                <br/>
+                                <rich:dataTable value="#{dataBean.members}" var="m" id="speedRank" 
+                                                columnClasses="center"
+                                                rowClasses="odd-row, even-row"
+                                                styleClass="stable"
+                                                style="width:90%"
+                                                rows="10">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="Speed Ranking"/>
+                                    </f:facet>
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Rank"/></f:facet>
+                                        <h:outputText value="#{goupBean.speedRank}" />
+                                    </rich:column>
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
+                                        <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
+                                            <h:outputText value="#{m.member.account.username}" />
+                                        </a>
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.member.userProfile.avgSpeed}" sortOrder="DESCENDING" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
+                                        <h:outputText value="#{m.member.userProfile.avgSpeed} km/h" />
+                                    </rich:column>
+
+                                    <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                        <h:outputText value="#{m.member.tripsCount}" />
+                                    </rich:column>
+
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="dsDistRank" for="sppedRank" />
+                                    </f:facet>
+                                </rich:dataTable>
+
+                                <br />
+                                <rich:dataTable value="#{dataBean.members}" var="m" id="durRank" 
+                                                columnClasses="center"
+                                                rowClasses="odd-row, even-row"
+                                                styleClass="stable"
+                                                style="width:90%"
+                                                rows="10">
+
+                                    <f:facet name="header">
+                                        <h:outputText value="Duration Ranking"/>
+                                    </f:facet>
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Rank"/></f:facet>
+                                        <h:outputText value="#{goupBean.durRank}" />
+                                    </rich:column>
+                                    <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
+                                        <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
+                                            <h:outputText value="#{m.member.account.username}" />
+                                        </a>
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.member.userProfile.totalDuration}" sortOrder="DESCENDING" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Duration"/></f:facet>
+                                        <h:outputText value="#{m.member.userProfile.formatDuration}" />
+                                    </rich:column>
+                                    <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
+                                        <f:facet name="header"><h:outputText value="Trips"/></f:facet>
+                                        <h:outputText value="#{m.member.tripsCount}" />
+                                    </rich:column>
+                                    <f:facet name="footer">
+                                        <rich:dataScroller id="dsRank" for="durRank" />
+                                    </f:facet>
+                                </rich:dataTable>
+
+                            </center>
+                        </rich:tab>
+
+                        <rich:tab header="Group Members">
+                            <rich:dataTable value="#{dataBean.members}" var="m" id="memberList" 
+                                            columnClasses="center"
                                             rowClasses="odd-row, even-row"
-                                            styleClass="stable" rows="10"
-                                            style="text-align:center">
+                                            styleClass="stable" rows="10" style="width:90%">
 
                                 <f:facet name="header">
-                                    <rich:columnGroup>
-                                        <rich:column>
-                                            <h:outputText value="Name" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="Description" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="Active members" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="Non active members" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="Total" />
-                                        </rich:column>
-                                    </rich:columnGroup>
+                                    <h:outputText value="Group members"/>
                                 </f:facet>
+
+                                <rich:column sortBy="#{m.id}">
+                                    <f:facet name="header"><h:outputText value="Membership ID"/></f:facet>
+                                    <h:outputText value="#{m.id}" />
+                                </rich:column>
+                                <rich:column sortBy="#{m.member.account.username}">
+                                    <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
+                                    <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
+                                        <h:outputText value="#{m.member.account.username}" />
+                                    </a>
+                                </rich:column>
+                                <rich:column>
+                                    <f:facet name="header"><h:outputText value="Role"/></f:facet>
+                                    <h:outputText value="#{m.role}" />
+                                </rich:column>
+                                <rich:column sortBy="#{m.date}">
+                                    <f:facet name="header"><h:outputText value="Adhesion date"/></f:facet>
+                                    <h:outputText value="#{m.dateAsString}" />
+                                </rich:column>
+                                <rich:column>
+                                    <f:facet name="header"><h:outputText value="Active"/></f:facet>
+                                    <h:selectBooleanCheckbox value="#{m.active}" disabled="true" />
+                                </rich:column>
+
                                 <f:facet name="footer">
-                                    <rich:columnGroup>
-                                        <rich:column>
-                                            <h:outputText value="#{it.name}" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="#{it.description}" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="#{it.activeMembers}" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="#{it.nonActiveMembers}" />
-                                        </rich:column>
-                                        <rich:column rowspan="1">
-                                            <h:outputText value="#{it.listSize}" />
-                                        </rich:column>
-                                    </rich:columnGroup>
+                                    <rich:dataScroller id="dsMembers" for="memberList" />
                                 </f:facet>
                             </rich:dataTable>
-
-                            <rich:panelMenu  itemMode="ajax" groupMode="ajax"
-                                             groupExpandedLeftIcon="triangleUp"
-                                             groupCollapsedLeftIcon="triangleDown"
-                                             topGroupExpandedRightIcon="chevronUp"
-                                             topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
-
-                                <rich:panelMenuGroup label="Group actions" name="my_group" expanded="true">
-                                    <rich:panelMenuItem label="Join Group" action="#{joinGroup.join}">
-                                        <f:param name="groupId" value="#{it.id}"/>
-                                    </rich:panelMenuItem>
-                                    <rich:panelMenuItem label="Leave Group" action="#{joinGroup.leave}">
-                                        <f:param name="groupId" value="#{it.id}"/>
-                                    </rich:panelMenuItem>
-                                </rich:panelMenuGroup>
-                            </rich:panelMenu>
-                        </h:panelGrid>
-
-
-
-                        <rich:panel bodyClass="rich-laguna-panel-no-header" style="width:70%">
-                            <a4j:outputPanel ajaxRendered="true">
-                                <h:outputText value="#{joinGroup.error}"  style="font-weight:bold;color:#FF0000;" />
-                                <h:outputText value="#{joinGroup.success}" style="font-weight:bold;color:#00FF00;" />
-                            </a4j:outputPanel>
-                        </rich:panel>
-
-
-
-
-
-                        <a4j:outputPanel ajaxRendered="true" id="rankings">
-                            <rich:tabPanel switchType="client" style="width:95%">
-                                <rich:tab header="Group Rankings">
-                                    <br />
-                                    <center>
-                                        <rich:dataTable value="#{dataBean.members}" var="m" id="distRank" 
-                                                        columnClasses="center"
-                                                        rowClasses="odd-row, even-row"
-                                                        styleClass="stable"
-                                                        style="width:90%"
-                                                        rows="10">
-
-                                            <f:facet name="header">
-                                                <h:outputText value="Distance Ranking"/>
-                                            </f:facet>
-
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Rank"/></f:facet>
-                                                <h:outputText value="#{goupBean.distRank}" />
-                                            </rich:column>
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
-                                                <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
-                                                    <h:outputText value="#{m.member.account.userName}" />
-                                                </a>
-                                            </rich:column>
-                                            <rich:column sortBy="#{m.member.userProfile.totalDistance}" sortOrder="DESCENDING"  styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Distance"/></f:facet>
-                                                <h:outputText value="#{m.member.userProfile.totalDistance} km" />
-                                            </rich:column>
-                                            <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Trips"/></f:facet>
-                                                <h:outputText value="#{m.member.tripsCount}" />
-                                            </rich:column>
-
-                                            <f:facet name="footer">
-                                                <rich:dataScroller id="dsRank" for="distRank" />
-                                            </f:facet>
-                                        </rich:dataTable>
-
-                                        <br/>
-                                        <rich:dataTable value="#{dataBean.members}" var="m" id="speedRank" 
-                                                        columnClasses="center"
-                                                        rowClasses="odd-row, even-row"
-                                                        styleClass="stable"
-                                                        style="width:90%"
-                                                        rows="10">
-
-                                            <f:facet name="header">
-                                                <h:outputText value="Speed Ranking"/>
-                                            </f:facet>
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Rank"/></f:facet>
-                                                <h:outputText value="#{goupBean.speedRank}" />
-                                            </rich:column>
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
-                                                <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
-                                                    <h:outputText value="#{m.member.account.userName}" />
-                                                </a>
-                                            </rich:column>
-                                            <rich:column sortBy="#{m.member.userProfile.avgSpeed}" sortOrder="DESCENDING" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
-                                                <h:outputText value="#{m.member.userProfile.avgSpeed} km/h" />
-                                            </rich:column>
-
-                                            <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Trips"/></f:facet>
-                                                <h:outputText value="#{m.member.tripsCount}" />
-                                            </rich:column>
-
-                                            <f:facet name="footer">
-                                                <rich:dataScroller id="dsDistRank" for="sppedRank" />
-                                            </f:facet>
-                                        </rich:dataTable>
-
-                                        <br />
-                                        <rich:dataTable value="#{dataBean.members}" var="m" id="durRank" 
-                                                        columnClasses="center"
-                                                        columnClasses="center"
-                                                        rowClasses="odd-row, even-row"
-                                                        styleClass="stable"
-                                                        style="width:90%"
-                                                        rows="10">
-
-                                            <f:facet name="header">
-                                                <h:outputText value="Duration Ranking"/>
-                                            </f:facet>
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Rank"/></f:facet>
-                                                <h:outputText value="#{goupBean.durRank}" />
-                                            </rich:column>
-                                            <rich:column styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
-                                                <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
-                                                    <h:outputText value="#{m.member.account.userName}" />
-                                                </a>
-                                            </rich:column>
-                                            <rich:column sortBy="#{m.member.userProfile.totalDuration}" sortOrder="DESCENDING" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Duration"/></f:facet>
-                                                <h:outputText value="#{m.member.userProfile.formatDuration}" />
-                                            </rich:column>
-                                            <rich:column sortBy="#{m.member.tripsCount}" styleClass="#{m.member.id == goupBean.current.id ? 'me' : 'other'}">
-                                                <f:facet name="header"><h:outputText value="Trips"/></f:facet>
-                                                <h:outputText value="#{m.member.tripsCount}" />
-                                            </rich:column>
-                                            <f:facet name="footer">
-                                                <rich:dataScroller id="dsRank" for="durRank" />
-                                            </f:facet>
-                                        </rich:dataTable>
-
-                                    </center>
-                                </rich:tab>
-
-                                <rich:tab header="Group Members">
-                                    <rich:dataTable value="#{dataBean.members}" var="m" id="memberList" 
-                                                    columnClasses="center"
-                                                    rowClasses="odd-row, even-row"
-                                                    styleClass="stable" rows="10" style="width:90%">
-
-                                        <f:facet name="header">
-                                            <h:outputText value="Group members"/>
-                                        </f:facet>
-
-                                        <rich:column sortBy="#{m.id}">
-                                            <f:facet name="header"><h:outputText value="Membership ID"/></f:facet>
-                                            <h:outputText value="#{m.id}" />
-                                        </rich:column>
-                                        <rich:column sortBy="#{m.member.account.userName}">
-                                            <f:facet name="header"><h:outputText value="Cyclist"/></f:facet>
-                                            <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{m.member.id}">
-                                                <h:outputText value="#{m.member.account.userName}" />
-                                            </a>
-                                        </rich:column>
-                                        <rich:column>
-                                            <f:facet name="header"><h:outputText value="Role"/></f:facet>
-                                            <h:outputText value="#{m.role}" />
-                                        </rich:column>
-                                        <rich:column sortBy="#{m.date}">
-                                            <f:facet name="header"><h:outputText value="Adhesion date"/></f:facet>
-                                            <h:outputText value="#{m.dateAsString}" />
-                                        </rich:column>
-                                        <rich:column>
-                                            <f:facet name="header"><h:outputText value="Active"/></f:facet>
-                                            <h:selectBooleanCheckbox value="#{m.active}" disabled="true" />
-                                        </rich:column>
-
-                                        <f:facet name="footer">
-                                            <rich:dataScroller id="dsMembers" for="memberList" />
-                                        </f:facet>
-                                    </rich:dataTable>
-                                </rich:tab>
-                            </rich:tabPanel>
-                        </a4j:outputPanel>
-                    </h:form>
-                </center>
-            </rich:panel>
-        </rich:panel>
+                        </rich:tab>
+                    </rich:tabPanel>
+                </a4j:outputPanel>
+            </h:form>
+        </ubike:panel>
     </ui:define>
 </ui:composition>

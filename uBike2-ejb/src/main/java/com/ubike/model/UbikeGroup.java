@@ -36,13 +36,20 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 /**
- * 
- * @author BENOTHMAN Nabil.
+ * {@code UbikeGroup}
+ * <p/>
+ *
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
-@Table(name = "UBIKE_GROUPS")
+@Table(name = "UBIKE_GROUPS", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"NAME"})
+})
 @NamedQueries({
     @NamedQuery(name = "Group.getAll", query = "SELECT o FROM UbikeGroup o ORDER BY o.name"),
     @NamedQuery(name = "Group.getByName", query = "SELECT o FROM UbikeGroup o WHERE o.name=:groupName")
@@ -63,27 +70,41 @@ public class UbikeGroup implements com.ubike.util.UbikeEntity {
     @Column(name = "DESCRIPTION")
     private String description;
     @OneToMany(mappedBy = "group", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private List<MemberShip> members = new ArrayList<MemberShip>();
+    private List<MemberShip> memberShips = new ArrayList<MemberShip>();
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Statistic> statistics;
 
     /**
-     * Create a new <code>UbikeGroup</code> instance
+     * Create a new instance of {@code UbikeGroup}
      */
     public UbikeGroup() {
         super();
+        this.memberShips = new ArrayList<MemberShip>();
     }
 
     /**
-     *
-     * @param name
-     * @param description
-     * @param owner
+     * Create a new instance of {@code UbikeGroup}
+     * 
+     * @param name the group name
+     * @param description the group description
+     */
+    public UbikeGroup(String name, String description) {
+        this();
+        this.name = name;
+        this.description = description;
+    }
+
+    /**
+     * Create a new instance of {@code UbikeGroup}
+     * 
+     * @param name the group name
+     * @param description the group description
+     * @param owner the group creator
      */
     public UbikeGroup(String name, String description, UbikeUser owner) {
         this.name = name;
         this.description = description;
-        this.members.add(new MemberShip(owner, this, Role.Creator));
+        this.memberShips.add(new MemberShip(owner, this, Role.Creator));
     }
 
     /**
@@ -120,7 +141,7 @@ public class UbikeGroup implements com.ubike.util.UbikeEntity {
      */
     @Override
     public List<MemberShip> getMemberShips() {
-        return this.members;
+        return this.memberShips;
     }
 
     /**
@@ -128,12 +149,12 @@ public class UbikeGroup implements com.ubike.util.UbikeEntity {
      */
     @Override
     public void setMemberShips(List<MemberShip> members) {
-        this.members = members;
+        this.memberShips = members;
     }
 
     @Transient
     public int getListSize() {
-        return this.members == null ? 0 : this.members.size();
+        return this.memberShips == null ? 0 : this.memberShips.size();
     }
 
     @Transient

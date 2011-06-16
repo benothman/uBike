@@ -33,4 +33,11 @@ import javax.ejb.Local;
  */
 @Local
 public interface TripServiceLocal extends AbstractService<Trip> {
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public Trip findWithMapCode(Long id);
 }

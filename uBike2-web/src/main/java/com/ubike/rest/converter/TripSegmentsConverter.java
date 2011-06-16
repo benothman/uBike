@@ -16,7 +16,6 @@
  *
  *  This class is a part of uBike projet (HEIG-VD)
  */
-
 package com.ubike.rest.converter;
 
 import com.ubike.model.TripSegment;
@@ -32,15 +31,17 @@ import java.util.ArrayList;
  *
  * @author Benothman
  */
-
 @XmlRootElement(name = "tripSegments")
 public class TripSegmentsConverter {
+
     private Collection<TripSegment> entities;
     private Collection<TripSegmentConverter> items;
     private URI uri;
     private int expandLevel;
-  
-    /** Creates a new instance of TripSegmentsConverter */
+
+    /** 
+     * Creates a new instance of TripSegmentsConverter 
+     */
     public TripSegmentsConverter() {
     }
 
@@ -56,7 +57,7 @@ public class TripSegmentsConverter {
         this.entities = entities;
         this.uri = uri;
         this.expandLevel = expandLevel;
-        getTripSegment();
+        //getTripSegment();
     }
 
     /**

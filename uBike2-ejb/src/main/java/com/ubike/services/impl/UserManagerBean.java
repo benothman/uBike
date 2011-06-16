@@ -184,7 +184,7 @@ public class UserManagerBean implements UserManagerLocal {
     public boolean changePassword(long id, String oldPass, String newPass, String confirm) {
         Account account = (Account) this.getAccountById(id);
         if (account != null) {
-            if (account.getKeyPass().equals(Util.getEncryption(
+            if (account.getKeyPass().equals(Util.encrypt(
                     account.getSalt() + oldPass)) && newPass.equals(confirm)) {
 
                 account.setKeyPass(newPass);

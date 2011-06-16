@@ -14,6 +14,7 @@ import com.ubike.util.StatisticType;
 import java.util.Collection;
 import java.util.Date;
 import javax.ejb.Local;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -202,4 +203,9 @@ public interface TripManagerLocal {
      * @param o
      */
     public void updateEntity(Object o);
+
+    /**
+     * 
+     */
+    public void setEntityManager(EntityManager entityManager);
 }

@@ -24,9 +24,14 @@ import com.ubike.model.MemberShip;
 import com.ubike.model.Trip;
 import com.ubike.model.UbikeGroup;
 import com.ubike.model.UbikeUser;
+import com.ubike.services.MemberShipServiceLocal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -42,10 +47,13 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class DataBean {
 
+    private static final Logger logger = Logger.getLogger(DataBean.class.getName());
     private List<UbikeUser> users;
     private List<UbikeGroup> groups;
     private List<Trip> trips;
     private List<MemberShip> members;
+    @EJB
+    private MemberShipServiceLocal memberShipService;
 
     /**
      * Create a new instance of {@code DataBean}
@@ -67,6 +75,15 @@ public class DataBean {
 
         this.trips = BaseBean.getSessionAttribute("tmp_trips") != null
                 ? (List<Trip>) BaseBean.getSessionAttribute("tmp_trips") : new ArrayList<Trip>();
+    }
+
+    @PreDestroy
+    protected void destroy() {
+        logger.log(Level.INFO, "Destroy managed bean {0}", getClass().getName());
+    }
+
+    public long countGroupMembers(Long groupId) {
+        return this.memberShipService.countActiveMembers(groupId);
     }
 
     /**

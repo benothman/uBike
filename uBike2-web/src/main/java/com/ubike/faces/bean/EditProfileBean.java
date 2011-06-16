@@ -21,18 +21,21 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.UbikeUser;
-import com.ubike.services.UserManagerLocal;
+import com.ubike.services.UserServiceLocal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
+import javax.faces.event.ActionEvent;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.security.providers.encoding.ShaPasswordEncoder;
 
 /**
  * {@code EditProfileBean}
@@ -46,37 +49,42 @@ import org.springframework.security.providers.encoding.ShaPasswordEncoder;
 @RequestScoped
 public class EditProfileBean {
 
-    // Data for Profile Edition
-    @NotEmpty
+    private static final Logger logger = Logger.getLogger(EditProfileBean.class.getName());
+    @NotBlank
+    private String firstname;
+    @NotBlank
+    private String lastname;
+    @NotBlank
     private String address;
     @NotEmpty
-    @Length(min = 10, max = 17)
+    @Length(min = 10, max = 17, message = "The phone number must have between 10 and 17 digits")
     @Pattern(regexp = "[0-9]+", message = "The phone number can contain only digits")
     private String phone;
     @Email
     @NotEmpty
     private String email;
+    @NotBlank
+    @Pattern(regexp = ".*[^\\s]", message = "The username cannot contain spaces")
+    private String username;
+    // Data for Profile Edition
     private boolean groupAccess;
     private boolean otherAccess;
-    // Data for Password Edition
-    @NotEmpty
-    private String oldPassword;
-    @NotEmpty
-    @Length(min = 6, max = 20)
-    private String newPassword;
-    @NotEmpty
-    private String confirm;
-    // Util Data
-    private String error;
-    private String success;
     @EJB
-    private UserManagerLocal uml;
+    private UserServiceLocal userService;
 
     /**
-     * 
+     * Create a new instance of {@code EditProfileBean}
      */
     public EditProfileBean() {
+        super();
+    }
+
+    @PostConstruct
+    protected void init() {
         UbikeUser current = (UbikeUser) BaseBean.getSessionAttribute("user");
+        this.firstname = current.getFirstname();
+        this.lastname = current.getLastname();
+        this.username = current.getAccount().getUsername();
         this.address = current.getAddress();
         this.phone = current.getPhone();
         this.email = current.getEmail();
@@ -90,8 +98,9 @@ public class EditProfileBean {
      * @return <tt>success</tt> if the processing finish with successfully else
      * <tt>failure</tt>
      */
-    public String editProfile() {
+    public void save() {
 
+        FacesContext fc = FacesContext.getCurrentInstance();
         try {
             UbikeUser current = (UbikeUser) BaseBean.getSessionAttribute("user");
             current.setAddress(this.address);
@@ -99,62 +108,26 @@ public class EditProfileBean {
             current.setEmail(this.email);
             current.getPreferences().setGroupAccess(this.groupAccess);
             current.getPreferences().setOthersAccess(this.otherAccess);
-            getUml().updateEntity(current);
-            getUml().updateEntity(current.getPreferences());
+            this.userService.update(current);
+            fc.addMessage("edit_form:edit_error", new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "You profile was updated successfully!",
+                    "You profile was updated successfully!"));
 
-            ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
-            HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
-            response.sendRedirect(exctx.getRequestContextPath() + "/resources/users/" + current.getId());
-
-            this.error = "";
-            this.success = "You profile was updated successfully!";
-            return BaseBean.SUCCESS;
         } catch (Exception exp) {
-            this.error = "An error was occur! Please try again.";
-            this.success = "";
-            return BaseBean.FAILURE;
+            fc.addMessage("edit_form:edit_error", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "An error was occur! Please try again.",
+                    "An error was occur! Please try again."));
+
+            logger.log(Level.SEVERE, "An error was occur! Please try again -> " + exp.getMessage(), exp);
         }
     }
 
     /**
-     *
-     * @return
+     * 
+     * @param event 
      */
-    public String editPassword() {
-        try {
-            UbikeUser current = (UbikeUser) BaseBean.getSessionAttribute("user");
-
-            ShaPasswordEncoder encoder = new ShaPasswordEncoder(512);
-            String encodedPW = encoder.encodePassword(this.getOldPassword(), current.getAccount().getUsername());
-            // Verify the old password
-            if (!current.getAccount().getKeyPass().equals(encodedPW)) {
-                this.success = "";
-                this.error = "Wrong old password! Please try again";
-                return BaseBean.FAILURE;
-            }
-            // Verify that the new password is typed correctly
-            if (!this.newPassword.equals(confirm)) {
-                this.success = "";
-                this.error = "Please verify the new Password";
-                return BaseBean.FAILURE;
-            }
-
-            String keyPass = encoder.encodePassword(getNewPassword(), current.getAccount().getUsername());
-            current.getAccount().setKeyPass(keyPass);
-            getUml().updateEntity(current.getAccount());
-
-            ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
-            HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
-            response.sendRedirect(exctx.getRequestContextPath() + "/resources/users/" + current.getId());
-
-            this.error = "";
-            this.success = "";
-            return BaseBean.SUCCESS;
-        } catch (Exception exp) {
-            this.success = "";
-            this.error = "An Error was occur! Please try again";
-            return BaseBean.FAILURE;
-        }
+    public void save(ActionEvent event) {
+        save();
     }
 
     /**
@@ -228,86 +201,44 @@ public class EditProfileBean {
     }
 
     /**
-     * @return the uml
+     * @return the firstname
      */
-    public UserManagerLocal getUml() {
-        return uml;
+    public String getFirstname() {
+        return firstname;
     }
 
     /**
-     * @param uml the uml to set
+     * @param firstname the firstname to set
      */
-    public void setUml(UserManagerLocal uml) {
-        this.uml = uml;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     /**
-     * @return the error
+     * @return the lastname
      */
-    public String getError() {
-        return error;
+    public String getLastname() {
+        return lastname;
     }
 
     /**
-     * @param error the error to set
+     * @param lastname the lastname to set
      */
-    public void setError(String error) {
-        this.error = error;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     /**
-     * @return the success
+     * @return the username
      */
-    public String getSuccess() {
-        return success;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * @param success the success to set
+     * @param username the username to set
      */
-    public void setSuccess(String success) {
-        this.success = success;
-    }
-
-    /**
-     * @return the oldPassword
-     */
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    /**
-     * @param oldPassword the oldPassword to set
-     */
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    /**
-     * @return the newPassword
-     */
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    /**
-     * @param newPassword the newPassword to set
-     */
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    /**
-     * @return the confirm
-     */
-    public String getConfirm() {
-        return confirm;
-    }
-
-    /**
-     * @param confirm the confirm to set
-     */
-    public void setConfirm(String confirm) {
-        this.confirm = confirm;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

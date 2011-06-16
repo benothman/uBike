@@ -1,15 +1,16 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8' ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:rich="http://richfaces.org/rich">
+
     <h:head>
+        <title>uBike - Ubiquitous computing for cyclists</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>uBike</title>
-        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/default.css" rel="stylesheet" type="text/css" />
-        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/default1.css" rel="stylesheet" type="text/css" />
+        <link href="#{facesContext.externalContext.requestContextPath}/layouts/css/cssLayout1.css" rel="stylesheet" type="text/css" />
         <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=#{gmBean.gmapkey}" type="text/javascript"></script>
         <script type="text/javascript">
 
@@ -35,8 +36,20 @@
                         numLevels: 4
                     });
                     //var start = new GLatLng(#{it.startLat},#{it.startLon});
+                    var clickEvent = "click";
                     var start = new GMarker(new GLatLng(#{it.startLat},#{it.startLon}));
+                    var startHtmlInfo = '<b>Start Point</b> <br /> Latitude ' + #{it.startLat} + 
+                        '<br/> Longitude ' + #{it.startLon} +'<br/>';
+                    GEvent.addListener(start, clickEvent, function() {
+                        start.openInfoWindowHtml(startHtmlInfo);
+                    });
                     var end = new GMarker(new GLatLng(#{it.endLat},#{it.endLon}));
+                    var endHtmlInfo = '<b>End Point</b> <br /> Latitude ' + #{it.endLat} + 
+                        '<br/> Longitude ' + #{it.endLon} +'<br/>';
+                    GEvent.addListener(end, clickEvent, function() {
+                        end.openInfoWindowHtml(endHtmlInfo);
+                    });
+                    
                     map.addOverlay(start);
                     map.addOverlay(end);
                     map.addOverlay(encodedPolyline);
@@ -50,25 +63,29 @@
 
     <h:body onload="initialize()" onunload="GUnload()">
         <div id="wrapper">
-            <div id="top" class="top">
+            <div id="top">
                 <ui:insert name="top">
-                    <h1>uBike</h1>
-                    <h3>Ubiquitous computing for cyclists</h3>
+                    <div id="top-header-image">
+                        <a href="#{facesContext.externalContext.requestContextPath}/" title="Home">
+                            <span class="sitename1">u</span><span class="sitename2">Bike</span>
+                        </a>
+                        <span class="sitename3">Ubiquitous computing for cyclists</span>
+                    </div>
+                    <div id="top-menu"></div>
                 </ui:insert>
             </div>
-            <div>
+            <div id="main">
                 <div id="left">
                     <ui:insert name="left">
                         <h:form id="form">
-                            <rich:panel style="border:1px;width:100%;height:100%;">
-                                <f:facet name="header">
-                                    <h:outputText value="uBike Menu" />
-                                </f:facet>
-                                <rich:panelMenu style="width:98%" itemMode="server" groupMode="ajax"
-                                                groupExpandedLeftIcon="triangleUp"
-                                                groupCollapsedLeftIcon="triangleDown"
-                                                topGroupExpandedRightIcon="chevronUp"
-                                                topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+                            <rich:panel header="uBike Menu" style="border:1px;width:100%;height:100%;">
+                                <rich:panelMenu 
+                                    style="width:98%" itemMode="server" groupMode="ajax"
+                                    groupExpandedLeftIcon="triangleUp"
+                                    groupCollapsedLeftIcon="triangleDown"
+                                    topGroupExpandedRightIcon="chevronUp"
+                                    topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+
                                     <rich:panelMenuGroup label="MY DATA" name="my_data" expanded="true">
                                         <rich:panelMenuItem label="My Profile" action="#{panelMenu.myData}">
                                             <f:param name="action" value="user-profile"/>
@@ -101,12 +118,15 @@
                                             <f:param name="action" value="3"/>
                                         </rich:panelMenuItem>
                                         <rich:panelMenuItem label="Create Group" action="#{panelMenu.myCommunity}">
-                                            <f:param name="action" value="4"/>
+                                            <f:param name="action" value="create-group"/>
                                         </rich:panelMenuItem>
                                     </rich:panelMenuGroup>
                                     <rich:panelMenuGroup label="Additional" name="addtional" expanded="true">
+                                        <rich:panelMenuItem label="About uBike" action="#{panelMenu.additional}">
+                                            <f:param name="action" value="about"/>
+                                        </rich:panelMenuItem>
                                         <rich:panelMenuItem label="Logout" action="#{authenticationController.logout}">
-                                            <f:param name="action" value="1"/>
+                                            <f:param name="action" value="2"/>
                                         </rich:panelMenuItem>
                                     </rich:panelMenuGroup>
                                 </rich:panelMenu>
@@ -114,9 +134,82 @@
                         </h:form>
                     </ui:insert>
                 </div>
-                <div id="content" class="left_content">
-                    <ui:insert name="content">Content</ui:insert>
+                <div>
+
+                    <ui:insert name="right">
+                        <div id="right">
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                        </div>
+                    </ui:insert>
+                    <div id="content" class="right_content">
+                        <f:view contentType="text/html">
+                            <ui:insert name="content">
+
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+                                <br />
+
+                            </ui:insert>
+                        </f:view>
+                    </div>
                 </div>
+            </div>
+            <div id="bottom">
+                <ui:insert name="bottom">
+                    &#169; Copyright 2011 - uBike, uBiquitous computing for cyclists
+                </ui:insert>
             </div>
         </div>
     </h:body>

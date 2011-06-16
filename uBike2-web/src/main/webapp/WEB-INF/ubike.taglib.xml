@@ -11,10 +11,19 @@
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
               version="2.0">
     <namespace>http://www.ubike.com/faces</namespace>
+    
     <tag>
         <tag-name>captcha</tag-name>
         <component>
             <component-type>com.ubike.faces.component.Captcha</component-type>
         </component>
     </tag>
+    
+    <tag>
+        <tag-name>panel</tag-name>
+        <component>
+            <component-type>com.ubike.faces.component.Panel</component-type>
+        </component>
+    </tag>
+    
 </facelet-taglib>

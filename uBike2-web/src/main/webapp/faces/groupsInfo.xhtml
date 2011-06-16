@@ -1,61 +1,87 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="template-ubike.xhtml"
+<ui:composition template="template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
-    
+
     <ui:define name="content">
-        <rich:panel style="border:0;width:85%;text-align:center">
-            <rich:panel header=" uBike group List">
+        <ubike:panel header=" uBike group List" style="margin: auto">
+            <h:form>
 
-                <center>
-                    <h:form>
-                        <rich:dataTable value="#{dataBean.groups}" var="grp" id="groupList" 
-                                        columnClasses="center"
-                                        rowClasses="odd-row, even-row"
-                                        styleClass="stable" rows="10"
-                                        style="width:80%">
+                <rich:dataTable value="#{groupsBean.groups}" var="grp" id="groupList" 
+                                columnClasses="center"
+                                rowClasses="odd-row, even-row"
+                                styleClass="stable" rows="10">
 
-                            <f:facet name="header">
-                                <h:outputText value="uBike groups"/>
-                            </f:facet>
+                    <f:facet name="header">
+                        <h:outputText value="uBike groups"/>
+                    </f:facet>
 
-                            <rich:column sortBy="#{grp.name}">
-                                <f:facet name="header"><h:outputText value="Group name"/></f:facet>
-                                <a href="#{facesContext.externalContext.requestContextPath}/resources/groups/#{grp.id}">
-                                    <h:outputText value="#{grp.name}" />
-                                </a>
-                            </rich:column>
+                    <rich:column sortBy="#{grp.name}">
+                        <f:facet name="header"><h:outputText value="Group name"/></f:facet>
+                        <a href="#{facesContext.externalContext.requestContextPath}/resources/groups/#{grp.id}">
+                            <h:outputText value="#{grp.name}" />
+                        </a>
+                    </rich:column>
 
-                            <rich:column>
-                                <f:facet name="header"><h:outputText value="Description"/></f:facet>
-                                <h:outputText value="#{grp.description}" />
-                            </rich:column>
+                    <rich:column>
+                        <f:facet name="header">
+                            <h:outputText value="Description"/>
+                        </f:facet>
+                        <h:outputText value="#{grp.description}" />
+                    </rich:column>
 
-                            <rich:column sortBy="#{grp.activeMembers}">
-                                <f:facet name="header"><h:outputText value="Active members"/></f:facet>
-                                <h:outputText value="#{grp.activeMembers}" />
-                            </rich:column>
+                    <rich:column sortBy="#{grp.activeMembers}">
+                        <f:facet name="header">
+                            <h:outputText value="Active members"/>
+                        </f:facet>
+                        <h:outputText value="#{grp.activeMembers}" />
+                    </rich:column>
 
-                            <rich:column sortBy="#{grp.nonActiveMembers}">
-                                <f:facet name="header"><h:outputText value="Non active members"/></f:facet>
-                                <h:outputText value="#{grp.nonActiveMembers}" />
-                            </rich:column>
+                    <rich:column sortBy="#{grp.nonActiveMembers}">
+                        <f:facet name="header">
+                            <h:outputText value="Non active members"/>
+                        </f:facet>
+                        <h:outputText value="#{grp.nonActiveMembers}" />
+                    </rich:column>
 
-                            <rich:column sortBy="#{grp.listSize}">
-                                <f:facet name="header"><h:outputText value="Total"/></f:facet>
-                                <h:outputText value="#{grp.listSize}" />
-                            </rich:column>
-                            <f:facet name="footer">
-                                <rich:dataScroller id="ds" for="groupList"/>
-                            </f:facet>
-                        </rich:dataTable>
-                    </h:form>
-                </center>
-            </rich:panel>
-        </rich:panel>
+                    <rich:column sortBy="#{grp.listSize}">
+                        <f:facet name="header">
+                            <h:outputText value="Total"/>
+                        </f:facet>
+                        <h:outputText value="#{grp.listSize}" />
+                    </rich:column>
+                    <f:facet name="footer">
+                        <h:panelGrid columns="3" style="margin: auto;">
+                            <h:graphicImage value="/layouts/images/arr_left.png"
+                                            onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+                            <rich:dataScroller id="ds" for="groupList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                            <h:graphicImage value="/layouts/images/arr_right.png"
+                                            onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        </h:panelGrid>
+                    </f:facet>
+                </rich:dataTable>
+            </h:form>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </ubike:panel>
     </ui:define>
 </ui:composition>

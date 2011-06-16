@@ -42,6 +42,7 @@ public class UbikeUserVoter extends UbikeResourceAccessVoter {
      * @see org.springframework.security.vote.AccessDecisionVoter#vote(org.springframework.security.Authentication,
      * java.lang.Object, org.springframework.security.ConfigAttributeDefinition)
      */
+    @Override
     public int vote(Authentication auth, Object secureObj, ConfigAttributeDefinition config) {
         if (supports(secureObj.getClass())) {
             try {

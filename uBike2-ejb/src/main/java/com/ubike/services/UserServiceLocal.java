@@ -21,6 +21,7 @@
 package com.ubike.services;
 
 import com.ubike.model.UbikeUser;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -33,4 +34,30 @@ import javax.ejb.Local;
  */
 @Local
 public interface UserServiceLocal extends AbstractService<UbikeUser> {
+
+    /**
+     * 
+     */
+    public UbikeUser findWithTrips(Long id);
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public UbikeUser findWithMemberShips(Long id);
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public UbikeUser findWithTripsAndMemberShips(Long id);
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public List<UbikeUser> getFriends(Long id);
 }

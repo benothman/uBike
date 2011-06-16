@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -50,6 +51,9 @@ public final class Util {
     private static final Random rand = new Random();
     private static final Calendar cal = Calendar.getInstance();
 
+    /**
+     * Create a new instance of {@code Util}
+     */
     private Util() {
     }
 
@@ -58,7 +62,7 @@ public final class Util {
      * @param plaintext
      * @return The cipher text
      */
-    public static String getEncryption(String plaintext) {
+    public static String encrypt(String plaintext) {
 
         try {
             String str1 = encrypt(plaintext, SHA_512);
@@ -143,12 +147,7 @@ public final class Util {
      * @return
      */
     public static String formatTimestamp(Date date) {
-        cal.setTime(date);
-        String asString = (cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + cal.get(Calendar.DAY_OF_MONTH) + "/";
-        asString += (cal.get(Calendar.MONTH) < 10 ? "0" : "") + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR) + " - ";
-        asString += (cal.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":";
-        asString += (cal.get(Calendar.MINUTE) < 10 ? "0" : "") + cal.get(Calendar.MINUTE);
-        return asString;
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(date);
     }
 
     /**
@@ -156,23 +155,35 @@ public final class Util {
      * @return a formated String from the given date
      */
     public static String formatDate(Date date) {
-        cal.setTime(date);
-        String format = (cal.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "") + cal.get(Calendar.DAY_OF_MONTH) + "/";
-        format += (cal.get(Calendar.MONTH) < 9 ? "0" : "") + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR);
-
-        return format;
+        return DateFormat.getDateTimeInstance().format(date);
     }
 
     /**
      *
      * @return
      */
-    public static Calendar getThisDay() {
+    public static Calendar today() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
+    }
+
+    /**
+     * 
+     * @param date
+     * @return 
+     */
+    public static Date dateMidnight(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     /**
@@ -180,9 +191,9 @@ public final class Util {
      * @param duration
      * @return
      */
-    public static String formatDuration(int duration) {
-        int h = duration / 3600;
-        int m = (duration % 3600) / 60;
+    public static String formatDuration(long duration) {
+        long h = duration / 3600;
+        long m = (duration % 3600) / 60;
         return h + "h" + m + "min";
     }
 }

@@ -48,10 +48,10 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "UBIKE_USERS")
 @NamedQueries({
-    @NamedQuery(name = "user.getAll", query = "SELECT o FROM UbikeUser o ORDER BY o.lastName, o.firstName"),
-    @NamedQuery(name = "user.getByName", query = "SELECT o FROM UbikeUser o WHERE o.firstName=:param1 AND o.lastName=:param2"),
-    @NamedQuery(name = "user.getByAccount", query = "SELECT o FROM UbikeUser o WHERE o.account.id=:accountId"),
-    @NamedQuery(name = "user.getWithMemberShips", query = "SELECT o FROM UbikeUser o LEFT JOIN FETCH o.memberShips WHERE o.id=:userId")
+    @NamedQuery(name = "UbikeUser.getAll", query = "SELECT o FROM UbikeUser o ORDER BY o.lastname, o.firstname"),
+    @NamedQuery(name = "UbikeUser.getByName", query = "SELECT o FROM UbikeUser o WHERE o.firstname=:param1 AND o.lastname=:param2"),
+    @NamedQuery(name = "UbikeUser.getByAccount", query = "SELECT o FROM UbikeUser o WHERE o.account.id=:accountId"),
+    @NamedQuery(name = "UbikeUser.getWithMemberShips", query = "SELECT o FROM UbikeUser o LEFT JOIN FETCH o.memberShips WHERE o.id=:userId")
 })
 public class UbikeUser implements com.ubike.util.UbikeEntity {
 
@@ -65,9 +65,9 @@ public class UbikeUser implements com.ubike.util.UbikeEntity {
     @Column(name = "ID")
     private Long id;
     @Column(name = "FIRSTNAME", length = 50, nullable = false)
-    private String firstName;
+    private String firstname;
     @Column(name = "LASTNAME", length = 50, nullable = false)
-    private String lastName;
+    private String lastname;
     @Column(name = "ADDRESS", length = 255)
     private String address;
     @Column(name = "PHONE", length = 20, nullable = false)
@@ -108,8 +108,8 @@ public class UbikeUser implements com.ubike.util.UbikeEntity {
      */
     public UbikeUser(String firstName, String lastName) {
         this();
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstname = firstName;
+        this.lastname = lastName;
     }
 
     /**
@@ -131,29 +131,29 @@ public class UbikeUser implements com.ubike.util.UbikeEntity {
     /**
      * @return the firstname
      */
-    public String getFirstName() {
-        return this.firstName;
+    public String getFirstname() {
+        return this.firstname;
     }
 
     /**
      * @param firstname the firstname to set
      */
-    public void setFirstName(String firstname) {
-        this.firstName = firstname;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     /**
      * @return the lastname
      */
-    public String getLastName() {
-        return this.lastName;
+    public String getLastname() {
+        return this.lastname;
     }
 
     /**
      * @param lastname the lastname to set
      */
-    public void setLastName(String lastname) {
-        this.lastName = lastname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     /**
@@ -258,7 +258,7 @@ public class UbikeUser implements com.ubike.util.UbikeEntity {
 
     @Override
     public String toString() {
-        return this.firstName + " " + this.lastName + " : " + this.address + ", " + this.phone + ", " + this.email;
+        return this.firstname + " " + this.lastname + " : " + this.address + ", " + this.phone + ", " + this.email;
     }
 
     @Transient

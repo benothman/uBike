@@ -5,56 +5,96 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
-    <ui:define name="title"><center>uBike Users Info</center></ui:define>
-    <ui:define name="body">
-        <rich:panel style="border:0px;width:85%;text-align:center">
-            <rich:panel header="uBike users List">
+    <ui:define name="content">
 
-                <center>
-                    <rich:extendedDataTable value="#{dataBean.users}" var="usr" id="usersList"
-                                            style="width:90%; height: 400px"
-                                            rowClasses="odd-row, even-row"
-                                            styleClass="stable" rows="10"
-                                            frozenColumns="2"selectionMode="none">
+        <h:form>
+            <ubike:panel header="uBike users list">
 
+                <rich:extendedDataTable value="#{usersBean.users}"
+                                        var="usr" id="usersList" 
+                                        frozenColumns="3"
+                                        style="margin: auto;"
+                                        rows="10" styleClass="stable"
+                                        rowClasses="odd-row, even-row"
+                                        selectionMode="single">
+
+                    <f:facet name="header">
+                        <h:outputText value="uBike Users"/>
+                    </f:facet>
+
+                    <rich:column width="5%" sortBy="#{usr.id}">
                         <f:facet name="header">
-                            <h:outputText value="uBike Users"/>
+                            <h:outputText value="User ID"/>
                         </f:facet>
+                        <h:outputText value="#{usr.id}" />
+                    </rich:column>
 
-                        <rich:column width="5%" sortBy="#{usr.id}">
-                            <f:facet name="header"><h:outputText value="User ID"/></f:facet>
-                            <h:outputText value="#{usr.id}" />
-                        </rich:column>
-
-                        <rich:column width="10%" sortBy="#{usr.account.username}">
-                            <f:facet name="header"><h:outputText value="UserName"/></f:facet>
+                    <rich:column width="10%" sortBy="#{usr.account.username}">
+                        <f:facet name="header">
+                            <h:outputText value="Username"/>
+                        </f:facet>
+                        <h:outputLink value="#{facesContext.externalContext.requestContextPath}/resources/users/#{usr.id}">
                             <h:outputText value="#{usr.account.username}" />
-                        </rich:column>
-                        <rich:column width="10%" sortBy="#{usr.firstName}">
-                            <f:facet name="header"><h:outputText value="Firstname"/></f:facet>
-                            <h:outputText value="#{usr.firstName}" />
-                        </rich:column>
-                        <rich:column width="10%" sortBy="#{usr.lastName}">
-                            <f:facet name="header"><h:outputText value="Lastname"/></f:facet>
-                            <h:outputText value="#{usr.lastName}" />
-                        </rich:column>
-                        <rich:column width="40%">
-                            <f:facet name="header"><h:outputText value="Address"/></f:facet>
-                            <h:outputText value="#{usr.address}" />
-                        </rich:column>
-                        <rich:column width="10%">
-                            <f:facet name="header"><h:outputText value="Phone"/></f:facet>
-                            <h:outputText value="#{usr.phone}" />
-                        </rich:column>
-                        <rich:column width="15%">
-                            <f:facet name="header"><h:outputText value="E-mail"/></f:facet>
-                            <h:outputText value="#{usr.email}" />
-                        </rich:column>
-                    </rich:extendedDataTable>
-                </center>
-            </rich:panel>
-        </rich:panel>
+                        </h:outputLink>
+                    </rich:column>
+
+                    <rich:column width="10%" sortBy="#{usr.firstname}">
+                        <f:facet name="header">
+                            <h:outputText value="Firstname"/>
+                        </f:facet>
+                        <h:outputText value="#{usr.firstname}" />
+                    </rich:column>
+
+                    <rich:column width="10%" sortBy="#{usr.lastname}">
+                        <f:facet name="header">
+                            <h:outputText value="Lastname"/>
+                        </f:facet>
+                        <h:outputText value="#{usr.lastname}" />
+                    </rich:column>
+
+                    <rich:column width="40%" >
+                        <f:facet name="header">
+                            <h:outputText value="Address"/>
+                        </f:facet>
+                        <h:outputText value="#{usr.address}" />
+                    </rich:column>
+
+                    <rich:column width="10%">
+                        <f:facet name="header">
+                            <h:outputText value="Phone"/>
+                        </f:facet>
+                        <h:outputText value="#{usr.phone}" />
+                    </rich:column>
+
+                    <rich:column width="15%">
+                        <f:facet name="header">
+                            <h:outputText value="E-mail"/>
+                        </f:facet>
+                        <h:outputText value="#{usr.email}" />
+                    </rich:column>
+                    <f:facet name="footer">
+                        <h:graphicImage value="/layouts/images/arr_left.png"
+                                        onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+                        <rich:dataScroller id="ds" for="usersList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                        <h:graphicImage value="/layouts/images/arr_right.png"
+                                        onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                    </f:facet>
+                </rich:extendedDataTable>
+            </ubike:panel>
+        </h:form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
     </ui:define>
 </ui:composition>

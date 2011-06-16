@@ -48,6 +48,14 @@ public class TripServiceImpl extends AbstractServiceImpl<Trip> implements TripSe
     }
 
     @Override
+    public Trip findWithMapCode(Long id) {
+        Trip trip = find(id);
+        trip.getMapLevels();
+        trip.getMapLevels();
+        return trip;
+    }
+
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }

@@ -33,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import org.hibernate.annotations.Index;
 
 /**
  * {@code Authority}
@@ -47,17 +48,19 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Authority.getAll", query = "SELECT o FROM Authority o"),
     @NamedQuery(name = "Authority.getByUserName",
-    query = "SELECT o FROM Authority o WHERE o.username=:param")
+    query = "SELECT o FROM Authority o WHERE o.username=:param"),
+    @NamedQuery(name = "Authority.getByAccount",
+    query = "SELECT o FROM Authority o WHERE o.account.id=:param")
 })
 public class Authority implements Serializable {
 
     public static final long serialVersionUID = 1L;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
+    @Index(name = "username_index")
     @Column(name = "USERNAME", nullable = false)
     private String username;
     @Column(name = "AUTHORITY", nullable = false)
@@ -65,20 +68,21 @@ public class Authority implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID")
     private Account account;
-    
+
     /**
-     * 
+     * Creates a new instance of {@code Authority}
      */
-    public Authority(){
+    public Authority() {
         super();
     }
 
     /**
+     * Creates a new instance of {@code Authority}
      * 
      * @param username
      * @param authority
      */
-    public Authority(Account account, String username, String authority){
+    public Authority(Account account, String username, String authority) {
         this.account = account;
         this.username = username;
         this.authority = authority;
@@ -139,5 +143,4 @@ public class Authority implements Serializable {
     public void setAccount(Account account) {
         this.account = account;
     }
-
 }

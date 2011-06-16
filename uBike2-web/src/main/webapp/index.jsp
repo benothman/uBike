@@ -6,4 +6,4 @@
 
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:forward page = "faces/welcome.jsf" ></jsp:forward>
+<jsp:forward page = "login.jsf" ></jsp:forward>

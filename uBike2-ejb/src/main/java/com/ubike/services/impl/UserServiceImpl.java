@@ -22,6 +22,10 @@ package com.ubike.services.impl;
 
 import com.ubike.model.UbikeUser;
 import com.ubike.services.UserServiceLocal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,12 +43,48 @@ public class UserServiceImpl extends AbstractServiceImpl<UbikeUser> implements U
 
     @PersistenceContext(unitName = "ubikeEJB")
     private EntityManager entityManager;
+    private static final Logger logger = Logger.getLogger(UserServiceLocal.class.getName());
 
     /**
      * Create a new instance of {@code UserServiceImpl}
      */
     public UserServiceImpl() {
         super(UbikeUser.class);
+    }
+
+    @Override
+    public UbikeUser findWithTrips(Long id) {
+        UbikeUser user = find(id);
+        user.getTrips().size();
+        return user;
+    }
+
+    @Override
+    public UbikeUser findWithMemberShips(Long id) {
+        UbikeUser user = find(id);
+        user.getMemberShips().size();
+        return user;
+    }
+
+    @Override
+    public UbikeUser findWithTripsAndMemberShips(Long id) {
+        UbikeUser user = findWithTrips(id);
+        user.getMemberShips().size();
+        return user;
+    }
+
+    @Override
+    public List<UbikeUser> getFriends(Long id) {
+        logger.log(Level.WARNING, "Not yet implemented");
+        try {
+            String query = "SELECT o FROM UbikeUser o WHERE o.id IN "
+                    + "(SELECT m.member.id FROM MemberShip m WHERE )";
+            return (List<UbikeUser>) getEntityManager().createQuery(query).getResultList();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "An error occurs while retrieving friends", exp);
+        }
+
+        return new ArrayList<UbikeUser>();
     }
 
     @Override

@@ -33,4 +33,11 @@ import javax.ejb.Local;
  */
 @Local
 public interface GroupServiceLocal extends AbstractService<UbikeGroup> {
+
+    /**
+     * 
+     * @param id
+     * @return 
+     */
+    public UbikeGroup findWithMemberShips(Long id);
 }

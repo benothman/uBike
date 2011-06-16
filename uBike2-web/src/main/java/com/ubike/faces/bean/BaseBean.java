@@ -42,6 +42,14 @@ public class BaseBean {
     protected static final Logger logger = Logger.getLogger(BaseBean.class.getName());
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
+    public static final String LOGIN = "login";
+    public static final String LOGIN_SUCCESS = "login-success";
+    public static final String SIGNUP = "signup";
+    public static final String ABOUT = "about";
+    public static final String UPLOAD = "upload";
+    public static final String EDIT_PASSWORD = "edit-password";
+    public static final String EDIT_PROFILE = "edit-profile";
+    public static final String CREATE_GROUP = "create-group";
     private String template;
 
     /**

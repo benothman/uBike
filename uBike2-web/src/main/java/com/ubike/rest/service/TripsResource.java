@@ -81,20 +81,37 @@ public class TripsResource {
      *
      * @return an instance of TripsConverter
      */
-    @Secured({"ROLE_USER", "USER_ACCESS"})
     @GET
-    @Produces({MediaType.TEXT_HTML, "application/xml", "application/json"})
-    public Viewable get(
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(
             @QueryParam("start") @DefaultValue("0") int start,
             @QueryParam("max") @DefaultValue("100") int max,
-            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel,
-            @QueryParam("query") @DefaultValue("SELECT e FROM Trip e") String query) {
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
+        List<Trip> entities = getEntities(start, max);
+        BaseBean.setSessionAttribute("tmp_trips", entities);
+        return new Viewable("/tripsInfo.jsp", entities);
+    }
+
+    /**
+     * 
+     * @param start
+     * @param max
+     * @param expandLevel
+     * @param query
+     * @return 
+     */
+    @GET
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public TripsConverter getXML(
+            @QueryParam("start") @DefaultValue("0") int start,
+            @QueryParam("max") @DefaultValue("100") int max,
+            @QueryParam("expandLevel") @DefaultValue("0") int expandLevel) {
         TripsConverter converter = new TripsConverter(getEntities(start, max),
                 uriInfo.getAbsolutePath(), expandLevel);
-
-        BaseBean.setSessionAttribute("tmp_trips", converter.getEntities());
-        return new Viewable("/tripsInfo.jsp", converter.getEntities());
+        return converter;
     }
 
     /**

@@ -27,8 +27,12 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 /**
+ * {@code NormalizedGpsFile}
+ * <p/>
  *
- * @author BENOTHMAN Nabil.
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "NORM_GPS_FILES")
@@ -36,29 +40,32 @@ import javax.persistence.Table;
 public class NormalizedGpsFile extends GpsFile {
 
     /**
-     *
+     * Creates a new instance of {@code NormalizedGpsFile}
      */
     public NormalizedGpsFile() {
         super();
     }
 
     /**
-     * @param fileName the file name
+     * Creates a new instance of {@code NormalizedGpsFile}
+     * 
+     * @param filename the file name
      * @param length the length of the file
      * @param d the creation date of the file
      */
-    public NormalizedGpsFile(String fileName, long length, Date d) {
-        super(fileName, length, d);
+    public NormalizedGpsFile(String filename, long length, Date d) {
+        super(filename, length, d);
     }
 
     /**
-     *
-     * @param fileName the file name
+     * Creates a new instance of {@code NormalizedGpsFile}
+     * 
+     * @param filename the file name
      * @param length the length of the file
      * @param d the creation date of the file
      * @param segments the list of segments of the file
      */
-    public NormalizedGpsFile(String fileName, long length, Date d, List<TripSegment> segments) {
-        super(fileName, length, d, segments);
+    public NormalizedGpsFile(String filename, long length, Date d, List<TripSegment> segments) {
+        super(filename, length, d, segments);
     }
 }

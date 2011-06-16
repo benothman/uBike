@@ -46,8 +46,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
+ * {@code Trip}
+ * <p/>
  *
- * @author BENOTHMAN Nabil.
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "TRIPS")
@@ -55,8 +59,7 @@ import javax.persistence.Transient;
     @NamedQuery(name = "Trip.getAll", query = "SELECT o FROM Trip o"),
     @NamedQuery(name = "Trip.getUserTripByDate",
     query = "SELECT o FROM Trip o WHERE o.owner.id=:ownerId AND o.startDate<=:sDate AND o.endDate <=:eDate"),
-    @NamedQuery(name = "Trip.getUserTrips",
-    query = "SELECT o FROM Trip o WHERE o.owner.id=:ownerId")
+    @NamedQuery(name = "Trip.getUserTrips", query = "SELECT o FROM Trip o WHERE o.owner.id=:ownerId")
 })
 public class Trip implements Serializable {
 
@@ -98,10 +101,12 @@ public class Trip implements Serializable {
     @Column(name = "END_LON")
     private double endLon;
     @Lob
-    @Column(name = "MAP_CODE")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "MAP_CODE", length = 5000)
     private String mapCode;
     @Lob
-    @Column(name = "MAP_LEVELS")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "MAP_LEVELS", length = 5000)
     private String mapLevels;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_OWNER", referencedColumnName = "ID")

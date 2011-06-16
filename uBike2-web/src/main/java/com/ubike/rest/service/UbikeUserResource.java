@@ -20,6 +20,7 @@
  */
 package com.ubike.rest.service;
 
+import com.sun.jersey.api.NotFoundException;
 import com.ubike.model.UbikeUser;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -37,11 +38,12 @@ import com.ubike.faces.bean.BaseBean;
 import javax.ws.rs.WebApplicationException;
 import javax.persistence.NoResultException;
 import com.ubike.model.Account;
-import com.ubike.model.Statistic;
 import com.ubike.model.MemberShip;
 import com.ubike.model.PrivacyPreferences;
 import com.ubike.model.Trip;
+import com.ubike.model.Statistic;
 import com.ubike.rest.converter.UbikeUserConverter;
+import com.ubike.services.MemberShipServiceLocal;
 import com.ubike.util.StatisticManager;
 import com.ubike.services.TripManagerLocal;
 import com.ubike.services.UserServiceLocal;
@@ -49,6 +51,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -77,6 +81,8 @@ public class UbikeUserResource {
     protected Long id;
     @EJB
     private UserServiceLocal userService;
+    @EJB
+    private MemberShipServiceLocal memberShipService;
 
     /**
      * Creates a new instance of UbikeUserResource
@@ -93,22 +99,18 @@ public class UbikeUserResource {
     }
 
     /**
-     * Get method for retrieving an instance of UbikeUser identified by id in XML format.
+     * Get method for retrieving an instance of UbikeUser identified by id in HTML format.
      *
      * @param id identifier for the entity
-     * @return an instance of UbikeUserConverter
+     * @return an instance of Viewable
      */
-    @Secured({"ROLE_USER", "USER_ACCESS"})
     @GET
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Viewable get(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
         try {
-            UbikeUserConverter converter = new UbikeUserConverter(getEntity(), uriInfo.getAbsolutePath(), expandLevel);
-            UbikeUser user = converter.getEntity();
-
-            user.getMemberShips().size();
-            user.getTrips().size();
+            UbikeUser user = getEntityWithTripsAndMemberShips();
             BaseBean.setSessionAttribute("client", user);
             BaseBean.setSessionAttribute("tmp_trips", user.getTrips());
             BaseBean.setSessionAttribute("tmp_members", user.getMemberShips());
@@ -118,6 +120,20 @@ public class UbikeUserResource {
             return new Viewable("/userInfo.jsp", user);
         } finally {
         }
+    }
+
+    /**
+     * Get method for retrieving an instance of UbikeUser identified by id in XML format.
+     *
+     * @param id identifier for the entity
+     * @return an instance of UbikeUserConverter
+     */
+    @GET
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public UbikeUserConverter getXML(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+        return new UbikeUserConverter(getEntityWithTripsAndMemberShips(),
+                uriInfo.getAbsolutePath(), expandLevel);
     }
 
     /**
@@ -153,6 +169,42 @@ public class UbikeUserResource {
     public UbikeUser getEntity() {
         try {
             return this.userService.find(this.id);
+        } catch (NoResultException ex) {
+            throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
+        }
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public UbikeUser getEntityWithTrips() {
+        try {
+            return this.userService.findWithTrips(this.id);
+        } catch (NoResultException ex) {
+            throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
+        }
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public UbikeUser getEntityWithMemberShips() {
+        try {
+            return this.userService.findWithMemberShips(this.id);
+        } catch (NoResultException ex) {
+            throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
+        }
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public UbikeUser getEntityWithTripsAndMemberShips() {
+        try {
+            return this.userService.findWithTripsAndMemberShips(this.id);
         } catch (NoResultException ex) {
             throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath() + " does not exist."), 404);
         }
@@ -256,8 +308,8 @@ public class UbikeUserResource {
     public TripsResource getTripsResource() {
         TripsResourceSub resource = resourceContext.getResource(
                 TripsResourceSub.class);
-        
-        resource.setParent(getEntity());
+
+        resource.setParent(getEntityWithTrips());
         return resource;
     }
 
@@ -287,7 +339,7 @@ public class UbikeUserResource {
     public MemberShipsResource getMemberShipsResource() {
         MemberShipsResourceSub resource = resourceContext.getResource(
                 MemberShipsResourceSub.class);
-        resource.setParent(getEntity());
+        resource.setParent(getEntityWithMemberShips());
         return resource;
     }
 
@@ -295,38 +347,34 @@ public class UbikeUserResource {
      * @return The list of the all members of all user groups
      */
     @Secured({"ROLE_USER", "USER_ACCESS"})
-    @GET
     @Path("friends/")
-    public Viewable getFriends() {
-        UbikeUser entity = getEntity();
-        entity.getMemberShips().size();
-        BaseBean.setSessionAttribute("tmp_users", extractFriends(entity));
-        return new Viewable("/friends.jsp", entity);
+    public UbikeUsersResource getFriends() {
+        FriendsResource resource = resourceContext.getResource(FriendsResource.class);
+        resource.setParent(getEntity());
+        resource.setName("uBike user friends list");
+        resource.setService(memberShipService);
+        return resource;
     }
 
     /**
      * 
      * @param entity
      * @return
-     */
-    private List<UbikeUser> extractFriends(UbikeUser entity) {
-
-        // We use a HashSet to garantee that an element is not added more than one time
-        List<UbikeUser> friends = new ArrayList<UbikeUser>();
-
-        for (MemberShip o : entity.getMemberShips()) {
-            for (MemberShip m : o.getGroup().getMemberShips()) {
-                if (!m.getMember().getId().equals(entity.getId()) && !friends.contains(m.getMember())) {
-                    friends.add(m.getMember());
-                }
-            }
-        }
-
-        friends.remove(entity);
-
-        return friends;
+     *
+    private List<UbikeUser> extractFriends() {
+    
+    // We use a HashSet to garantee that an element is not added more than once
+    List<UbikeUser> friends = new ArrayList<UbikeUser>();
+    List<MemberShip> memberShips = this.memberShipService.getFriends(id);
+    for (MemberShip m : memberShips) {
+    if (!m.getMember().getId().equals(id)) {
+    friends.add(m.getMember());
     }
-
+    }
+    
+    return friends;
+    }
+    
     /**
      * Extract alla the statistic related to the given user
      */
@@ -375,10 +423,40 @@ public class UbikeUserResource {
         return resource;
     }
 
+    public static class FriendsResource extends UbikeUsersResource {
+
+        private UbikeUser parent;
+        private MemberShipServiceLocal memberShipService;
+
+        public void setParent(UbikeUser parent) {
+            this.parent = parent;
+        }
+
+        public void setService(MemberShipServiceLocal memberShipService) {
+            this.memberShipService = memberShipService;
+        }
+
+        @Override
+        protected List<UbikeUser> getEntities(int start, int max) {
+
+            Long id = this.parent.getId();
+            System.out.println("MemberShipServiceLocal -> " + memberShipService);
+            List<MemberShip> memberShips = this.memberShipService.getFriends(id);
+            Map<Long, UbikeUser> users = new HashMap<Long, UbikeUser>();
+            for (MemberShip m : memberShips) {
+                users.put(m.getMember().getId(), m.getMember());
+            }
+
+            users.remove(id);
+
+            return new ArrayList<UbikeUser>(users.values());
+        }
+    }
+
     public static class TripsResourceSub extends TripsResource {
 
         private UbikeUser parent;
- 
+
         public void setParent(UbikeUser parent) {
             this.parent = parent;
         }
@@ -410,10 +488,8 @@ public class UbikeUserResource {
         public Account getEntity() {
             Account entity = parent.getAccount();
             if (entity == null) {
-                throw new WebApplicationException(
-                        new Throwable(
-                        "Resource for " + uriInfo.getAbsolutePath() + " does not exist."),
-                        404);
+                throw new NotFoundException("Resource for " + uriInfo.getAbsolutePath()
+                        + " does not exist.", uriInfo.getAbsolutePath());
             }
             return entity;
         }
@@ -454,11 +530,10 @@ public class UbikeUserResource {
         public PrivacyPreferences getEntity() {
             PrivacyPreferences entity = parent.getPreferences();
             if (entity == null) {
-                throw new WebApplicationException(
-                        new Throwable(
-                        "Resource for " + uriInfo.getAbsolutePath() + " does not exist."),
-                        404);
+                throw new NotFoundException("Resource for " + uriInfo.getAbsolutePath()
+                        + " does not exist.", uriInfo.getAbsolutePath());
             }
+
             return entity;
         }
     }

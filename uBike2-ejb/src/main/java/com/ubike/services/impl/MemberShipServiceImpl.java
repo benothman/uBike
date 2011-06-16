@@ -21,7 +21,13 @@
 package com.ubike.services.impl;
 
 import com.ubike.model.MemberShip;
+import com.ubike.model.Ranking;
 import com.ubike.services.MemberShipServiceLocal;
+import com.ubike.util.Metric;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -39,6 +45,7 @@ public class MemberShipServiceImpl extends AbstractServiceImpl<MemberShip> imple
 
     @PersistenceContext(unitName = "ubikeEJB")
     private EntityManager entityManager;
+    private static final Logger logger = Logger.getLogger(MemberShipServiceLocal.class.getName());
 
     /**
      * Create a new instance of {@code MemberShipServiceImpl}
@@ -48,7 +55,86 @@ public class MemberShipServiceImpl extends AbstractServiceImpl<MemberShip> imple
     }
 
     @Override
+    public void create(MemberShip entity) {
+        if (entity.getRankings() == null) {
+            entity.setRankings(new ArrayList<Ranking>());
+        }
+
+        int rank = getGroupCount(entity.getGroup().getId()) + 1;
+
+        if (entity.getRankings().isEmpty()) {
+            for (Metric m : Metric.values()) {
+                Ranking ranking = new Ranking(rank, 0, m);
+                entity.getRankings().add(ranking);
+            }
+        }
+
+        super.create(entity);
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @return 
+     */
+    private int getGroupCount(Long groupId) {
+        try {
+            return (Integer) getEntityManager().createQuery("SELECT COUNT(o.id) FROM MemberShip o WHERE o.group.id="
+                    + groupId).getSingleResult();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "Error while retreiving the number of members", exp);
+            return 0;
+        }
+    }
+
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    @Override
+    public int countActiveMembers(Long groupId) {
+        return countMembers(groupId, true);
+    }
+
+    @Override
+    public int countNonActiveMembers(Long groupId) {
+        return countMembers(groupId, false);
+    }
+
+    @Override
+    public List<MemberShip> getFriends(Long userId) {
+        logger.log(Level.INFO, "Retrieving friends list for user [id = {0}]", userId);
+        try {
+            /*
+            String query = "SELECT o FROM MemberShip o WHERE m.group.id IN (SELECT m.group.id FROM "
+            + "MemberShip m WHERE m.member.id = " + userId + ") AND NOT (o.member.id = "
+            + userId + ")";
+            return (List<MemberShip>) getEntityManager().createQuery(query).getResultList();
+             */
+            return (List<MemberShip>) getEntityManager().createNamedQuery("MemberShip.getUserFriends").
+                    setParameter("userId", userId).getResultList();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "An error occurs while retreiving friends list for user with id = " + userId, exp);
+            return new ArrayList<MemberShip>();
+        }
+    }
+
+    /**
+     * 
+     * @param groupId
+     * @param active
+     * @return 
+     */
+    private int countMembers(Long groupId, boolean active) {
+        logger.log(Level.INFO, "Counting members for group [id = {0}]", groupId);
+        try {
+            String query = "SELECT COUNT(o.id) FROM MemberShip o WHERE o.group.id=" + groupId + "AND o.active=" + active;
+            return (Integer) getEntityManager().createQuery(query).getSingleResult();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "Error occurs while counting the number of members", exp);
+        }
+
+        return 0;
     }
 }

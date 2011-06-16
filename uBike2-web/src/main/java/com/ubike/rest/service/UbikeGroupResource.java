@@ -85,6 +85,15 @@ public class UbikeGroupResource {
         this.id = id;
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_XML})
+    public UbikeGroupConverter getXML(@QueryParam("expandLevel") @DefaultValue("0") int expandLevel) {
+
+        UbikeGroup entity = expandLevel > 0 ? getEntityWithMemberShips() : getEntity();
+
+        return new UbikeGroupConverter(entity, uriInfo.getAbsolutePath(), expandLevel);
+    }
+
     /**
      * Get method for retrieving an instance of UbikeGroup identified by id in XML format.
      *
@@ -92,18 +101,16 @@ public class UbikeGroupResource {
      * @return an instance of UbikeGroupConverter
      */
     @GET
-    @Produces({MediaType.TEXT_HTML, "application/xml", "application/json"})
-    public Viewable get(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
-
-        UbikeGroupConverter converter = new UbikeGroupConverter(getEntity(), uriInfo.getAbsolutePath(), expandLevel);
-        converter.getEntity().getMemberShips().size();
-        BaseBean.setSessionAttribute("tmp_members", converter.getEntity().getMemberShips());
+        UbikeGroup entity = getEntityWithMemberShips();
+        BaseBean.setSessionAttribute("tmp_members", entity.getMemberShips());
         // Extracting entity statistics
         //extractStatistics(converter.getEntity());
-        BaseBean.setSessionAttribute("client", converter.getEntity());
+        BaseBean.setSessionAttribute("client", entity);
 
-        return new Viewable("/groupInfo.jsp", converter.getEntity());
+        return new Viewable("/groupInfo.jsp", entity);
     }
 
     /**
@@ -127,6 +134,21 @@ public class UbikeGroupResource {
     @DELETE
     public void delete() {
         deleteEntity(getEntity());
+    }
+
+    /**
+     * Returns an instance of UbikeGroup identified by id.
+     *
+     * @param id identifier for the entity
+     * @return an instance of UbikeGroup
+     */
+    protected UbikeGroup getEntityWithMemberShips() {
+        try {
+            return this.groupService.findWithMemberShips(id);
+        } catch (NoResultException ex) {
+            throw new NotFoundException("Resource for " + uriInfo.getAbsolutePath() + " does not exist.",
+                    uriInfo.getAbsolutePath());
+        }
     }
 
     /**

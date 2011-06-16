@@ -27,15 +27,15 @@
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>login</from-outcome>
-            <to-view-id>/faces/login.xhtml</to-view-id>
+            <to-view-id>/login.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>register</from-outcome>
-            <to-view-id>/faces/regist.xhtml</to-view-id>
+            <from-outcome>signup</from-outcome>
+            <to-view-id>/signup.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>about</from-outcome>
-            <to-view-id>/faces/about.xhtml</to-view-id>
+            <to-view-id>/about.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>upload</from-outcome>
@@ -48,6 +48,10 @@
         <navigation-case>
             <from-outcome>edit-profile</from-outcome>
             <to-view-id>/faces/private/editProfile.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>create-group</from-outcome>
+            <to-view-id>/faces/createGroup.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
         

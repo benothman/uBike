@@ -35,13 +35,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
- * This class represent the global private preferrences of the user. In this
+ * {@code PrivacyPreferences}
+ * <p>
+ * This class represent the global private preferences of the user. In this
  * class we use the Unix permissions for the user, group and other members witch
  * defined as below :
  *   false -> no access
  *   true  -> read only
+ * </p>
+ * Created on Jun 6, 2011 at 7:17:22 PM
  *
- * @author BENOTHMAN Nabil.
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "PRIVACY_PREFERENCES")
@@ -55,7 +59,7 @@ public class PrivacyPreferences implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
@@ -166,7 +170,7 @@ public class PrivacyPreferences implements Serializable {
                 other.owner))) {
             return false;
         }
-        
+
         return this.groupAccess == other.groupAccess && this.othersAccess == other.othersAccess;
     }
 

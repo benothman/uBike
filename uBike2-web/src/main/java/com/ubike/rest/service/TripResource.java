@@ -84,7 +84,7 @@ public class TripResource {
 
     @GET
     @Produces({MediaType.TEXT_HTML})
-    public Viewable get(@QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+    public Viewable get(@QueryParam("expandLevel") @DefaultValue("0") int expandLevel) {
         TripConverter converter = new TripConverter(getEntity(), uriInfo.getAbsolutePath(), expandLevel);
         return new Viewable("/tripInfo.jsp", converter.getEntity());
     }
@@ -133,7 +133,7 @@ public class TripResource {
      */
     public Trip getEntity() {
         try {
-            return this.tripService.find(id);
+            return this.tripService.findWithMapCode(id);
         } catch (NoResultException ex) {
             throw new NotFoundException("Resource for " + uriInfo.getAbsolutePath() + " does not exist.",
                     uriInfo.getAbsolutePath());

@@ -20,22 +20,13 @@
  */
 package com.ubike.faces.component.captcha;
 
-import java.io.BufferedReader;
+import com.ubike.faces.validator.CaptchaValidator;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.FacesException;
-import javax.faces.application.FacesMessage;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * {@code Captcha}
@@ -68,14 +59,17 @@ public class Captcha extends UIInput {
     public Captcha() {
         super();
         logger.log(Level.INFO, "Create a new instance of {0}", getClass().getName());
+        this.addValidator(new CaptchaValidator());
     }
 
     @Override
-    public void encodeBegin(FacesContext context) throws IOException {
+    public void encodeBegin(FacesContext fc) throws IOException {
+        super.encodeBegin(fc);
     }
 
     @Override
-    public void encodeEnd(FacesContext context) throws IOException {
+    public void encodeEnd(FacesContext fc) throws IOException {
+        super.encodeEnd(fc);
     }
 
     @Override
@@ -111,85 +105,6 @@ public class Captcha extends UIInput {
         theme = (String) values[4];
         secure = (Boolean) values[5];
         setTabindex((int) (Integer) values[6]);
-    }
-
-    @Override
-    public void validate(FacesContext fc) {
-        Object submittedValue = getSubmittedValue();
-        if (submittedValue == null) { // the value was not submitted at all
-            return;
-        }
-
-        super.validate(fc);
-
-        if (isValid()) {
-
-            String result = null;
-            Verification verification = (Verification) submittedValue;
-
-            try {
-                URL url = new URL("http://api-verify.recaptcha.net/verify");
-                URLConnection conn = url.openConnection();
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setUseCaches(false);
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                String postBody = createPostParameters(fc, verification);
-
-                OutputStream out = conn.getOutputStream();
-                out.write(postBody.getBytes());
-                out.flush();
-                out.close();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                result = rd.readLine();
-                rd.close();
-            } catch (Exception exception) {
-                throw new FacesException(exception);
-            }
-
-            boolean isValid = Boolean.valueOf(result);
-
-            if (!isValid) {
-                setValid(false);
-
-                String validatorMessage = getValidatorMessage();
-                FacesMessage msg = null;
-
-                if (validatorMessage == null) {
-                    validatorMessage = "The security answer is not correct";
-                }
-
-                msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, validatorMessage, validatorMessage);
-                fc.addMessage(getClientId(fc), msg);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param facesContext
-     * @param verification
-     * @return
-     * @throws UnsupportedEncodingException 
-     */
-    private String createPostParameters(FacesContext facesContext, Verification verification) throws UnsupportedEncodingException {
-        String challenge = verification.getChallenge();
-        String answer = verification.getAnswer();
-        String remoteAddress = ((HttpServletRequest) facesContext.getExternalContext().getRequest()).getRemoteAddr();
-        String privateKeyParam = facesContext.getExternalContext().getInitParameter(Captcha.PRIVATE_KEY);
-
-        if (privateKeyParam == null) {
-            throw new FacesException("Cannot find private key for catpcha, use "
-                    + PRIVATE_KEY + " context-param to define one");
-        }
-
-        StringBuilder postParams = new StringBuilder();
-        postParams.append("privatekey=").append(URLEncoder.encode(privateKeyParam, "UTF-8"));
-        postParams.append("&remoteip=").append(URLEncoder.encode(remoteAddress, "UTF-8"));
-        postParams.append("&challenge=").append(URLEncoder.encode(challenge, "UTF-8"));
-        postParams.append("&response=").append(URLEncoder.encode(answer, "UTF-8"));
-
-        return postParams.toString();
     }
 
     /**

@@ -20,18 +20,22 @@
  */
 package com.ubike.faces.bean;
 
+import com.ubike.model.MemberShip;
 import com.ubike.model.UbikeGroup;
 import com.ubike.model.UbikeUser;
+import com.ubike.services.GroupServiceLocal;
 import com.ubike.services.UserManagerLocal;
+import com.ubike.util.Role;
 import java.io.IOException;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * {@code GroupBean}
@@ -45,45 +49,49 @@ import org.hibernate.validator.constraints.NotEmpty;
 @RequestScoped
 public class GroupBean {
 
-    @NotEmpty
+    @NotBlank
     @Length(min = 5, max = 50)
     private String name;
-    @NotEmpty
+    @NotBlank
     @Length(min = 6, max = 200)
     private String description;
     @EJB
     private UserManagerLocal manager;
-    private String createError;
+    @EJB
+    private GroupServiceLocal groupService;
 
     /**
-     * 
+     * Create a new instance of {@code GroupBean}
      */
     public GroupBean() {
         super();
     }
 
     /**
-     * Create a group, if the user is not authenticated he will be redireceted
+     * Create a group, if the user is not authenticated he will be redirected
      * to the login page, else the group creation process will be done.
      *
      * @return
      */
-    public String create() throws IOException {
+    public void create() throws IOException {
 
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         UbikeUser user = (UbikeUser) BaseBean.getSessionAttribute("user");
+        UbikeGroup group = new UbikeGroup(this.name, this.description);
+        MemberShip memberShip = new MemberShip(user, group, Role.Creator);
+        group.getMemberShips().add(memberShip);
 
-        UbikeGroup group = new UbikeGroup(this.name, this.description, user);
-        if (!manager.addGroup(group)) {
-            createError = "The group " + this.name + " is already exists! Please try again";
-            return BaseBean.FAILURE;
+        try {
+            this.groupService.create(group);
+            BaseBean.logInfo("The group " + this.name + " has been created with success!");
+            HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
+            response.sendRedirect(ctx.getRequestContextPath() + "/resources/groups/" + group.getId());
+        } catch (Exception exp) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "The group " + this.name + " is already exists! Please try again",
+                    "The group " + this.name + " is already exists! Please try again");
+            FacesContext.getCurrentInstance().addMessage("create_group:create_status", message);
         }
-
-        BaseBean.logInfo("The group " + this.name + " whas been created with success!");
-        this.createError = "";
-        HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
-        response.sendRedirect(ctx.getRequestContextPath() + "/resources/groups/" + group.getId());
-        return BaseBean.SUCCESS;
     }
 
     /**
@@ -126,19 +134,5 @@ public class GroupBean {
      */
     public void setManager(UserManagerLocal manager) {
         this.manager = manager;
-    }
-
-    /**
-     * @return the createError
-     */
-    public String getCreateError() {
-        return createError;
-    }
-
-    /**
-     * @param createError the createError to set
-     */
-    public void setCreateError(String createError) {
-        this.createError = createError;
     }
 }

@@ -34,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import com.sun.jersey.api.core.ResourceContext;
 import com.sun.jersey.api.view.Viewable;
-import com.ubike.faces.bean.BaseBean;
 import com.ubike.model.Account;
 import com.ubike.model.MemberShip;
 import com.ubike.model.PrivacyPreferences;
@@ -42,6 +41,7 @@ import com.ubike.model.Trip;
 import com.ubike.rest.converter.UbikeUserConverter;
 import com.ubike.rest.converter.UbikeUsersConverter;
 import com.ubike.services.UserServiceLocal;
+import com.ubike.util.Couple;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -70,6 +70,7 @@ public class UbikeUsersResource {
     protected ResourceContext resourceContext;
     @EJB
     private UserServiceLocal userService;
+    private String name = "uBike Users List";
 
     /**
      * Creates a new instance of UbikeUsersResource
@@ -82,23 +83,34 @@ public class UbikeUsersResource {
      *
      * @return an instance of UbikeUsersConverter
      */
-    @Secured({"ROLE_ADMIN", "ADMIN_ACCESS"})
     @GET
-    @Produces({MediaType.TEXT_HTML, "application/xml", "application/json"})
-    public Viewable get(
+    @Secured({"ROLE_ADMIN", "ADMIN_ACCESS"})
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(
             @QueryParam("start") @DefaultValue("0") int start,
             @QueryParam("max") @DefaultValue("100") int max,
-            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel,
-            @QueryParam("query") @DefaultValue("SELECT e FROM UbikeUser e") String query) {
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
         try {
-            UbikeUsersConverter converter = new UbikeUsersConverter(getEntities(start, max, query),
-                    uriInfo.getAbsolutePath(), expandLevel);
-
-            BaseBean.setSessionAttribute("tmp_users", converter.getEntities());
-            return new Viewable("/usersInfo.jsp", converter.getEntities());
+            List<UbikeUser> entities = getEntities(start, max);
+            
+            Couple<UbikeUser, List<UbikeUser>> couple = new Couple<UbikeUser, List<UbikeUser>>();
+            couple.setSecond(entities);
+            couple.setName(getName());
+            return new Viewable("/usersInfo.jsp", couple);
         } finally {
         }
+    }
+
+    @GET
+    @Secured({"ROLE_ADMIN", "ADMIN_ACCESS"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public UbikeUsersConverter getXML(
+            @QueryParam("start") @DefaultValue("0") int start,
+            @QueryParam("max") @DefaultValue("100") int max,
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+        return new UbikeUsersConverter(getEntities(start, max),
+                uriInfo.getAbsolutePath(), expandLevel);
     }
 
     /**
@@ -136,6 +148,22 @@ public class UbikeUsersResource {
 
     /**
      * 
+     * @param name 
+     */
+    public void setName(@DefaultValue("uBike Users List") String name) {
+        this.name = name;
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * 
      * @param id
      * @return
      */
@@ -148,7 +176,7 @@ public class UbikeUsersResource {
      *
      * @return a collection of UbikeUser instances
      */
-    protected List<UbikeUser> getEntities(int start, int max, String query) {
+    protected List<UbikeUser> getEntities(int start, int max) {
         return userService.findRange(start, max);
     }
 

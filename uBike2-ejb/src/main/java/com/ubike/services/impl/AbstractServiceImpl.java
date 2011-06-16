@@ -112,8 +112,7 @@ public abstract class AbstractServiceImpl<T> implements AbstractService<T> {
      */
     @Override
     public List<T> findRange(int start, int max) {
-        CriteriaQuery<T> cq = getEntityManager().
-                getCriteriaBuilder().createQuery(entityClass);
+        CriteriaQuery<T> cq = getEntityManager().getCriteriaBuilder().createQuery(entityClass);
         cq.select(cq.from(entityClass));
         Query q = getEntityManager().createQuery(cq);
         q.setMaxResults(max);
@@ -126,7 +125,7 @@ public abstract class AbstractServiceImpl<T> implements AbstractService<T> {
      */
     @Override
     public int count() {
-        CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+        CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery().where();
         javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
         cq.select(getEntityManager().getCriteriaBuilder().count(rt));
         Query q = getEntityManager().createQuery(cq);

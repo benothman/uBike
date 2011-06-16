@@ -42,8 +42,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
+ * {@code GpsFile}
+ * <p/>
  *
- * @author BENOTHMAN Nabil.
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "GPS_FILES")

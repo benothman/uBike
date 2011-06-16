@@ -1,55 +1,109 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="../template-ubike.xhtml"
+<ui:composition template="../template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:a4j="http://richfaces.org/a4j"
                 xmlns:rich="http://richfaces.org/rich">
+
+
     <ui:define name="content">
-        <rich:panel style="border:0;width:80%;text-align:center">
-            <h:form>
-                <rich:panel>
-                    <f:facet name="header">
-                        <h:outputText value="uBike Edit Profile" />
+        <h:form id="edit_form">
+            <ubike:panel id="form_panel" header="uBike Edit Profile">
+                <a4j:status>
+                    <f:facet name="start">
+                        <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
                     </f:facet>
-                    <f:view>
-                        <h:outputText value="#{editProfileBean.error}" style="font-weight:bold;color:#FF0000"/><br/>
-                        <h:panelGrid columns="3" style="text-align:center">
+                </a4j:status>
+                <h:panelGrid columns="1" style="margin: auto;">
+                    <h:inputHidden id="edit_error" />
+                    <rich:message for="edit_error" id="status_message" />
+                </h:panelGrid>
+                <br/>
 
-                            <h:outputLabel value="Address :" />
-                            <h:inputTextarea id="addr" value="#{editProfileBean.address}" rows="4" cols="28">
-                                <rich:ajaxValidator event="onblur" />
-                            </h:inputTextarea>
-                            <rich:message for="addr" style="color:#FF0000"/>
+                <h:panelGrid columns="2" columnClasses="td1_signup,td2_signup">
+                    <h:panelGroup>
+                        <h:outputLabel value="Firstname :" />
+                        <h:inputText id="fn" value="#{editProfileBean.firstname}" title="Firstname"
+                                     disabled="true">
+                        </h:inputText>
+                    </h:panelGroup>
 
-                            <h:outputLabel value="Phone :"/>
-                            <h:inputText id="ph" value="#{editProfileBean.phone}" size="30">
-                                <rich:ajaxValidator event="onblur" />
-                            </h:inputText>
-                            <rich:message for="ph" style="color:#FF0000"/>
+                    <h:panelGroup>
+                        <h:outputLabel value="Lastname :" />
+                        <h:inputText id="ln" value="#{editProfileBean.lastname}" disabled="true">
+                        </h:inputText>
+                    </h:panelGroup>
 
-                            <h:outputLabel value="E-mail :" />
-                            <h:inputText id="email" value="#{editProfileBean.email}" size="30">
-                                <rich:ajaxValidator event="onblur" />
-                            </h:inputText>
-                            <rich:message for="email" style="color:#FF0000"/>
+                    <h:panelGroup>
+                        <h:outputLabel value="Address :" />
+                        <h:inputTextarea id="addr" value="#{editProfileBean.address}"
+                                         requiredMessage="The address is required" 
+                                         rows="6" cols="32" >
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputTextarea>
+                        <rich:message for="addr"/>
+                    </h:panelGroup>
 
-                            <h:outputLabel value="Group Access :" />
-                            <h:selectBooleanCheckbox id="groupAccess" value="#{editProfileBean.groupAccess}" />
-                            <rich:message for="groupAccess" style="color:#FF0000"/>
+                    <h:panelGroup style="width: 100%;">
+                        <h:outputLabel value="Phone :"/>
+                        <h:inputText id="ph" value="#{editProfileBean.phone}"
+                                     requiredMessage="The phone number is required">
+                            <f:validateRegex pattern="[0-9]+" />
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="ph"/>
+                        <br/>
+                        <br/>
+                        <h:outputLabel value="E-mail :" />
+                        <h:inputText id="email" value="#{editProfileBean.email}"
+                                     requiredMessage="The e-mail address is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="email"/>
+                        <br/>
+                    </h:panelGroup>
 
-                            <h:outputLabel value="Others Access :" />
-                            <h:selectBooleanCheckbox id="otherAccess" value="#{editProfileBean.otherAccess}" />
-                            <rich:message for="otherAccess" style="color:#FF0000"/>
+                    <h:panelGroup styleClass="td1_signup">
+                        <h:outputLabel value="Username :" />
+                        <h:inputText id="un" value="#{editProfileBean.username}" disabled="true">
+                        </h:inputText>
+                        <br/>
+                        <br/>
+                        <h:outputLabel value="Group Access :" />
+                        <h:selectBooleanCheckbox id="groupAccess" value="#{editProfileBean.groupAccess}" />
+                        <br/>
+                        <br/>
+                        <h:outputLabel value="Others Access :" />
+                        <h:selectBooleanCheckbox id="otherAccess" value="#{editProfileBean.otherAccess}" />
+                        <br/>
+                    </h:panelGroup>
 
-                            <h:outputLabel value="  " />
-                            <h:commandButton value="Send" action="#{editProfileBean.editProfile}"/>
-                            <h:outputLabel value="  " />
-                        </h:panelGrid>
-                    </f:view>
-                </rich:panel>
-            </h:form>
-        </rich:panel>
+                    <h:panelGroup style="margin-top: 5px;">
+                        <h:outputLabel value="Security question:" />
+                        <ubike:captcha id="captcha" requiredMessage="The value is required" />
+                        <rich:message for="captcha"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <h:panelGrid columns="2" style="margin: auto;">
+                    <a4j:commandButton styleClass="button" value="Save" action="#{editProfileBean.save}" 
+                                       render="status_message" />
+                    <h:commandLink value="Cancel" immediate="true" action="#{panelMenu.myData}">
+                        <f:param name="action" value="user-profile" />
+                    </h:commandLink>
+                </h:panelGrid>
+            </ubike:panel>
+        </h:form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
     </ui:define>
 </ui:composition>

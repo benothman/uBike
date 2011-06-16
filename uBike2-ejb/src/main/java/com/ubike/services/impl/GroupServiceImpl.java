@@ -48,6 +48,13 @@ public class GroupServiceImpl extends AbstractServiceImpl<UbikeGroup> implements
     }
 
     @Override
+    public UbikeGroup findWithMemberShips(Long id) {
+        UbikeGroup group = find(id);
+        group.getMemberShips().size();
+        return group;
+    }
+
+    @Override
     public EntityManager getEntityManager() {
         return entityManager;
     }

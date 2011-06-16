@@ -33,7 +33,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
         
         <dependency>
@@ -115,6 +114,11 @@
             <version>${org.richfaces.bom.version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>jfreechart</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         
         <dependency>
             <groupId>junit</groupId>

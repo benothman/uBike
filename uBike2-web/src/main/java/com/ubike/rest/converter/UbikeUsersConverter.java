@@ -16,7 +16,6 @@
  *
  *  This class is a part of uBike projet (HEIG-VD)
  */
-
 package com.ubike.rest.converter;
 
 import com.ubike.model.UbikeUser;
@@ -32,14 +31,14 @@ import java.util.ArrayList;
  *
  * @author Benothman
  */
-
-@XmlRootElement(name = "ubikeUsers")
+@XmlRootElement(name = "ubike-users")
 public class UbikeUsersConverter {
+
     private Collection<UbikeUser> entities;
     private Collection<UbikeUserConverter> items;
     private URI uri;
     private int expandLevel;
-  
+
     /**
      * Creates a new instance of UbikeUsersConverter 
      */

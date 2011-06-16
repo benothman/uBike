@@ -24,7 +24,9 @@ import com.ubike.model.Statistic;
 import com.ubike.model.Trip;
 import com.ubike.model.UbikeGroup;
 import com.ubike.model.UserStatistic;
+import com.ubike.services.StatisticServiceLocal;
 import com.ubike.services.TripManagerLocal;
+import com.ubike.services.TripServiceLocal;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -39,6 +41,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class StatisticManager {
 
     private TripManagerLocal tml;
+    private TripServiceLocal tripService;
+    private StatisticServiceLocal statisticService;
 
     /**
      * 
@@ -116,6 +120,7 @@ public class StatisticManager {
             }
             o.setValid(true);
             o.setCount(o.getCount() + 1);
+            statisticService.update(o);
             getTml().updateEntity(o);
         }
     }
@@ -376,5 +381,33 @@ public class StatisticManager {
      */
     public void setTml(TripManagerLocal tml) {
         this.tml = tml;
+    }
+
+    /**
+     * @return the tripService
+     */
+    public TripServiceLocal getTripService() {
+        return tripService;
+    }
+
+    /**
+     * @param tripService the tripService to set
+     */
+    public void setTripService(TripServiceLocal tripService) {
+        this.tripService = tripService;
+    }
+
+    /**
+     * @return the statisticService
+     */
+    public StatisticServiceLocal getStatisticService() {
+        return statisticService;
+    }
+
+    /**
+     * @param statisticService the statisticService to set
+     */
+    public void setStatisticService(StatisticServiceLocal statisticService) {
+        this.statisticService = statisticService;
     }
 }

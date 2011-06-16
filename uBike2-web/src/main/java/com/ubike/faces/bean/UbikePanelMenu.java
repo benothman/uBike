@@ -114,12 +114,17 @@ public class UbikePanelMenu {
      */
     public String myCommunity() {
 
-        String string = "";
         try {
             boolean error = false;
             ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
-            int action = Integer.parseInt(request.getParameter("action"));
+            String param = request.getParameter("action");
+            int action = -1;
+            try {
+                action = Integer.parseInt(param);
+            } catch (NumberFormatException nfe) {
+                return param;
+            }
             String url = exctx.getRequestContextPath();
 
             switch (action) {
@@ -131,9 +136,6 @@ public class UbikePanelMenu {
                     break;
                 case 3:
                     url += "/resources/groups/";
-                    break;
-                case 4:
-                    url += "/faces/createGroup.jsf";
                     break;
                 default:
                     error = true;
@@ -149,7 +151,7 @@ public class UbikePanelMenu {
         } catch (Exception exp) {
             BaseBean.logError(exp.getMessage());
         }
-        return string;
+        return "";
     }
 
     /**

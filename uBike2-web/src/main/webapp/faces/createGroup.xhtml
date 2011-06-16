@@ -1,45 +1,60 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="template-ubike.xhtml" 
+<ui:composition template="template.xhtml" 
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
     <ui:define name="content">
-        <rich:panel style="border:0;width:85%;text-align:center">
-            <h:form>
-                <rich:panel>
-                    <f:facet name="header">
-                        <h:outputText value="Create uBike Group" />
-                    </f:facet>
-                    <f:view>
-                        <h:outputText value="#{createGroup.createError}" style="font-weight:bold;color:#FF0000"/><br/>
-                        <h:panelGrid columns="3" style="text-align:center">
-                            <h:outputLabel value="Group Name :" />
-                            <h:inputText id="name" value="#{createGroup.name}" size="30">
-                                <f:validateLength minimum="5" maximum="50" />
-                                <f:validateRequired />
-                                <rich:validator />
-                            </h:inputText>
-                            <rich:message for="name" style="color:#FF0000"/>
+        <h:form id="create_group">
+            <ubike:panel header="Create uBike Group" style="width:400px; margin: auto;">
 
-                            <h:outputLabel value="Description :" />
-                            <h:inputTextarea id="desc" value="#{createGroup.description}" rows="6" cols="28">
-                                <f:validateLength minimum="6" maximum="200" />
-                                <f:validateRequired />
-                                <rich:validator />
-                            </h:inputTextarea>
-                            <rich:message for="desc" style="color:#FF0000"/>
+                <h:inputHidden id="create_status" />
+                <rich:message for="create_status" />
+                <br/>
 
-                            <h:outputLabel value="  " />
-                            <h:commandButton value="Create" action="#{createGroup.create}"/>
-                            <h:outputLabel value="  " />
-                        </h:panelGrid>
-                    </f:view>
-                </rich:panel>
-            </h:form>
-        </rich:panel>
+                <h:panelGrid columns="1" style="width: 99%; margin: auto;">
+                    <h:outputLabel value="Group Name :" />
+                    <h:inputText id="name" value="#{createGroup.name}">
+                        <f:validateLength minimum="5" maximum="50" />
+                        <f:validateRequired />
+                        <rich:validator />
+                    </h:inputText>
+                    <rich:message for="name"/>
+
+                    <h:outputLabel value="Description :" />
+                    <h:inputTextarea id="desc" value="#{createGroup.description}" rows="6">
+                        <f:validateLength minimum="1" maximum="200" />
+                        <f:validateRequired />
+                        <rich:validator />
+                    </h:inputTextarea>
+                    <rich:message for="desc"/>
+
+                    <h:panelGroup>
+                        <h:commandButton styleClass="button" value="Create" action="#{createGroup.create}"/>
+                        <h:commandLink value="Cancel" action="#{panelMenu.myData}" immediate="true">
+                            <f:param name="action" value="user-profile"/>
+                        </h:commandLink>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </ubike:panel>
+        </h:form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
     </ui:define>
 </ui:composition>

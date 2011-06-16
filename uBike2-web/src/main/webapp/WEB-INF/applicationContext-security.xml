@@ -17,11 +17,11 @@
     <http auto-config="true" access-decision-manager-ref="accessDecisionManager" access-denied-page="/faces/403.jsf">
         <intercept-url pattern="/resources/**" access="ROLE_USER,ROLE_ADMIN" />
         <intercept-url pattern="/faces/private/**" access="ROLE_USER,ROLE_ADMIN" />
-        <intercept-url pattern="/faces/upload.jsf*" access="ROLE_USER,ROLE_ADMIN" />
-        <intercept-url pattern="/faces/createGroup.jsf*" access="ROLE_USER,ROLE_ADMIN" />
+        <intercept-url pattern="/faces/**" access="ROLE_USER,ROLE_ADMIN" />
+        <!--intercept-url pattern="/faces/createGroup.jsf*" access="ROLE_USER,ROLE_ADMIN" / -->
 
-        <form-login login-page="/faces/login.jsf" default-target-url="/index.jsp" authentication-failure-url="/faces/login.jsf?error=1" />
-        <logout logout-success-url="/faces/login.jsf" />
+        <form-login login-page="/login.jsf" default-target-url="/index.jsp" authentication-failure-url="/login.jsf" />
+        <logout logout-success-url="/login.jsf" />
     </http>
 
     <authentication-manager alias="authenticationManager" />

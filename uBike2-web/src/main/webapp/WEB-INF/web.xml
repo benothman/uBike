@@ -31,13 +31,18 @@
         <param-value>.xhtml</param-value>
     </context-param>
     <context-param>
-        <param-name>facelets.DEVELOPMENT</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
     <!-- RichFaces configuration -->
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -58,14 +63,6 @@
     <context-param>
         <param-name>org.richfaces.fileUpload.createTempFiles</param-name>
         <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Development</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-        <param-value>server</param-value>
     </context-param>
 
     <filter>
@@ -89,9 +86,9 @@
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
-    <listener>
+    <!--listener>
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-    </listener>
+    </listener -->
 
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -131,4 +128,21 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+    
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/index.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.NullPointerException</exception-type>
+        <location>/faces/500.jsf</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/faces/404.jsf</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/faces/404.jsf</location>
+    </error-page>
 </web-app>

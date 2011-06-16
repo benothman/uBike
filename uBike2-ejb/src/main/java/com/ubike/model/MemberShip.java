@@ -22,8 +22,8 @@ package com.ubike.model;
 
 import com.ubike.util.Role;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,14 +38,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
+ * {@code MemberShip}
+ * <p/>
  *
- * @author BENOTHMAN Nabil.
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "MEMBERSHIPS")
@@ -54,7 +59,9 @@ import javax.persistence.Transient;
     @NamedQuery(name = "MemberShip.getByGroup", query = "SELECT o FROM MemberShip o WHERE o.group.id=:groupId"),
     @NamedQuery(name = "MemberShip.getByUser", query = "SELECT o FROM MemberShip o WHERE o.member.id=:userId"),
     @NamedQuery(name = "MemberShip.getByGroupUser",
-    query = "SELECT o FROM MemberShip o WHERE o.member.id=:userId AND o.group.id=:groupId")
+    query = "SELECT o FROM MemberShip o WHERE o.member.id=:userId AND o.group.id=:groupId"),
+    @NamedQuery(name = "MemberShip.getUserFriends", query = "SELECT o FROM MemberShip o WHERE o.group.id IN (SELECT m.group.id FROM "
+    + "MemberShip m WHERE m.member.id = :userId) AND NOT (o.member.id = :userId )")
 })
 public class MemberShip implements Serializable {
 
@@ -81,27 +88,37 @@ public class MemberShip implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_GROUPE", referencedColumnName = "ID")
     private UbikeGroup group;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    private List<Ranking> rankings;
 
     /**
-     *
+     * Create a new instance of {@code MemberShip}
      */
     public MemberShip() {
         this.active = true;
-        this.date = new Date(Calendar.getInstance().getTimeInMillis());
+        this.date = new Date(System.currentTimeMillis());
     }
 
     /**
+     * Create a new instance of {@code MemberShip}
+     * @param role the membership role
+     */
+    public MemberShip(Role role) {
+        this();
+        this.role = role;
+    }
+
+    /**
+     * Create a new instance of {@code MemberShip}
+     * 
      * @param member
      * @param group
      * @param role
      */
     public MemberShip(UbikeUser member, UbikeGroup group, Role role) {
-        this();
+        this(role);
         this.member = member;
         this.group = group;
-        this.role = role;
-        this.group.getMemberShips().add(this);
-        this.member.getMemberShips().add(this);
     }
 
     /**
@@ -190,7 +207,7 @@ public class MemberShip implements Serializable {
 
     @Transient
     public String getDateAsString() {
-         return com.ubike.util.Util.formatDate(this.date);
+        return com.ubike.util.Util.formatDate(this.date);
     }
 
     @Override
@@ -217,5 +234,19 @@ public class MemberShip implements Serializable {
     @Override
     public String toString() {
         return "MemberShip[" + this.group.getName() + ", " + this.member.getAccount().getUsername() + "]";
+    }
+
+    /**
+     * @return the rankings
+     */
+    public List<Ranking> getRankings() {
+        return rankings;
+    }
+
+    /**
+     * @param rankings the rankings to set
+     */
+    public void setRankings(List<Ranking> rankings) {
+        this.rankings = rankings;
     }
 }

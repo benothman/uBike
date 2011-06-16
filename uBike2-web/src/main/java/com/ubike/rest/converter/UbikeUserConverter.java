@@ -1,20 +1,22 @@
 /*
- *  Copyright 2009 Nabil BENOTHMAN <nabil.benothman@gmail.com>.
+ * Copyright 2011, Nabil Benothman, and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  under the License.
- *
- *  This class is a part of uBike projet (HEIG-VD)
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package com.ubike.rest.converter;
 
@@ -33,10 +35,14 @@ import com.ubike.model.Trip;
 import java.util.List;
 
 /**
+ * {@code UbikeUserConverter}
+ * <p/>
  *
- * @author Benothman
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@XmlRootElement(name = "uBikeUser")
+@XmlRootElement(name = "ubike-user")
 public class UbikeUserConverter {
 
     private UbikeUser entity;
@@ -104,8 +110,8 @@ public class UbikeUserConverter {
      * @return value for firstName
      */
     @XmlElement
-    public String getFirstName() {
-        return (expandLevel > 0) ? entity.getFirstName() : null;
+    public String getFirstname() {
+        return (expandLevel > 0) ? entity.getFirstname() : null;
     }
 
     /**
@@ -113,8 +119,8 @@ public class UbikeUserConverter {
      *
      * @param value the value to set
      */
-    public void setFirstName(String value) {
-        entity.setFirstName(value);
+    public void setFirstname(String value) {
+        entity.setFirstname(value);
     }
 
     /**
@@ -123,8 +129,8 @@ public class UbikeUserConverter {
      * @return value for lastName
      */
     @XmlElement
-    public String getLastName() {
-        return (expandLevel > 0) ? entity.getLastName() : null;
+    public String getLastname() {
+        return (expandLevel > 0) ? entity.getLastname() : null;
     }
 
     /**
@@ -132,8 +138,8 @@ public class UbikeUserConverter {
      *
      * @param value the value to set
      */
-    public void setLastName(String value) {
-        entity.setLastName(value);
+    public void setLastname(String value) {
+        entity.setLastname(value);
     }
 
     /**

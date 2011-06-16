@@ -1,27 +1,36 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="template-ubike.xhtml"
+<ui:composition template="template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
     <ui:define name="content">
-        <rich:panel style="border:0;width:85%;text-align:center">
-            <rich:panel header="uBike File upload">
-                <center>
-                    <h:form>
-                        <h:panelGrid columns="2" columnClasses="top,top">
-
-                            <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}"
-                                             id="upload"  acceptedTypes="nmea, txt, xml">
-                                <a4j:ajax event="uploadcomplete" execute="@none" render="info" />
-                            </rich:fileUpload>
-                        </h:panelGrid>
-                    </h:form>
-                </center>
-            </rich:panel>
-        </rich:panel>
+        <ubike:panel header="uBike File upload">
+            <br/>
+            <br/>
+            <a4j:status>
+                <f:facet name="start">
+                    <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
+                </f:facet>
+            </a4j:status>
+            <h:form>
+                <rich:fileUpload fileUploadListener="#{fileUploadBean.upload}" style="margin: auto;"
+                                 id="upload"  acceptedTypes="nmea, txt, xml">
+                    <a4j:ajax event="uploadcomplete" execute="@none" render="info" />
+                </rich:fileUpload>
+            </h:form>
+        </ubike:panel>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
     </ui:define>
 </ui:composition>

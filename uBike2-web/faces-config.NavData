@@ -6,34 +6,38 @@
         <Node id="tripsInfo.jsp" x="2150" y="150" zoom="true"/>
         <Node id="index.jsp" x="400" y="150" zoom="true"/>
         <Node id="faces/tripInfo.xhtml" x="650" y="150" zoom="true"/>
-        <Node id="faces/tripTemplate.xhtml" x="900" y="600" zoom="true"/>
         <Node id="faces/welcome.xhtml" x="900" y="750" zoom="true"/>
         <Node id="faces/userInfo.xhtml" x="150" y="900" zoom="true"/>
         <Node id="faces/regist.xhtml" x="900" y="300" zoom="true"/>
-        <Node id="faces/login.xhtml" x="400" y="450" zoom="true"/>
         <Node id="faces/groupsInfo.xhtml" x="400" y="1050" zoom="true"/>
+        <Node id="faces/login.xhtml" x="400" y="450" zoom="true"/>
         <Node id="groupInfo.jsp" x="400" y="750" zoom="true"/>
         <Node id="memberShips.jsp" x="1150" y="450" zoom="true"/>
         <Node id="faces/memberShips.xhtml" x="1900" y="300" zoom="true"/>
         <Node id="faces/groupInfo.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="faces/trip-template.xhtml" x="900" y="600" zoom="true"/>
         <Node id="tripInfo.jsp" x="900" y="450" zoom="true"/>
+        <Node id="login.xhtml" x="650" y="750" zoom="true"/>
         <Node id="faces/template-ubike.xhtml" x="400" y="300" zoom="true"/>
-        <Node id="faces/tripsInfo.xhtml" x="150" y="1050" zoom="true"/>
         <Node id="usersInfo.jsp" x="150" y="600" zoom="true"/>
+        <Node id="faces/tripsInfo.xhtml" x="150" y="1050" zoom="true"/>
         <Node id="*" x="150" y="150" zoom="true"/>
         <Node id="groupsInfo.jsp" x="900" y="150" zoom="true"/>
-        <Node id="friends.jsp" x="400" y="900" zoom="true"/>
         <Node id="faces/private/editPassword.xhtml" x="650" y="600" zoom="true"/>
+        <Node id="friends.jsp" x="400" y="900" zoom="true"/>
         <Node id="faces/403.xhtml" x="400" y="600" zoom="true"/>
         <Node id="faces/template.xhtml" x="1150" y="600" zoom="true"/>
-        <Node id="faces/usersInfo.xhtml" x="650" y="300" zoom="true"/>
         <Node id="userInfo.jsp" x="1150" y="300" zoom="true"/>
-        <Node id="faces/friends.xhtml" x="150" y="300" zoom="true"/>
-        <Node id="faces/private/editProfile.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="faces/usersInfo.xhtml" x="650" y="300" zoom="true"/>
         <Node id="faces/about.xhtml" x="150" y="750" zoom="true"/>
+        <Node id="faces/private/editProfile.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="faces/friends.xhtml" x="150" y="300" zoom="true"/>
+        <Node id="faces/signup.xhtml" x="1400" y="150" zoom="true"/>
         <Node id="faces/welcome-template.xhtml" x="1900" y="150" zoom="true"/>
         <Node id="faces/createGroup.xhtml" x="650" y="900" zoom="true"/>
+        <Node id="faces/404.xhtml" x="1650" y="150" zoom="true"/>
         <Node id="welcome.jsp" x="150" y="450" zoom="true"/>
+        <Node id="signup.xhtml" x="1400" y="300" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

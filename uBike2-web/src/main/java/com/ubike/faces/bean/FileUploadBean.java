@@ -22,11 +22,16 @@ package com.ubike.faces.bean;
 
 import com.ubike.model.UbikeUser;
 import com.ubike.processor.RawFileProcessor;
+import com.ubike.services.GPSFileServiceLocal;
+import com.ubike.services.StatisticServiceLocal;
 import com.ubike.services.TripManagerLocal;
+import com.ubike.services.TripServiceLocal;
+import com.ubike.services.UserServiceLocal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -35,7 +40,6 @@ import javax.faces.context.FacesContext;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 
-
 /**
  * {@code FileUploadBean}
  * <p>This class is user as a managed bean for file upload.</p>
@@ -43,7 +47,7 @@ import org.richfaces.model.UploadedFile;
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name ="fileUploadBean")
+@ManagedBean(name = "fileUploadBean")
 @RequestScoped
 public class FileUploadBean {
 
@@ -54,14 +58,28 @@ public class FileUploadBean {
     private boolean uploadPanelOpen;
     @EJB
     private TripManagerLocal tripManager;
+    @EJB
+    private TripServiceLocal tripService;
+    @EJB
+    private GPSFileServiceLocal gpsFileService;
+    @EJB
+    private StatisticServiceLocal statisticService;
+    @EJB
+    private UserServiceLocal userService;
     private UbikeUser user;
 
     /**
-     * Creates a new instance of UserBean
+     * Creates a new instance of {@code FileUploadBean}
      */
     public FileUploadBean() {
+        super();
+    }
+
+    @PostConstruct
+    protected void init() {
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         this.user = (UbikeUser) ctx.getSessionMap().get("user");
+        tripManager.setEntityManager(tripService.getEntityManager());
     }
 
     /**
@@ -69,7 +87,7 @@ public class FileUploadBean {
      * @param event
      * @throws java.io.IOException
      */
-    public void listener(FileUploadEvent event) throws IOException {
+    public void upload(FileUploadEvent event) throws IOException {
         UploadedFile item = event.getUploadedFile();
         uploadsAvailable--;
         try {
@@ -85,7 +103,15 @@ public class FileUploadBean {
                 } else if (my_file.getName().matches(".+[\\.][tT][xX][tT]") || my_file.getName().matches(".+[\\.][nN][mM][eE][aA]")) {
                     //message.setType(UbikeMessage.RAW_GPS_FILE);
                     // starting a new Raw file processor
-                    RawFileProcessor.create(tripManager, user).process(new File(my_file.getPath()));
+                    
+                    UbikeUser u = userService.findWithTrips(user.getId());
+                    RawFileProcessor processor = RawFileProcessor.create(u);
+                    processor.setGpsFileService(gpsFileService);
+                    processor.setTripService(tripService);
+                    processor.setStatisticService(statisticService);
+                    processor.setTml(tripManager);
+
+                    processor.process(new File(my_file.getPath()));
                 }
                 //UbikeJmsProducer.getInstance().sendMessage(message);
             }
@@ -102,12 +128,18 @@ public class FileUploadBean {
      */
     public File save(UploadedFile item) throws FileNotFoundException, IOException {
 
-        String filename = "/tmp/" + user.getId() + "_" + item.getName();
-        File file = new File(filename);
+        int lastIndex = item.getName().lastIndexOf('.');
 
-        if (file.exists() || !file.createNewFile()) {
-            throw new IOException("File already exist or File creation problem");
+        String saveName = user.getId() + "_"
+                + item.getName().replaceAll("[\\\\/><\\|\\s\"'{}()\\[\\]]+", "_");
+        String extension = ".txt";
+        if (lastIndex >= 0) {
+            extension = item.getName().substring(lastIndex);
         }
+
+        // Create a temporary file placed in the default system temp folder
+        
+        File file = File.createTempFile(saveName, extension);
 
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(item.getData());

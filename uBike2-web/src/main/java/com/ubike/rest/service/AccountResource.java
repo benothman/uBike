@@ -72,6 +72,10 @@ public class AccountResource {
     public AccountResource() {
     }
 
+    /**
+     * 
+     * @param id 
+     */
     public void setId(Long id) {
         this.id = id;
     }

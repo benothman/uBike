@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 
 /**
@@ -41,7 +41,7 @@ import javax.faces.event.ValueChangeEvent;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @ManagedBean(name = "calendarBean")
-@SessionScoped
+@ViewScoped
 public class CalendarBean {
 
     private boolean popup;
@@ -62,7 +62,7 @@ public class CalendarBean {
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         this.popup = true;
         this.showApply = true;
         this.pattern = "MMM d, yyyy";

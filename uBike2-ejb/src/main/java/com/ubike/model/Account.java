@@ -33,7 +33,6 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,6 +40,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 /**
  * {@code Account}
@@ -51,7 +51,9 @@ import javax.persistence.Transient;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
-@Table(name = "ACCOUNTS")
+@Table(name = "ACCOUNTS", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"USERNAME"})
+})
 @NamedQueries({
     @NamedQuery(name = "Account.getAll", query = "SELECT o FROM Account o"),
     @NamedQuery(name = "Account.getByUsername",
@@ -63,11 +65,10 @@ public class Account implements Serializable {
 
     public static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Long id;
-    @Column(name = "USERNAME", length = 20, unique = true, nullable = false)
+    @Column(name = "USERNAME", length = 20, unique = true, nullable = false, updatable=false)
     private String username;
     @Column(name = "PASSWORD", nullable = false)
     private String keyPass;

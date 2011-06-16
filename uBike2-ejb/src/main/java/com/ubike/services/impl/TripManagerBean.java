@@ -57,6 +57,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#addTrip(com.ubike.entities.Trip)
      */
+    @Override
     public void addTrip(Trip trip) {
         addEntity(trip);
     }
@@ -64,6 +65,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#addSegment(com.ubike.entities.TripSegment)
      */
+    @Override
     public void addSegment(TripSegment segment) {
         addEntity(segment);
     }
@@ -71,6 +73,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#addGPSFile(com.ubike.entities.GpsFile)
      */
+    @Override
     public void addGPSFile(GpsFile file) {
         addEntity(file);
     }
@@ -78,6 +81,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#addRoute(com.ubike.entities.Route)
      */
+    @Override
     public void addRoute(Route route) {
         addEntity(route);
     }
@@ -85,6 +89,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#addStatistic(com.ubike.model.Statistic)
      */
+    @Override
     public void addStatistic(Statistic stat) {
         addEntity(stat);
     }
@@ -92,6 +97,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getUserTrips(java.lang.Long)
      */
+    @Override
     public Collection<Trip> getUserTrips(long userId) {
         try {
             return (Collection<Trip>) manager.createNamedQuery("Trip.getUserTrips").setParameter(
@@ -105,6 +111,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getUserTripsByDate(java.lang.Long)
      */
+    @Override
     public Collection<Trip> getUserTripsByDate(long userId, Date sDate, Date eDate) {
         try {
             return (Collection<Trip>) manager.createNamedQuery("Trip.getUserTripByDate").setParameter(
@@ -118,6 +125,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getTripSegments(java.lang.Long)
      */
+    @Override
     public Collection<TripSegment> getTripSegments(long tripId) {
         try {
             return (Collection<TripSegment>) manager.createNamedQuery(
@@ -132,6 +140,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getFileByName(java.lang.String)
      */
+    @Override
     public GpsFile getFileByName(String fileName) {
         try {
             return (GpsFile) manager.createNamedQuery("GPSFILE.getByName").
@@ -144,6 +153,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getTripById(java.lang.Long)
      */
+    @Override
     public Trip getTripById(long tripId) {
         return manager.find(Trip.class, tripId);
     }
@@ -151,6 +161,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatByType(com.ubike.util.StatisticType)
      */
+    @Override
     public Collection<Statistic> getStatByType(StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getByType").setParameter("param", type).getResultList();
@@ -162,6 +173,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatByMetric(com.ubike.util.Metric)
      */
+    @Override
     public Collection<Statistic> getStatByMetric(Metric metric) {
         try {
             return manager.createNamedQuery("Statistic.getByMetric").setParameter("param", metric).getResultList();
@@ -222,6 +234,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getStatByData(com.ubike.util.Metric,
      *          com.ubike.util.StatisticType,java.util.Date,java.util.Date)
      */
+    @Override
     public Collection<Statistic> getStatByData(Metric metric, StatisticType type, Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getByData").setParameter("type", type).
@@ -235,6 +248,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getEntityStat(java.lang.Long)
      */
+    @Override
     public Collection<Statistic> getEntityStat(long entityId) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStat").setParameter("entityId", entityId).getResultList();
@@ -247,6 +261,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStatByIntervalAndType(java.lang.Long,
      *          com.ubike.util.StatisticType,java.util.Date,java.util.Date)
      */
+    @Override
     public Collection<Statistic> getEntityStatByIntervalAndType(long entityId, StatisticType type, Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByIntervalAndType").
@@ -261,6 +276,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStatAfterByType(java.lang.Long,
      *          com.ubike.util.StatisticType,java.util.Date)
      */
+    @Override
     public Collection<Statistic> getEntityStatAfterByType(long entityId, StatisticType type, Date start) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatAfterByType").
@@ -274,6 +290,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getEntityStatByType(java.lang.Long)
      */
+    @Override
     public Collection<Statistic> getEntityStatByType(long entityId, StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByType").
@@ -286,6 +303,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getEntityStatByMetric(java.lang.Long)
      */
+    @Override
     public Collection<Statistic> getEntityStatByMetric(long entityId, Metric metric) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByMetric").
@@ -298,6 +316,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getEntityStatByMetricAndType(java.lang.Long)
      */
+    @Override
     public Collection<Statistic> getEntityStatByMetricAndType(long entityId, Metric metric, StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByMetricAndType").
@@ -311,6 +330,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#insertEntity(java.lang.Object)
      */
+    @Override
     public void insertEntity(Object entity) {
         manager.persist(entity);
     }
@@ -318,6 +338,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#flush()
      */
+    @Override
     public void flush() {
         manager.flush();
     }
@@ -325,6 +346,7 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#updateEntity(java.lang.Object)
      */
+    @Override
     public void updateEntity(Object o) {
         try {
             System.out.println("TripManagerBean#updateEntity( " + o + " )");
@@ -332,5 +354,10 @@ public class TripManagerBean implements TripManagerLocal {
         } catch (Exception exp) {
             exp.printStackTrace();
         }
+    }
+
+    @Override
+    public void setEntityManager(EntityManager entityManager) {
+        this.manager = entityManager;
     }
 }

@@ -1,60 +1,59 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<ui:composition template="template-ubike.xhtml"
+<ui:composition template="template.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
     <ui:define name="content">
-        <rich:panel style="border:0;width:85%;text-align:center">
-            <rich:panel header="uBike friendship">
-                <center>
-                    <h:form>
-                        <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_left.png"
-                                        onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+        <ubike:panel header="Friends List">
+            <h:form>
+                <h:graphicImage value="/layouts/images/arr_left.png"
+                                onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
 
-                        <h:graphicImage value="#{facesContext.externalContext.requestContextPath}/layouts/images/arr_right.png"
-                                        onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                <h:graphicImage value="/layouts/images/arr_right.png"
+                                onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
 
-                        <rich:dataTable id="friendsList" value="#{dataBean.users}" var="u" 
-                                        columnClasses="center"
-                                        rowClasses="odd-row, even-row"
-                                        styleClass="stable" rows="10">
+                <rich:dataTable id="friendsList" value="#{usersBean.users}" var="u" 
+                                columnClasses="center"
+                                rowClasses="odd-row, even-row"
+                                styleClass="stable" rows="10">
 
-                            <f:facet name="header">
-                                <h:outputText value="#{it.account.username} Friends"/>
-                            </f:facet>
+                    <f:facet name="header">
+                        <h:outputText value="Users List"/>
+                    </f:facet>
 
-                            <rich:column sortBy="#{u.id}">
-                                <f:facet name="header"><h:outputText value="Friend ID"/></f:facet>
-                                <h:outputText value="#{u.id}" />
-                            </rich:column>
+                    <rich:column sortBy="#{u.id}">
+                        <f:facet name="header"><h:outputText value="Friend ID"/></f:facet>
+                        <h:outputText value="#{u.id}" />
+                    </rich:column>
 
-                            <rich:column sortBy="#{u.account.username}">
-                                <f:facet name="header"><h:outputText value="Username"/></f:facet>
-                                <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{u.id}/">
-                                    <h:outputText value="#{u.account.username}" />
-                                </a>
-                            </rich:column>
-                            <rich:column sortBy="#{u.firstName}">
-                                <f:facet name="header"><h:outputText value="Firstname"/></f:facet>
-                                <h:outputText value="#{u.firstName}" />
-                            </rich:column>
-                            <rich:column sortBy="#{u.lastName}">
-                                <f:facet name="header"><h:outputText value="Lastname"/></f:facet>
-                                <h:outputText value="#{u.lastName}" />
-                            </rich:column>
-                            <rich:column>
-                                <f:facet name="header"><h:outputText value="E-mail"/></f:facet>
-                                <h:outputText value="#{u.email}" />
-                            </rich:column>
-                        </rich:dataTable>
+                    <rich:column sortBy="#{u.account.username}">
+                        <f:facet name="header"><h:outputText value="Username"/></f:facet>
+                        <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{u.id}/">
+                            <h:outputText value="#{u.account.username}" />
+                        </a>
+                    </rich:column>
+                    <rich:column sortBy="#{u.firstname}">
+                        <f:facet name="header"><h:outputText value="Firstname"/></f:facet>
+                        <h:outputText value="#{u.firstname}" />
+                    </rich:column>
+                    <rich:column sortBy="#{u.lastname}">
+                        <f:facet name="header"><h:outputText value="Lastname"/></f:facet>
+                        <h:outputText value="#{u.lastname}" />
+                    </rich:column>
+                    <rich:column>
+                        <f:facet name="header"><h:outputText value="E-mail"/></f:facet>
+                        <h:outputText value="#{u.email}" />
+                    </rich:column>
+                    <f:facet name="header">
                         <rich:dataScroller id="ds" for="friendsList" />
-                    </h:form>
-                </center>
-            </rich:panel>
-        </rich:panel>
+                    </f:facet>
+                </rich:dataTable>
+            </h:form>
+        </ubike:panel>
     </ui:define>
 </ui:composition>

@@ -21,14 +21,15 @@
 package com.ubike.processor;
 
 import com.ubike.util.StatisticManager;
-import com.ubike.model.MemberShip;
 import com.ubike.model.RawGpsFile;
 import com.ubike.model.TrackPoint;
 import com.ubike.model.Trip;
 import com.ubike.util.UbikeEntity;
 import com.ubike.model.UbikeUser;
+import com.ubike.services.GPSFileServiceLocal;
+import com.ubike.services.StatisticServiceLocal;
 import com.ubike.services.TripManagerLocal;
-import com.ubike.util.UserStatisticManager;
+import com.ubike.services.TripServiceLocal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -37,6 +38,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -44,6 +47,7 @@ import java.util.List;
  */
 public class RawFileProcessor implements GpsFileProcessor {
 
+    private static final Logger logger = Logger.getLogger(RawFileProcessor.class.getName());
     public static final String GPGGA = "$GPGGA";
     public static final String GPRMC = "$GPRMC";
     public static final String GPGLL = "$GPGLL";
@@ -54,6 +58,9 @@ public class RawFileProcessor implements GpsFileProcessor {
     private UbikeUser user;
     private Calendar cal = Calendar.getInstance();
     private StatisticManager statManager;
+    private TripServiceLocal tripService;
+    private GPSFileServiceLocal gpsFileService;
+    private StatisticServiceLocal statisticService;
 
     /**
      *
@@ -68,10 +75,29 @@ public class RawFileProcessor implements GpsFileProcessor {
     }
 
     /**
+     * 
+     * @param user 
+     */
+    private RawFileProcessor(UbikeUser user) {
+        super();
+        this.user = user;
+    }
+
+    /**
      * @return a new instance of <code>RawFileProcessor</code> 
      */
     public static RawFileProcessor create(TripManagerLocal tml, UbikeUser user) {
         return new RawFileProcessor(tml, user);
+    }
+
+    /**
+     * Create a new instance of {@code RawFileProcessor}
+     * 
+     * @param user the current user
+     * @return a new instance of {@code RawFileProcessor}
+     */
+    public static RawFileProcessor create(UbikeUser user) {
+        return new RawFileProcessor(user);
     }
 
     /* (non-Javadoc)
@@ -102,7 +128,6 @@ public class RawFileProcessor implements GpsFileProcessor {
                 // 01131.000,E  Longitude 11 deg 31.000' E
 
                 int fixQuality = Integer.parseInt(tokens[6]);
-
                 if (fixQuality == 0) {
                     // The GPS line entry is not valid
                     continue;
@@ -179,27 +204,33 @@ public class RawFileProcessor implements GpsFileProcessor {
             totalDisatance += tracks.isEmpty() ? 0.0 : trackPoint.distanceTo(tracks.getLast());
             tracks.addLast(trackPoint);
         }
+        
         // adding Trip to the database
         Trip trip = initializeTrip(tracks);
         if (trip != null) {
+            logger.log(Level.INFO, "Add trip to datastore");
             trip.setOwner(user);
-            getTml().addTrip(trip);
+            this.tripService.create(trip);
             double avg = (user.getUserProfile().getAvgSpeed() * user.getTrips().size() + trip.getAvgSpeed()) / (user.getTrips().size() + 1);
             user.getTrips().add(trip);
             user.getUserProfile().setAvgSpeed(getDoubleValue(avg));
             user.getUserProfile().setTotalDistance(getDoubleValue(user.getUserProfile().getTotalDistance() + trip.getDistance()));
             user.getUserProfile().setTotalDuration(user.getUserProfile().getTotalDuration() + trip.getDuration());
 
-            getTml().addGPSFile(new RawGpsFile(inputFile.getName(), inputFile.length(),
-                    java.util.Calendar.getInstance().getTime()));
+            RawGpsFile gpsFile = new RawGpsFile(inputFile.getName(), inputFile.length(),
+                    java.util.Calendar.getInstance().getTime());
+            this.gpsFileService.create(gpsFile);
 
+            /*
             updateEntityStatistics(user, trip);
-
+            user.getMemberShips().size();
             for (MemberShip m : user.getMemberShips()) {
-                updateEntityStatistics(m.getGroup(), trip);
+            updateEntityStatistics(m.getGroup(), trip);
             }
+             */
+        } else {
+            logger.log(Level.INFO, "The trip is null");
         }
-
     }
 
     /**
@@ -292,5 +323,47 @@ public class RawFileProcessor implements GpsFileProcessor {
      */
     public void setTml(TripManagerLocal tml) {
         this.tml = tml;
+    }
+
+    /**
+     * @return the tripService
+     */
+    public TripServiceLocal getTripService() {
+        return tripService;
+    }
+
+    /**
+     * @param tripService the tripService to set
+     */
+    public void setTripService(TripServiceLocal tripService) {
+        this.tripService = tripService;
+    }
+
+    /**
+     * @return the gpsFileService
+     */
+    public GPSFileServiceLocal getGpsFileService() {
+        return gpsFileService;
+    }
+
+    /**
+     * @param gpsFileService the gpsFileService to set
+     */
+    public void setGpsFileService(GPSFileServiceLocal gpsFileService) {
+        this.gpsFileService = gpsFileService;
+    }
+
+    /**
+     * @return the statisticService
+     */
+    public StatisticServiceLocal getStatisticService() {
+        return statisticService;
+    }
+
+    /**
+     * @param statisticService the statisticService to set
+     */
+    public void setStatisticService(StatisticServiceLocal statisticService) {
+        this.statisticService = statisticService;
     }
 }

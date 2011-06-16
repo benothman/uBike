@@ -67,8 +67,28 @@ public class UbikeGroupsResource {
     @EJB
     private GroupServiceLocal groupService;
 
-    /** Creates a new instance of UbikeGroupsResource */
+    /** 
+     * Creates a new instance of {@code UbikeGroupsResource} 
+     */
     public UbikeGroupsResource() {
+    }
+
+    /**
+     * Get method for retrieving a collection of UbikeGroup instance in HTML format.
+     *
+     * @return an instance of Viewable
+     */
+    @GET
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(
+            @QueryParam("start") @DefaultValue("0") int start,
+            @QueryParam("max") @DefaultValue("10") int max,
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+
+        List<UbikeGroup> entities = getEntities(start, max);
+        BaseBean.setSessionAttribute("tmp_groups", entities);
+
+        return new Viewable("/groupsInfo.jsp", entities);
     }
 
     /**
@@ -77,18 +97,14 @@ public class UbikeGroupsResource {
      * @return an instance of UbikeGroupsConverter
      */
     @GET
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Viewable get(
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public UbikeGroupsConverter getXML(
             @QueryParam("start") @DefaultValue("0") int start,
             @QueryParam("max") @DefaultValue("10") int max,
-            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel,
-            @QueryParam("query") @DefaultValue("SELECT e FROM UbikeGroup e") String query) {
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
-        UbikeGroupsConverter converter = new UbikeGroupsConverter(getEntities(start, max,
-                query), uriInfo.getAbsolutePath(), expandLevel);
-
-        BaseBean.setSessionAttribute("tmp_groups", converter.getEntities());
-        return new Viewable("/groupsInfo.jsp", converter.getEntities());
+        return new UbikeGroupsConverter(getEntities(start, max),
+                uriInfo.getAbsolutePath(), expandLevel);
     }
 
     /**
@@ -127,7 +143,7 @@ public class UbikeGroupsResource {
      * @param query
      * @return a collection of UbikeGroup instances
      */
-    protected List<UbikeGroup> getEntities(int start, int max, String query) {
+    protected List<UbikeGroup> getEntities(int start, int max) {
         return groupService.findRange(start, max);
     }
 

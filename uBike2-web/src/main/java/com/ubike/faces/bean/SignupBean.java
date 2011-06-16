@@ -20,7 +20,6 @@
  */
 package com.ubike.faces.bean;
 
-import com.ubike.faces.validator.FieldMatch;
 import com.ubike.model.Account;
 import com.ubike.model.UbikeUser;
 import com.ubike.services.AccountServiceLocal;
@@ -37,25 +36,20 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.providers.encoding.ShaPasswordEncoder;
 
 /**
- * {@code UserRegisterBean}
+ * {@code SignupBean}
  * <p>This class is used as managed bean for user registration</p>
  * Created on Jun 6, 2011 at 7:17:22 PM
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name = "registerBean")
+@ManagedBean(name = "signupBean")
 @RequestScoped
-@FieldMatch.List({
-    @FieldMatch(type = UserRegisterBean.class, first = "keyPass", name = "registerBean",
-    second = "confirm", message = "The password fields must match")
-})
-public class UserRegisterBean {
+public class SignupBean {
 
-    private String progressString = "Fill the form please";
     @NotBlank
-    private String firstName;
+    private String firstname;
     @NotBlank
-    private String lastName;
+    private String lastname;
     @NotBlank
     private String address;
     @NotEmpty
@@ -71,16 +65,16 @@ public class UserRegisterBean {
     @NotEmpty
     @Length(min = 7, message = "Password must contain at least 7 characters")
     @Pattern(regexp = "^(?=.*\\d)(?=.*[a-zA-Z]).{7,25}$", message = "The password is not valid")
-    private String keyPass;
+    private String password;
     @NotBlank
-    private String confirm;
+    private String confirmPassword;
     @EJB
     private AccountServiceLocal accountService;
 
     /**
      * 
      */
-    public UserRegisterBean() {
+    public SignupBean() {
         super();
     }
 
@@ -88,59 +82,67 @@ public class UserRegisterBean {
      * 
      * @return
      */
-    public String doRegistration() {
+    public String signup() {
 
         FacesContext fc = FacesContext.getCurrentInstance();
 
-        if (!this.keyPass.equals(this.confirm)) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+        if (!this.password.equals(this.confirmPassword)) {
+            fc.addMessage("signup:signup_error", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Please verify your password !", "Please verify your password!"));
 
             return BaseBean.FAILURE;
         }
 
-        UbikeUser user = new UbikeUser(this.firstName, this.lastName, this.address, this.phone, this.email);
+        UbikeUser user = createUser();
         ShaPasswordEncoder shaPswdEncoder = new ShaPasswordEncoder(512);
-        String encodedPassword = shaPswdEncoder.encodePassword(this.keyPass, username);
+        String encodedPassword = shaPswdEncoder.encodePassword(this.password, this.username);
         Account account = accountService.createAccount(user, username, encodedPassword);
 
         if (account == null) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+            fc.addMessage("signup:signup_error", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "The username is already used! Please try again",
                     "The username is already used! Please try again"));
 
             return BaseBean.FAILURE;
         }
 
-        return BaseBean.SUCCESS;
+        return BaseBean.LOGIN;
     }
 
     /**
-     * @return the firstName
+     * Create a new instance of {@link com.ubike.model.UbikeUser}
+     * @return a new instance of {@link com.ubike.model.UbikeUser}
      */
-    public String getFirstName() {
-        return this.firstName;
+    private UbikeUser createUser() {
+        return new UbikeUser(this.firstname, this.lastname, this.address, this.phone, this.email);
     }
 
     /**
-     * @param firstName the firstName to set
+     * @return the first name
      */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public String getFirstname() {
+        return this.firstname;
+    }
+
+    /**
+     * @param firstname the firstName to set
+     */
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
     /**
      * @return the lastName
      */
-    public String getLastName() {
-        return this.lastName;
+    public String getLastname() {
+        return this.lastname;
     }
 
     /**
-     * @param lastName the lastName to set
+     * @param lastname the lastName to set
      */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     /**
@@ -200,53 +202,30 @@ public class UserRegisterBean {
     }
 
     /**
-     * @return the keyPass
+     * @return the password
      */
-    public String getKeyPass() {
-        return this.keyPass;
+    public String getPassword() {
+        return this.password;
     }
 
     /**
-     * @param keyPass the keyPass to set
+     * @param password the password to set
      */
-    public void setKeyPass(String keyPass) {
-        this.keyPass = keyPass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
      * @return the confirm
      */
-    public String getConfirm() {
-        return this.confirm;
+    public String getConfirmPassword() {
+        return this.confirmPassword;
     }
 
     /**
      * @param confirm the confirm to set
      */
-    public void setConfirm(String confirm) {
-        this.confirm = confirm;
-    }
-
-    /**
-     *
-     */
-    public void success() {
-        setProgressString(getProgressString() + "(Strored successfully)");
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getProgressString() {
-        return progressString;
-    }
-
-    /**
-     *
-     * @param progressString
-     */
-    public void setProgressString(String progressString) {
-        this.progressString = progressString;
+    public void setConfirmPassword(String confirm) {
+        this.confirmPassword = confirm;
     }
 }

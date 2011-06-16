@@ -50,12 +50,17 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
+ * {@code Statistic}
+ * <p>
  * This class represents a measurable value from the Users and/or Groups trips
  * There are many types of statistics such as Route statistics, Group Statistic,
  * User Statistic, etc...
  * A statistic still valid while there was not a new upload by a concerned user.
+ * </p>
  *
- * @author BENOTHMAN Nabil
+ * Created on Jun 6, 2011 at 7:17:22 PM
+ *
+ * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
 @Table(name = "STATISTICS")
@@ -105,8 +110,6 @@ public class Statistic implements Serializable {
     private double minValue;
     @Column(name = "STAT_TOTAL")
     private double totalValue;
-    @OneToMany(mappedBy = "statistic", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private List<Ranking> rankings;
 
     /**
      * Create a new <code>Statistic</code> instance with no settings
@@ -297,19 +300,5 @@ public class Statistic implements Serializable {
     @Transient
     public String getTotalDurationAsString() {
         return Util.formatDuration((int) this.totalValue);
-    }
-
-    /**
-     * @return the rankings
-     */
-    public List<Ranking> getRankings() {
-        return rankings;
-    }
-
-    /**
-     * @param rankings the rankings to set
-     */
-    public void setRankings(List<Ranking> rankings) {
-        this.rankings = rankings;
     }
 }

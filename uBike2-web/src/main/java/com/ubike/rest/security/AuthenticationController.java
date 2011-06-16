@@ -122,10 +122,10 @@ public final class AuthenticationController {
             HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
             response.sendRedirect(exctx.getRequestContextPath() + "/resources/users/" + user.getId());
 
-            return "login-success";
+            return BaseBean.LOGIN_SUCCESS;
         } catch (Exception e) {
             FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+            fc.addMessage("login:login_error", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "The username and/or password is not correct! Please try again",
                     "The username and/or password is not correct! Please try again"));
             return BaseBean.FAILURE;
