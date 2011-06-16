@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="faces/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <br/>
+        <h:form id="login">
+            <ubike:panel id="ubike_panel" header="uBike Login" style="width:400px; margin: auto;">
+                <h:inputHidden id="login_error" />
+                <br />
+                <rich:message for="login_error" ajaxRendered="true" />
+                <br/>
+                <h:panelGrid columns="1">                        
+                    <h:outputLabel for="username" value="Username : " />
+                    <h:inputText value="#{authenticationController.username}" id="username">
+                        <f:validateLength minimum="5" maximum="12"/>
+                        <f:validateRegex pattern=".*[^\\s]" />
+                        <f:validateRequired />
+                        <rich:validator />
+                    </h:inputText>
+                    <rich:message for="username" ajaxRendered="true" />
+
+                    <h:outputLabel value="Password :" for="password" />
+                    <h:inputSecret value="#{authenticationController.password}" id="password" size="50">
+                        <f:validateLength minimum="7" maximum="20"/>
+                        <f:validateRequired />
+                        <rich:validator />
+                    </h:inputSecret>
+                    <rich:message for="password" ajaxRendered="true"/>
+
+                    <h:panelGroup>
+                        <h:commandButton styleClass="button" value="Login" action="#{authenticationController.authenticate}"/>
+                        <h:outputLabel value="      " />
+                        <h:commandLink action="signup" value="Signup" immediate="true" title="uBike signup" />
+                    </h:panelGroup>
+                </h:panelGrid>
+            </ubike:panel>
+        </h:form>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </ui:define>
+</ui:composition>

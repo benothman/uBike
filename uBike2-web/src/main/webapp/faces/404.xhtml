@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ubike="http://www.ubike.com/faces"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <h:form>
+            <ubike:panel header="Page not found">
+
+                <h:graphicImage value="/layouts/images/404.jpg" alt="page not found" />
+                <br/>
+                <br/>
+                <rich:panel bodyClass="rich-laguna-panel-no-header">
+                    <h:outputText value="We are sorry but the requested page is not found, please verify the URL and try again." 
+                                  style="font-weight:bold;color:#FF0000;"/>
+                    <br/>
+                </rich:panel>
+                <br/>
+            </ubike:panel>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </h:form>
+    </ui:define>
+</ui:composition>

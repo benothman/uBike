@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition template="faces/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:ubike="http://www.ubike.com/faces"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="content">
+        <h:form id="signup">
+            <ubike:panel header="uBike Registration">
+
+                <h:inputHidden id="signup_error" />
+                <rich:message for="signup_error" />
+                <br/>
+
+                <h:panelGrid columns="2" columnClasses="td1_signup,td2_signup">
+                    <h:panelGroup>
+                        <h:outputLabel value="Firstname :" />
+                        <h:inputText id="fn" value="#{signupBean.firstname}" title="Firstname"
+                                     requiredMessage="The firstname is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="fn"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:outputLabel value="Lastname :" />
+                        <h:inputText id="ln" value="#{signupBean.lastname}"
+                                     requiredMessage="The lastname is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="ln" />
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:outputLabel value="Address :" />
+                        <h:inputTextarea id="addr" value="#{signupBean.address}"
+                                         requiredMessage="The address is required" 
+                                         rows="6" cols="32">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputTextarea>
+                        <rich:message for="addr"/>
+                    </h:panelGroup>
+
+                    <h:panelGroup style="width: 100%;">
+                        <h:outputLabel value="Phone :"/>
+                        <h:inputText id="ph" value="#{signupBean.phone}"
+                                     requiredMessage="The phone number is required">
+                            <f:validateRegex pattern="[0-9]+" />
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="ph"/>
+                        <br/>
+                        <br/>
+                        <h:outputLabel value="E-mail :" />
+                        <h:inputText id="email" value="#{signupBean.email}"
+                                     requiredMessage="The e-mail address is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="email"/>
+                        <br/>
+                    </h:panelGroup>
+
+                    <h:panelGroup styleClass="td1_signup">
+                        <h:outputLabel value="Username :" />
+                        <h:inputText id="un" value="#{signupBean.username}"
+                                     requiredMessage="The username is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputText>
+                        <rich:message for="un" />
+
+                        <h:outputLabel value="Password :" />
+                        <h:inputSecret id="pswd" value="#{signupBean.password}"
+                                       requiredMessage="The password is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputSecret>
+                        <rich:message for="pswd" />
+
+                        <h:outputLabel value="Confirm :" />
+                        <h:inputSecret id="cfm" value="#{signupBean.confirmPassword}" 
+                                       requiredMessage="The password confirmation is required">
+                            <f:validateRequired />
+                            <rich:validator />
+                        </h:inputSecret>
+                        <rich:message for="cfm"/>
+                        <br/>
+                    </h:panelGroup>
+
+                    <h:panelGroup style="margin-top: 5px;">
+                        <h:outputLabel value="Security question:" />
+                        <ubike:captcha id="captcha" requiredMessage="The value is required" />
+                        <rich:message for="captcha"/>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <h:panelGrid columns="3" style="margin: auto;">
+                    <h:commandButton value="Signup" styleClass="button" action="#{signupBean.signup}"/>
+                    <h:outputText value="Already registered ? " />
+                    <h:commandLink immediate="true" action="login" value="Login" />
+                </h:panelGrid>
+            </ubike:panel>
+        </h:form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    </ui:define>
+</ui:composition>
