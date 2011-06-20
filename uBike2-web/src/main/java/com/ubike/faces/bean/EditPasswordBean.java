@@ -44,7 +44,7 @@ import org.springframework.security.providers.encoding.ShaPasswordEncoder;
  */
 @ManagedBean(name = "editPasswordBean")
 @RequestScoped
-public class EditPasswordBean {
+public class EditPasswordBean extends AbstractBean {
 
     // Data for Password Edition
     @NotEmpty
@@ -89,7 +89,7 @@ public class EditPasswordBean {
             ShaPasswordEncoder encoder = new ShaPasswordEncoder(512);
             String encodedPW = encoder.encodePassword(this.oldPassword, current.getAccount().getUsername());
             // Verify the old password
-            if (!current.getAccount().getKeyPass().equals(encodedPW)) {
+            if (!current.getAccount().getPassword().equals(encodedPW)) {
                 fc.addMessage("edit_form:edit_status", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Wrong old password! Please try again",
                         "Wrong old password! Please try again"));
@@ -97,7 +97,7 @@ public class EditPasswordBean {
             }
 
             String keyPass = encoder.encodePassword(getNewPassword(), current.getAccount().getUsername());
-            current.getAccount().setKeyPass(keyPass);
+            current.getAccount().setPassword(keyPass);
             accountService.update(current.getAccount());
             fc.addMessage("edit_form:edit_status", new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Your password was updated successfully",

@@ -20,7 +20,6 @@
  */
 package com.ubike.faces.bean;
 
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -37,12 +36,11 @@ import org.springframework.web.context.request.RequestContextHolder;
  */
 @ManagedBean(name = "baseBean")
 @SessionScoped
-public class BaseBean {
+public class BaseBean extends AbstractBean {
 
-    protected static final Logger logger = Logger.getLogger(BaseBean.class.getName());
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
-    public static final String LOGIN = "login";
+    public static final String LOGIN_REQUIRED = "login";
     public static final String LOGIN_SUCCESS = "login-success";
     public static final String SIGNUP = "signup";
     public static final String ABOUT = "about";

@@ -37,8 +37,6 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "ID_STAT")
 public class GroupStatistic extends Statistic {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Create a new instance of {@code GroupStatistic}
      */

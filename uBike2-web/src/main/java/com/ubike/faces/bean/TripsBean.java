@@ -21,14 +21,14 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.Trip;
-import com.ubike.services.TripServiceLocal;
-import java.util.ArrayList;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import org.richfaces.component.SortOrder;
 
 /**
  * {@code TripsBean}
@@ -39,12 +39,16 @@ import javax.faces.bean.RequestScoped;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @ManagedBean(name = "tripsBean")
-@RequestScoped
-public class TripsBean {
+@ViewScoped
+public class TripsBean extends AbstractBean {
 
-    private List<Trip> trips;
-    @EJB
-    private TripServiceLocal tripService;
+    private CustomList<Trip> trips;
+    private SortOrder usernameOrder;
+    private SortOrder datesOrder;
+    private SortOrder distanceOrder;
+    private SortOrder durationOrder;
+    private SortOrder avgSpeedOrder;
+    private SortOrder maxSpeedOrder;
 
     /**
      * Create a new instance of {@code TripsBean}
@@ -55,8 +59,18 @@ public class TripsBean {
 
     @PostConstruct
     protected void init() {
-        this.trips = BaseBean.getSessionAttribute("tmp_trips") != null
-                ? (List<Trip>) BaseBean.getSessionAttribute("tmp_trips") : new ArrayList<Trip>();
+        List<Trip> tmp = (List<Trip>) BaseBean.getSessionAttribute("tmp_trips");
+        if (tmp == null) {
+            this.trips = new CustomArrayList<Trip>();
+        } else {
+            this.trips = new CustomArrayList<Trip>(tmp);
+        }
+        this.datesOrder = SortOrder.ascending;
+        this.usernameOrder = SortOrder.unsorted;
+        this.durationOrder = SortOrder.unsorted;
+        this.avgSpeedOrder = SortOrder.unsorted;
+        this.maxSpeedOrder = SortOrder.unsorted;
+        this.distanceOrder = SortOrder.unsorted;
     }
 
     @PreDestroy
@@ -65,16 +79,186 @@ public class TripsBean {
     }
 
     /**
+     * 
+     * @return 
+     */
+    public boolean getPaginate() {
+        return this.trips.size() > 10;
+    }
+
+    /**
+     * Sort trips by date
+     */
+    public void sortByDate() {
+        setUsernameOrder(SortOrder.unsorted);
+        setDistanceOrder(SortOrder.unsorted);
+        setDurationOrder(SortOrder.unsorted);
+        setAvgSpeedOrder(SortOrder.unsorted);
+        setMaxSpeedOrder(SortOrder.unsorted);
+        setDatesOrder(this.datesOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
+     * Sort trips by username
+     */
+    public void sortByUsername() {
+        setDatesOrder(SortOrder.unsorted);
+        setDistanceOrder(SortOrder.unsorted);
+        setDurationOrder(SortOrder.unsorted);
+        setAvgSpeedOrder(SortOrder.unsorted);
+        setMaxSpeedOrder(SortOrder.unsorted);
+        setUsernameOrder(usernameOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
+     * sort trips by average Speed
+     */
+    public void sortByAvgSpeed() {
+        setMaxSpeedOrder(SortOrder.unsorted);
+        setUsernameOrder(SortOrder.unsorted);
+        setDistanceOrder(SortOrder.unsorted);
+        setDurationOrder(SortOrder.unsorted);
+        setDatesOrder(SortOrder.unsorted);
+        setAvgSpeedOrder(avgSpeedOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
+     * Sort trips by max speed
+     */
+    public void sortByMaxSpeed() {
+        setAvgSpeedOrder(SortOrder.unsorted);
+        setUsernameOrder(SortOrder.unsorted);
+        setDistanceOrder(SortOrder.unsorted);
+        setDurationOrder(SortOrder.unsorted);
+        setDatesOrder(SortOrder.unsorted);
+        setMaxSpeedOrder(maxSpeedOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
+     * Sort trips by duration
+     */
+    public void sortByDuration() {
+        setUsernameOrder(SortOrder.unsorted);
+        setDistanceOrder(SortOrder.unsorted);
+        setAvgSpeedOrder(SortOrder.unsorted);
+        setMaxSpeedOrder(SortOrder.unsorted);
+        setDatesOrder(SortOrder.unsorted);
+        setDurationOrder(durationOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
+     * sort trips by distance
+     */
+    public void sortByDistance() {
+        setUsernameOrder(SortOrder.unsorted);
+        setDurationOrder(SortOrder.unsorted);
+        setAvgSpeedOrder(SortOrder.unsorted);
+        setMaxSpeedOrder(SortOrder.unsorted);
+        setDatesOrder(SortOrder.unsorted);
+        setDistanceOrder(distanceOrder.equals(SortOrder.ascending)
+                ? SortOrder.descending : SortOrder.ascending);
+    }
+
+    /**
      * @return the trips
      */
-    public List<Trip> getTrips() {
+    public CustomList<Trip> getTrips() {
         return trips;
     }
 
     /**
      * @param trips the trips to set
      */
-    public void setTrips(List<Trip> trips) {
+    public void setTrips(CustomList<Trip> trips) {
         this.trips = trips;
+    }
+
+    /**
+     * @return the usernameOrder
+     */
+    public SortOrder getUsernameOrder() {
+        return usernameOrder;
+    }
+
+    /**
+     * @param usernameOrder the usernameOrder to set
+     */
+    public void setUsernameOrder(SortOrder usernameOrder) {
+        this.usernameOrder = usernameOrder;
+    }
+
+    /**
+     * @return the datesOrder
+     */
+    public SortOrder getDatesOrder() {
+        return datesOrder;
+    }
+
+    /**
+     * @param datesOrder the datesOrder to set
+     */
+    public void setDatesOrder(SortOrder datesOrder) {
+        this.datesOrder = datesOrder;
+    }
+
+    /**
+     * @return the distanceOrder
+     */
+    public SortOrder getDistanceOrder() {
+        return distanceOrder;
+    }
+
+    /**
+     * @param distanceOrder the distanceOrder to set
+     */
+    public void setDistanceOrder(SortOrder distanceOrder) {
+        this.distanceOrder = distanceOrder;
+    }
+
+    /**
+     * @return the durationOrder
+     */
+    public SortOrder getDurationOrder() {
+        return durationOrder;
+    }
+
+    /**
+     * @param durationOrder the durationOrder to set
+     */
+    public void setDurationOrder(SortOrder durationOrder) {
+        this.durationOrder = durationOrder;
+    }
+
+    /**
+     * @return the avgSpeedOrder
+     */
+    public SortOrder getAvgSpeedOrder() {
+        return avgSpeedOrder;
+    }
+
+    /**
+     * @param avgSpeedOrder the avgSpeedOrder to set
+     */
+    public void setAvgSpeedOrder(SortOrder avgSpeedOrder) {
+        this.avgSpeedOrder = avgSpeedOrder;
+    }
+
+    /**
+     * @return the maxSpeedOrder
+     */
+    public SortOrder getMaxSpeedOrder() {
+        return maxSpeedOrder;
+    }
+
+    /**
+     * @param maxSpeedOrder the maxSpeedOrder to set
+     */
+    public void setMaxSpeedOrder(SortOrder maxSpeedOrder) {
+        this.maxSpeedOrder = maxSpeedOrder;
     }
 }

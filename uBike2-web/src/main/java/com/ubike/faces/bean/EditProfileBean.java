@@ -23,7 +23,6 @@ package com.ubike.faces.bean;
 import com.ubike.model.UbikeUser;
 import com.ubike.services.UserServiceLocal;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -47,9 +46,8 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @ManagedBean(name = "editProfileBean")
 @RequestScoped
-public class EditProfileBean {
+public class EditProfileBean extends AbstractBean {
 
-    private static final Logger logger = Logger.getLogger(EditProfileBean.class.getName());
     @NotBlank
     private String firstname;
     @NotBlank

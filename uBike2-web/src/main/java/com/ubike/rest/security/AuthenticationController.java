@@ -24,8 +24,6 @@ import com.ubike.faces.bean.BaseBean;
 import com.ubike.model.Account;
 import com.ubike.model.UbikeUser;
 import com.ubike.services.AccountServiceLocal;
-import com.ubike.services.TripManagerLocal;
-import com.ubike.services.UserManagerLocal;
 import java.io.IOException;
 import javax.ejb.EJB;
 import org.springframework.security.Authentication;
@@ -74,11 +72,7 @@ public final class AuthenticationController {
     private String password;
     private boolean remember;
     @EJB
-    private UserManagerLocal uml;
-    @EJB
     private AccountServiceLocal accountService;
-    @EJB
-    private TripManagerLocal tml;
     // injected properties
     @ManagedProperty(value = "#{authenticationManager}")
     private AuthenticationManager authenticationManager;
@@ -117,8 +111,6 @@ public final class AuthenticationController {
 
             RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
             attrs.setAttribute("user", user, RequestAttributes.SCOPE_SESSION);
-            attrs.setAttribute("uml", getUml(), RequestAttributes.SCOPE_SESSION);
-            attrs.setAttribute("tml", getTml(), RequestAttributes.SCOPE_SESSION);
             HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
             response.sendRedirect(exctx.getRequestContextPath() + "/resources/users/" + user.getId());
 
@@ -137,32 +129,32 @@ public final class AuthenticationController {
      *
      * @param e The action event of the logout action
      */
-    public void logout(ActionEvent e) throws IOException {
-        logout();
+    public String logout(ActionEvent e) throws IOException {
+        return logout();
     }
 
     /**
      * 
      * @throws IOException
      */
-    public void logout() throws IOException {
+    public String logout() throws IOException {
         final HttpServletRequest request = getRequest();
-        request.getSession(false).removeAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
+        UbikeUser u = (UbikeUser) BaseBean.getSessionAttribute("user");
+        request.getSession().removeAttribute(HttpSessionContextIntegrationFilter.SPRING_SECURITY_CONTEXT_KEY);
 
         // simulate the SecurityContextLogoutHandler
         SecurityContextHolder.clearContext();
-        request.getSession(false).invalidate();
-        ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
-
-        UbikeUser u = (UbikeUser) BaseBean.getSessionAttribute("user");
+        request.getSession().invalidate();
         if (u != null) {
-            getUml().logout(u.getAccount().getId());
+            Account account = u.getAccount();
+            account.setLoggedIn(false);
+            this.accountService.update(account);
         }
+
         BaseBean.removeSessionAttribute("user");
         BaseBean.removeSessionAttribute("client");
 
-        HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
-        response.sendRedirect(exctx.getRequestContextPath());
+        return BaseBean.LOGIN_REQUIRED;
     }
 
     /**
@@ -218,20 +210,6 @@ public final class AuthenticationController {
     }
 
     /**
-     * @return the User Manager <tt>uml</tt>
-     */
-    public UserManagerLocal getUml() {
-        return uml;
-    }
-
-    /**
-     * @param uml the uml to set
-     */
-    public void setUml(UserManagerLocal uml) {
-        this.uml = uml;
-    }
-
-    /**
      * @return the remember
      */
     public boolean isRemember() {
@@ -243,19 +221,5 @@ public final class AuthenticationController {
      */
     public void setRemember(boolean remember) {
         this.remember = remember;
-    }
-
-    /**
-     * @return the tml
-     */
-    public TripManagerLocal getTml() {
-        return tml;
-    }
-
-    /**
-     * @param tml the tml to set
-     */
-    public void setTml(TripManagerLocal tml) {
-        this.tml = tml;
     }
 }

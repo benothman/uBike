@@ -32,7 +32,7 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean(name = "gmBean")
 @RequestScoped
-public class TripMapBean {
+public class TripMapBean extends AbstractBean {
 
     private int zoom = 11;
     // this key is used for url : "http://193.134.218.17"

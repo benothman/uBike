@@ -22,6 +22,7 @@ package com.ubike.rest.service;
 
 import com.sun.jersey.api.NotFoundException;
 import com.ubike.model.UbikeUser;
+import com.ubike.model.Statistic;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -41,18 +42,13 @@ import com.ubike.model.Account;
 import com.ubike.model.MemberShip;
 import com.ubike.model.PrivacyPreferences;
 import com.ubike.model.Trip;
-import com.ubike.model.Statistic;
 import com.ubike.rest.converter.UbikeUserConverter;
 import com.ubike.services.MemberShipServiceLocal;
 import com.ubike.util.StatisticManager;
 import com.ubike.services.TripManagerLocal;
 import com.ubike.services.UserServiceLocal;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -83,6 +79,8 @@ public class UbikeUserResource {
     private UserServiceLocal userService;
     @EJB
     private MemberShipServiceLocal memberShipService;
+    @EJB
+    private TripManagerLocal tml;
 
     /**
      * Creates a new instance of UbikeUserResource
@@ -218,8 +216,8 @@ public class UbikeUserResource {
      * @return the updated entity
      */
     protected UbikeUser updateEntity(UbikeUser entity, UbikeUser newEntity) {
-        Collection<Trip> trips = entity.getTrips();
-        Collection<Trip> tripsNew = newEntity.getTrips();
+        List<Trip> trips = entity.getTrips();
+        List<Trip> tripsNew = newEntity.getTrips();
         Account account = entity.getAccount();
         Account accountNew = newEntity.getAccount();
         List<MemberShip> memberShips = entity.getMemberShips();
@@ -380,24 +378,23 @@ public class UbikeUserResource {
      */
     private void extractStatistics(UbikeUser user) {
 
-        TripManagerLocal tml = (TripManagerLocal) BaseBean.getSessionAttribute("tml");
         StatisticManager statMan = new StatisticManager(tml);
 
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
-        Collection<Statistic> today = statMan.getDailyStat(user, date);
-        Collection<Statistic> thisWeek = statMan.getWeeklyStat(user, date);
-        Collection<Statistic> thisMonth = statMan.getMonthlyStat(user, date);
-        Collection<Statistic> thisYear = statMan.getYearlyStat(user, date);
-        Collection<Statistic> general = statMan.getGeneralStat(user);
+        List<Statistic> today = statMan.getDailyStat(user, date);
+        List<Statistic> thisWeek = statMan.getWeeklyStat(user, date);
+        List<Statistic> thisMonth = statMan.getMonthlyStat(user, date);
+        List<Statistic> thisYear = statMan.getYearlyStat(user, date);
+        List<Statistic> general = statMan.getGeneralStat(user);
         cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR) - 1);
-        Collection<Statistic> lastWeek = statMan.getWeeklyStat(user, cal.getTime());
+        List<Statistic> lastWeek = statMan.getWeeklyStat(user, cal.getTime());
         cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR) + 1);
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - 1);
-        Collection<Statistic> lastMonth = statMan.getMonthlyStat(user, cal.getTime());
+        List<Statistic> lastMonth = statMan.getMonthlyStat(user, cal.getTime());
         cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) + 1);
         cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) - 1);
-        Collection<Statistic> lastYear = statMan.getYearlyStat(user, cal.getTime());
+        List<Statistic> lastYear = statMan.getYearlyStat(user, cal.getTime());
         BaseBean.setSessionAttribute("today", today);
         BaseBean.setSessionAttribute("thisWeek", thisWeek);
         BaseBean.setSessionAttribute("lastWeek", lastWeek);
@@ -442,14 +439,14 @@ public class UbikeUserResource {
             Long id = this.parent.getId();
             System.out.println("MemberShipServiceLocal -> " + memberShipService);
             List<MemberShip> memberShips = this.memberShipService.getFriends(id);
-            Map<Long, UbikeUser> users = new HashMap<Long, UbikeUser>();
+            java.util.Map<Long, UbikeUser> users = new java.util.HashMap<Long, UbikeUser>();
             for (MemberShip m : memberShips) {
                 users.put(m.getMember().getId(), m.getMember());
             }
 
             users.remove(id);
 
-            return new ArrayList<UbikeUser>(users.values());
+            return new java.util.ArrayList<UbikeUser>(users.values());
         }
     }
 
@@ -504,8 +501,7 @@ public class UbikeUserResource {
         }
 
         @Override
-        protected List<MemberShip> getEntities(int start, int max,
-                String query) {
+        protected List<MemberShip> getEntities(int start, int max) {
             List<MemberShip> result = new java.util.ArrayList<MemberShip>();
             int index = 0;
             for (MemberShip e : parent.getMemberShips()) {

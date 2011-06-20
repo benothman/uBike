@@ -44,7 +44,7 @@ import org.springframework.security.providers.encoding.ShaPasswordEncoder;
  */
 @ManagedBean(name = "signupBean")
 @RequestScoped
-public class SignupBean {
+public class SignupBean extends AbstractBean {
 
     @NotBlank
     private String firstname;
@@ -72,7 +72,7 @@ public class SignupBean {
     private AccountServiceLocal accountService;
 
     /**
-     * 
+     * Create a new instance of {@code SignupBean}
      */
     public SignupBean() {
         super();
@@ -83,9 +83,7 @@ public class SignupBean {
      * @return
      */
     public String signup() {
-
         FacesContext fc = FacesContext.getCurrentInstance();
-
         if (!this.password.equals(this.confirmPassword)) {
             fc.addMessage("signup:signup_error", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Please verify your password !", "Please verify your password!"));
@@ -106,7 +104,7 @@ public class SignupBean {
             return BaseBean.FAILURE;
         }
 
-        return BaseBean.LOGIN;
+        return BaseBean.LOGIN_REQUIRED;
     }
 
     /**

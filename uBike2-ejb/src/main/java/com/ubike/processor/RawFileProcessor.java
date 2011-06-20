@@ -26,10 +26,12 @@ import com.ubike.model.TrackPoint;
 import com.ubike.model.Trip;
 import com.ubike.util.UbikeEntity;
 import com.ubike.model.UbikeUser;
+import com.ubike.model.UserProfile;
 import com.ubike.services.GPSFileServiceLocal;
 import com.ubike.services.StatisticServiceLocal;
 import com.ubike.services.TripManagerLocal;
 import com.ubike.services.TripServiceLocal;
+import com.ubike.services.UserServiceLocal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -58,6 +60,7 @@ public class RawFileProcessor implements GpsFileProcessor {
     private UbikeUser user;
     private Calendar cal = Calendar.getInstance();
     private StatisticManager statManager;
+    private UserServiceLocal userService;
     private TripServiceLocal tripService;
     private GPSFileServiceLocal gpsFileService;
     private StatisticServiceLocal statisticService;
@@ -204,22 +207,21 @@ public class RawFileProcessor implements GpsFileProcessor {
             totalDisatance += tracks.isEmpty() ? 0.0 : trackPoint.distanceTo(tracks.getLast());
             tracks.addLast(trackPoint);
         }
-        
+
         // adding Trip to the database
         Trip trip = initializeTrip(tracks);
         if (trip != null) {
             logger.log(Level.INFO, "Add trip to datastore");
             trip.setOwner(user);
             this.tripService.create(trip);
-            double avg = (user.getUserProfile().getAvgSpeed() * user.getTrips().size() + trip.getAvgSpeed()) / (user.getTrips().size() + 1);
-            user.getTrips().add(trip);
-            user.getUserProfile().setAvgSpeed(getDoubleValue(avg));
-            user.getUserProfile().setTotalDistance(getDoubleValue(user.getUserProfile().getTotalDistance() + trip.getDistance()));
-            user.getUserProfile().setTotalDuration(user.getUserProfile().getTotalDuration() + trip.getDuration());
+            // computing general statistics
+            this.setUserStats(user, trip);
 
             RawGpsFile gpsFile = new RawGpsFile(inputFile.getName(), inputFile.length(),
-                    java.util.Calendar.getInstance().getTime());
+                    new Date(System.currentTimeMillis()));
             this.gpsFileService.create(gpsFile);
+            user.getTrips().add(trip);
+            this.userService.update(user);
 
             /*
             updateEntityStatistics(user, trip);
@@ -231,6 +233,50 @@ public class RawFileProcessor implements GpsFileProcessor {
         } else {
             logger.log(Level.INFO, "The trip is null");
         }
+    }
+
+    /**
+     * Computing the general statistics for the user with the new trip
+     * 
+     * @param user
+     * @param trip 
+     */
+    private void setUserStats(UbikeUser user, Trip trip) {
+        UserProfile userProfile = user.getUserProfile();
+
+        /* Setting speed values (min, avg and max) */
+        double avg = userProfile.getAvgSpeed();
+        avg = (avg == 0 ? trip.getAvgSpeed() : (avg + trip.getAvgSpeed()) / 2);
+        userProfile.setAvgSpeed(getDoubleValue(avg));
+        double max = Math.max(userProfile.getMaxSpeed(), trip.getMaxSpeed());
+        userProfile.setMaxSpeed(getDoubleValue(max));
+        double min = userProfile.getMinSpeed();
+        min = (min == 0 ? trip.getAvgSpeed() : Math.min(min, trip.getAvgSpeed()));
+        userProfile.setMinSpeed(getDoubleValue(min));
+
+        /* Setting distance values (min, avg and max) */
+        userProfile.setTotalDistance(getDoubleValue(userProfile.getTotalDistance() + trip.getDistance()));
+        max = Math.max(userProfile.getMaxDistance(), trip.getDistance());
+        userProfile.setMaxDistance(getDoubleValue(max));
+        min = userProfile.getMinDistance();
+        min = (min == 0 ? trip.getDistance() : Math.min(min, trip.getDistance()));
+        userProfile.setMinDistance(getDoubleValue(min));
+        avg = userProfile.getAvgDistance();
+        avg = (avg == 0 ? trip.getDistance() : (avg + trip.getDistance()) / 2);
+        userProfile.setAvgDistance(getDoubleValue(avg));
+
+        /* Setting duration values (min, avg and max) */
+        // Setting total duration
+        userProfile.setTotalDuration(userProfile.getTotalDuration() + trip.getDuration());
+        int avgD = userProfile.getAvgDuration();
+        avgD = (avgD == 0 ? trip.getDuration() : (avgD + trip.getDuration()) / 2);
+        userProfile.setAvgDuration(avgD);
+        // Setting the maximal duration
+        userProfile.setMaxDuration(Math.max(userProfile.getMaxDuration(), trip.getDuration()));
+        // Setting the minimal duration
+        int minD = userProfile.getMinDuration();
+        minD = (minD == 0 ? trip.getDuration() : Math.min(minD, trip.getDuration()));
+        userProfile.setMinDuration(minD);
     }
 
     /**
@@ -266,6 +312,16 @@ public class RawFileProcessor implements GpsFileProcessor {
         }
 
         return null;
+    }
+
+    /**
+     * 
+     * @param user
+     * @param trip 
+     */
+    public void updateUserRankings(UbikeUser user, Trip trip) {
+        UbikeUser tmp = this.userService.findWithMemberShips(user.getId());
+        // TODO
     }
 
     /**
@@ -365,5 +421,19 @@ public class RawFileProcessor implements GpsFileProcessor {
      */
     public void setStatisticService(StatisticServiceLocal statisticService) {
         this.statisticService = statisticService;
+    }
+
+    /**
+     * @return the userService
+     */
+    public UserServiceLocal getUserService() {
+        return userService;
+    }
+
+    /**
+     * @param userService the userService to set
+     */
+    public void setUserService(UserServiceLocal userService) {
+        this.userService = userService;
     }
 }

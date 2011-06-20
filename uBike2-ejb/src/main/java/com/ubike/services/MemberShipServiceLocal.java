@@ -36,6 +36,28 @@ import javax.ejb.Local;
 public interface MemberShipServiceLocal extends AbstractService<MemberShip> {
 
     /**
+     * 
+     * @param userId
+     * @return 
+     */
+    public List<MemberShip> getUserMemberShips(Long userId);
+
+    /**
+     * 
+     * @param groupId
+     * @return 
+     */
+    public List<MemberShip> getGroupMemberShips(Long groupId);
+
+    /**
+     * 
+     * @param userId
+     * @param groupId
+     * @return 
+     */
+    public MemberShip getMemberShip(Long userId, Long groupId);
+
+    /**
      * Count the number of active members of a given group
      * 
      * @param groupId the group id

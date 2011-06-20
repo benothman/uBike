@@ -40,7 +40,7 @@ import javax.persistence.Transient;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
-@Table(name = "USER_PROFILE")
+@Table(name = "USER_PROFILES")
 public class UserProfile implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,10 +51,26 @@ public class UserProfile implements Serializable {
     private Long id;
     @Column(name = "TOTAL_DISTANCE")
     private double totalDistance;
+    @Column(name = "MIN_DISTANCE")
+    private double minDistance;
+    @Column(name = "MAX_DISTANCE")
+    private double maxDistance;
+    @Column(name = "AVG_DISTANCE")
+    private double avgDistance;
     @Column(name = "AVG_SPEED")
     private double avgSpeed;
+    @Column(name = "MIN_SPEED")
+    private double minSpeed;
+    @Column(name = "MAX_SPEED")
+    private double maxSpeed;
     @Column(name = "TOTAL_DURATION")
     private int totalDuration;
+    @Column(name = "MIN_DURATION")
+    private int minDuration;
+    @Column(name = "MAX_DURATION")
+    private int maxDuration;
+    @Column(name = "AVG_DURATION")
+    private int avgDuration;
 
     /**
      * Create a new instance of {@code UserProfile}
@@ -124,7 +140,134 @@ public class UserProfile implements Serializable {
     }
 
     @Transient
-    public String getFormatDuration() {
-        return Util.formatDuration(totalDuration);
+    public String getTotalDurationAsString() {
+        return Util.formatDuration(this.totalDuration);
+    }
+
+    @Transient
+    public String getMaxDurationAsString() {
+        return Util.formatDuration(this.maxDuration);
+    }
+
+    @Transient
+    public String getMinDurationAsString() {
+        return Util.formatDuration(this.minDuration);
+    }
+
+    @Transient
+    public String getAvgDurationAsString() {
+        return Util.formatDuration(this.avgDuration);
+    }
+
+    /**
+     * @return the minDistance
+     */
+    public double getMinDistance() {
+        return minDistance;
+    }
+
+    /**
+     * @param minDistance the minDistance to set
+     */
+    public void setMinDistance(double minDistance) {
+        this.minDistance = minDistance;
+    }
+
+    /**
+     * @return the maxDistance
+     */
+    public double getMaxDistance() {
+        return maxDistance;
+    }
+
+    /**
+     * @param maxDistance the maxDistance to set
+     */
+    public void setMaxDistance(double maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    /**
+     * @return the minDuration
+     */
+    public int getMinDuration() {
+        return minDuration;
+    }
+
+    /**
+     * @param minDuration the minDuration to set
+     */
+    public void setMinDuration(int minDuration) {
+        this.minDuration = minDuration;
+    }
+
+    /**
+     * @return the maxDuration
+     */
+    public int getMaxDuration() {
+        return maxDuration;
+    }
+
+    /**
+     * @param maxDuration the maxDuration to set
+     */
+    public void setMaxDuration(int maxDuration) {
+        this.maxDuration = maxDuration;
+    }
+
+    /**
+     * @return the minSpeed
+     */
+    public double getMinSpeed() {
+        return minSpeed;
+    }
+
+    /**
+     * @param minSpeed the minSpeed to set
+     */
+    public void setMinSpeed(double minSpeed) {
+        this.minSpeed = minSpeed;
+    }
+
+    /**
+     * @return the maxSpeed
+     */
+    public double getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    /**
+     * @param maxSpeed the maxSpeed to set
+     */
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    /**
+     * @return the avgDistance
+     */
+    public double getAvgDistance() {
+        return avgDistance;
+    }
+
+    /**
+     * @param avgDistance the avgDistance to set
+     */
+    public void setAvgDistance(double avgDistance) {
+        this.avgDistance = avgDistance;
+    }
+
+    /**
+     * @return the avgDuration
+     */
+    public int getAvgDuration() {
+        return avgDuration;
+    }
+
+    /**
+     * @param avgDuration the avgDuration to set
+     */
+    public void setAvgDuration(int avgDuration) {
+        this.avgDuration = avgDuration;
     }
 }

@@ -56,8 +56,8 @@ public class Authority implements Serializable {
 
     public static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional=false)
     @Column(name = "ID")
     private Long id;
     @Index(name = "username_index")

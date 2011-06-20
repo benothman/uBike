@@ -29,7 +29,7 @@ import com.ubike.services.TripManagerLocal;
 import com.ubike.util.Metric;
 import com.ubike.util.StatisticType;
 import java.util.LinkedList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -98,9 +98,9 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getUserTrips(java.lang.Long)
      */
     @Override
-    public Collection<Trip> getUserTrips(long userId) {
+    public List<Trip> getUserTrips(long userId) {
         try {
-            return (Collection<Trip>) manager.createNamedQuery("Trip.getUserTrips").setParameter(
+            return (List<Trip>) manager.createNamedQuery("Trip.getUserTrips").setParameter(
                     "ownerId", userId).getResultList();
         } catch (Exception exp) {
         }
@@ -112,9 +112,9 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getUserTripsByDate(java.lang.Long)
      */
     @Override
-    public Collection<Trip> getUserTripsByDate(long userId, Date sDate, Date eDate) {
+    public List<Trip> getUserTripsByDate(long userId, Date sDate, Date eDate) {
         try {
-            return (Collection<Trip>) manager.createNamedQuery("Trip.getUserTripByDate").setParameter(
+            return (List<Trip>) manager.createNamedQuery("Trip.getUserTripByDate").setParameter(
                     "ownerId", userId).setParameter("sDate", sDate).setParameter("eDate", eDate).getResultList();
         } catch (Exception exp) {
         }
@@ -126,9 +126,9 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getTripSegments(java.lang.Long)
      */
     @Override
-    public Collection<TripSegment> getTripSegments(long tripId) {
+    public List<TripSegment> getTripSegments(long tripId) {
         try {
-            return (Collection<TripSegment>) manager.createNamedQuery(
+            return (List<TripSegment>) manager.createNamedQuery(
                     "TripSegment.getByTrip").setParameter(
                     "tripId", tripId).getResultList();
         } catch (Exception exp) {
@@ -162,7 +162,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getStatByType(com.ubike.util.StatisticType)
      */
     @Override
-    public Collection<Statistic> getStatByType(StatisticType type) {
+    public List<Statistic> getStatByType(StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getByType").setParameter("param", type).getResultList();
         } catch (Exception exp) {
@@ -174,7 +174,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getStatByMetric(com.ubike.util.Metric)
      */
     @Override
-    public Collection<Statistic> getStatByMetric(Metric metric) {
+    public List<Statistic> getStatByMetric(Metric metric) {
         try {
             return manager.createNamedQuery("Statistic.getByMetric").setParameter("param", metric).getResultList();
         } catch (Exception exp) {
@@ -185,7 +185,8 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatByInterval(java.util.Date, java.util.Date)
      */
-    public Collection<Statistic> getStatByInterval(Date start, Date end) {
+    @Override
+    public List<Statistic> getStatByInterval(Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getByInterval").
                     setParameter("start", start).setParameter("end", end).getResultList();
@@ -198,7 +199,8 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatByInterval(java.lang.Long,java.util.Date, java.util.Date)
      */
-    public Collection<Statistic> getEntityStatByInterval(long entityId, Date start, Date end) {
+    @Override
+    public List<Statistic> getEntityStatByInterval(long entityId, Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByInterval").setParameter("entityId", entityId).
                     setParameter("start", start).setParameter("end", end).getResultList();
@@ -211,7 +213,8 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatAfterDate(java.util.Date)
      */
-    public Collection<Statistic> getStatAfterDate(Date date) {
+    @Override
+    public List<Statistic> getStatAfterDate(Date date) {
         try {
             return manager.createNamedQuery("Statistic.getAfter").setParameter("start", date).getResultList();
         } catch (Exception exp) {
@@ -222,7 +225,8 @@ public class TripManagerBean implements TripManagerLocal {
     /* (non-Javadoc)
      * @see com.ubike.services.TripManagerLocal#getStatBeforDate(java.util.Date)
      */
-    public Collection<Statistic> getStatBeforDate(Date date) {
+    @Override
+    public List<Statistic> getStatBeforDate(Date date) {
         try {
             return manager.createNamedQuery("Statistic.getBefore").setParameter("end", date).getResultList();
         } catch (Exception exp) {
@@ -235,7 +239,7 @@ public class TripManagerBean implements TripManagerLocal {
      *          com.ubike.util.StatisticType,java.util.Date,java.util.Date)
      */
     @Override
-    public Collection<Statistic> getStatByData(Metric metric, StatisticType type, Date start, Date end) {
+    public List<Statistic> getStatByData(Metric metric, StatisticType type, Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getByData").setParameter("type", type).
                     setParameter("metric", metric).setParameter("start", start).
@@ -249,7 +253,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStat(java.lang.Long)
      */
     @Override
-    public Collection<Statistic> getEntityStat(long entityId) {
+    public List<Statistic> getEntityStat(long entityId) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStat").setParameter("entityId", entityId).getResultList();
         } catch (Exception exp) {
@@ -262,7 +266,7 @@ public class TripManagerBean implements TripManagerLocal {
      *          com.ubike.util.StatisticType,java.util.Date,java.util.Date)
      */
     @Override
-    public Collection<Statistic> getEntityStatByIntervalAndType(long entityId, StatisticType type, Date start, Date end) {
+    public List<Statistic> getEntityStatByIntervalAndType(long entityId, StatisticType type, Date start, Date end) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByIntervalAndType").
                     setParameter("entityId", entityId).setParameter("type", type).setParameter("start", start).
@@ -277,7 +281,7 @@ public class TripManagerBean implements TripManagerLocal {
      *          com.ubike.util.StatisticType,java.util.Date)
      */
     @Override
-    public Collection<Statistic> getEntityStatAfterByType(long entityId, StatisticType type, Date start) {
+    public List<Statistic> getEntityStatAfterByType(long entityId, StatisticType type, Date start) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatAfterByType").
                     setParameter("entityId", entityId).setParameter("type", type).
@@ -291,7 +295,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStatByType(java.lang.Long)
      */
     @Override
-    public Collection<Statistic> getEntityStatByType(long entityId, StatisticType type) {
+    public List<Statistic> getEntityStatByType(long entityId, StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByType").
                     setParameter("entityId", entityId).setParameter("type", type).getResultList();
@@ -304,7 +308,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStatByMetric(java.lang.Long)
      */
     @Override
-    public Collection<Statistic> getEntityStatByMetric(long entityId, Metric metric) {
+    public List<Statistic> getEntityStatByMetric(long entityId, Metric metric) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByMetric").
                     setParameter("entityId", entityId).setParameter("metric", metric).getResultList();
@@ -317,7 +321,7 @@ public class TripManagerBean implements TripManagerLocal {
      * @see com.ubike.services.TripManagerLocal#getEntityStatByMetricAndType(java.lang.Long)
      */
     @Override
-    public Collection<Statistic> getEntityStatByMetricAndType(long entityId, Metric metric, StatisticType type) {
+    public List<Statistic> getEntityStatByMetricAndType(long entityId, Metric metric, StatisticType type) {
         try {
             return manager.createNamedQuery("Statistic.getEntityStatByMetricAndType").
                     setParameter("entityId", entityId).setParameter("metric", metric).

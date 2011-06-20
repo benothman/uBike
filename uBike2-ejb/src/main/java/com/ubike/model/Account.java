@@ -33,6 +33,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Basic;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,9 +52,7 @@ import javax.persistence.UniqueConstraint;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
-@Table(name = "ACCOUNTS", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"USERNAME"})
-})
+@Table(name = "ACCOUNTS")
 @NamedQueries({
     @NamedQuery(name = "Account.getAll", query = "SELECT o FROM Account o"),
     @NamedQuery(name = "Account.getByUsername",
@@ -65,13 +64,14 @@ public class Account implements Serializable {
 
     public static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
-    @Column(name = "USERNAME", length = 20, unique = true, nullable = false, updatable=false)
+    @Column(name = "USERNAME", length = 20, unique = true, nullable = false, updatable = false)
     private String username;
     @Column(name = "PASSWORD", nullable = false)
-    private String keyPass;
+    private String password;
     @Column(name = "LOGGEDIN")
     private boolean loggedIn;
     @Column(name = "ENABLED")
@@ -103,7 +103,7 @@ public class Account implements Serializable {
         this.username = userName;
         this.owner = owner;
         this.enabled = true;
-        this.owner.setAccount(this);
+        setOwner(owner);
     }
 
     /**
@@ -137,15 +137,15 @@ public class Account implements Serializable {
     /**
      * @return the password
      */
-    public String getKeyPass() {
-        return this.keyPass;
+    public String getPassword() {
+        return this.password;
     }
 
     /**
      * @param keyPass
      */
-    public void setKeyPass(String keyPass) {
-        this.keyPass = keyPass;
+    public void setPassword(String keyPass) {
+        this.password = keyPass;
     }
 
     /**
@@ -188,6 +188,9 @@ public class Account implements Serializable {
      */
     public void setOwner(UbikeUser owner) {
         this.owner = owner;
+        if (owner != null) {
+            this.owner.setAccount(this);
+        }
     }
 
     /**

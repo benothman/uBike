@@ -8,22 +8,27 @@
                 xmlns:ubike="http://www.ubike.com/faces"
                 xmlns:rich="http://richfaces.org/rich">
 
+    <ui:insert name="right">
+    </ui:insert>
+
     <ui:define name="content">
         <ubike:panel header="uBike File upload">
-            <br/>
-            <br/>
-            <a4j:status>
-                <f:facet name="start">
-                    <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
-                </f:facet>
-            </a4j:status>
             <h:form>
+                <br/>
+                <a4j:status>
+                    <f:facet name="start">
+                        <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
+                    </f:facet>
+                </a4j:status>
+
                 <rich:fileUpload fileUploadListener="#{fileUploadBean.upload}" style="margin: auto;"
                                  id="upload"  acceptedTypes="nmea, txt, xml">
                     <a4j:ajax event="uploadcomplete" execute="@none" render="info" />
                 </rich:fileUpload>
             </h:form>
         </ubike:panel>
+        <br />
+        <br />
         <br />
         <br />
         <br />

@@ -11,8 +11,8 @@ import com.ubike.model.Trip;
 import com.ubike.model.TripSegment;
 import com.ubike.util.Metric;
 import com.ubike.util.StatisticType;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 import javax.persistence.EntityManager;
 
@@ -53,7 +53,7 @@ public interface TripManagerLocal {
      * @param userId
      * @return
      */
-    public Collection<Trip> getUserTrips(long userId);
+    public List<Trip> getUserTrips(long userId);
 
     /**
      * 
@@ -62,13 +62,13 @@ public interface TripManagerLocal {
      * @param eDate
      * @return
      */
-    public Collection<Trip> getUserTripsByDate(long userId, Date sDate, Date eDate);
+    public List<Trip> getUserTripsByDate(long userId, Date sDate, Date eDate);
 
     /**
      * @param tripId
      * @return
      */
-    public Collection<TripSegment> getTripSegments(long tripId);
+    public List<TripSegment> getTripSegments(long tripId);
 
     /**
      * @param fileName
@@ -88,14 +88,14 @@ public interface TripManagerLocal {
      * @param type
      * @return
      */
-    public Collection<Statistic> getStatByType(StatisticType type);
+    public List<Statistic> getStatByType(StatisticType type);
 
     /**
      * 
      * @param metric
      * @return
      */
-    public Collection<Statistic> getStatByMetric(Metric metric);
+    public List<Statistic> getStatByMetric(Metric metric);
 
     /**
      * 
@@ -103,7 +103,7 @@ public interface TripManagerLocal {
      * @param end
      * @return
      */
-    public Collection<Statistic> getStatByInterval(Date start, Date end);
+    public List<Statistic> getStatByInterval(Date start, Date end);
 
     /**
      * 
@@ -113,7 +113,7 @@ public interface TripManagerLocal {
      * @param end
      * @return
      */
-    public Collection<Statistic> getEntityStatByIntervalAndType(long entityId, StatisticType type, Date start, Date end);
+    public List<Statistic> getEntityStatByIntervalAndType(long entityId, StatisticType type, Date start, Date end);
 
     /**
      *
@@ -122,7 +122,7 @@ public interface TripManagerLocal {
      * @param start
      * @return
      */
-    public Collection<Statistic> getEntityStatAfterByType(long entityId, StatisticType type, Date start);
+    public List<Statistic> getEntityStatAfterByType(long entityId, StatisticType type, Date start);
 
     /**
      *
@@ -131,21 +131,21 @@ public interface TripManagerLocal {
      * @param end
      * @return
      */
-    public Collection<Statistic> getEntityStatByInterval(long entityId, Date start, Date end);
+    public List<Statistic> getEntityStatByInterval(long entityId, Date start, Date end);
 
     /**
      *
      * @param date
      * @return
      */
-    public Collection<Statistic> getStatAfterDate(Date date);
+    public List<Statistic> getStatAfterDate(Date date);
 
     /**
      *
      * @param date
      * @return
      */
-    public Collection<Statistic> getStatBeforDate(Date date);
+    public List<Statistic> getStatBeforDate(Date date);
 
     /**
      * 
@@ -155,14 +155,14 @@ public interface TripManagerLocal {
      * @param end
      * @return
      */
-    public Collection<Statistic> getStatByData(Metric metric, StatisticType type, Date start, Date end);
+    public List<Statistic> getStatByData(Metric metric, StatisticType type, Date start, Date end);
 
     /**
      * 
      * @param entityId
      * @return
      */
-    public Collection<Statistic> getEntityStat(long entityId);
+    public List<Statistic> getEntityStat(long entityId);
 
     /**
      * 
@@ -170,7 +170,7 @@ public interface TripManagerLocal {
      * @param type
      * @return
      */
-    public Collection<Statistic> getEntityStatByType(long entityId, StatisticType type);
+    public List<Statistic> getEntityStatByType(long entityId, StatisticType type);
 
     /**
      *
@@ -178,7 +178,7 @@ public interface TripManagerLocal {
      * @param metric
      * @return
      */
-    public Collection<Statistic> getEntityStatByMetric(long entityId, Metric metric);
+    public List<Statistic> getEntityStatByMetric(long entityId, Metric metric);
 
     /**
      * 
@@ -186,7 +186,7 @@ public interface TripManagerLocal {
      * @param type
      * @return
      */
-    public Collection<Statistic> getEntityStatByMetricAndType(long entityId, Metric metric, StatisticType type);
+    public List<Statistic> getEntityStatByMetricAndType(long entityId, Metric metric, StatisticType type);
 
     /**
      * 

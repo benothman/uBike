@@ -21,16 +21,16 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.UbikeUser;
-import com.ubike.processor.RawFileProcessor;
-import com.ubike.services.GPSFileServiceLocal;
-import com.ubike.services.StatisticServiceLocal;
-import com.ubike.services.TripManagerLocal;
-import com.ubike.services.TripServiceLocal;
-import com.ubike.services.UserServiceLocal;
+import com.ubike.services.MessageServiceLocal;
+import com.ubike.services.jms.FileMessage;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -49,24 +49,17 @@ import org.richfaces.model.UploadedFile;
  */
 @ManagedBean(name = "fileUploadBean")
 @RequestScoped
-public class FileUploadBean {
+public class FileUploadBean extends AbstractBean {
 
     private int uploadsAvailable = 5;
     private boolean autoUpload = false;
     private boolean uploadCompleted = false;
     private boolean useFlash = true;
     private boolean uploadPanelOpen;
-    @EJB
-    private TripManagerLocal tripManager;
-    @EJB
-    private TripServiceLocal tripService;
-    @EJB
-    private GPSFileServiceLocal gpsFileService;
-    @EJB
-    private StatisticServiceLocal statisticService;
-    @EJB
-    private UserServiceLocal userService;
     private UbikeUser user;
+    private CustomList<UploadedItem> items;
+    @EJB
+    private MessageServiceLocal messageProducer;
 
     /**
      * Creates a new instance of {@code FileUploadBean}
@@ -79,7 +72,7 @@ public class FileUploadBean {
     protected void init() {
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         this.user = (UbikeUser) ctx.getSessionMap().get("user");
-        tripManager.setEntityManager(tripService.getEntityManager());
+        this.items = new CustomArrayList<UploadedItem>();
     }
 
     /**
@@ -93,29 +86,17 @@ public class FileUploadBean {
         try {
             final File my_file = save(item);
             if (my_file != null && my_file.exists()) {
-                //UbikeMessage message = new UbikeMessage(my_file.getName(), my_file.getPath());
-                //message.setUser(user);
-                //message.setTripManager(tripManager);
-                if (my_file.getName().endsWith(".xml")) {
-                    // starting a new Normalized file processor
-                    //message.setType(UbikeMessage.NORMALIZED_GPS_FILE);
-                    //NormalizedFileProcessor.getInstance(tripManager, user).process(new File(my_file.getPath()));
-                } else if (my_file.getName().matches(".+[\\.][tT][xX][tT]") || my_file.getName().matches(".+[\\.][nN][mM][eE][aA]")) {
-                    //message.setType(UbikeMessage.RAW_GPS_FILE);
-                    // starting a new Raw file processor
-                    
-                    UbikeUser u = userService.findWithTrips(user.getId());
-                    RawFileProcessor processor = RawFileProcessor.create(u);
-                    processor.setGpsFileService(gpsFileService);
-                    processor.setTripService(tripService);
-                    processor.setStatisticService(statisticService);
-                    processor.setTml(tripManager);
-
-                    processor.process(new File(my_file.getPath()));
-                }
-                //UbikeJmsProducer.getInstance().sendMessage(message);
+                UploadedItem uItem = new UploadedItem(my_file.getName(), my_file.length());
+                items.add(uItem);
+                FileMessage message = new FileMessage();
+                message.setFilename(my_file.getName());
+                message.setAbsolutePath(my_file.getAbsolutePath());
+                message.setUserId(user.getId());
+                messageProducer.sendObjectMessage(message);
             }
         } catch (Exception exp) {
+            logger.log(Level.SEVERE, "An error occurs while uploading file or "
+                    + "sending Asynchronous message", exp);
         }
     }
 
@@ -138,7 +119,7 @@ public class FileUploadBean {
         }
 
         // Create a temporary file placed in the default system temp folder
-        
+
         File file = File.createTempFile(saveName, extension);
 
         FileOutputStream fos = new FileOutputStream(file);
@@ -147,6 +128,14 @@ public class FileUploadBean {
         fos.close();
 
         return file;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public boolean getPaginate() {
+        return this.items.size() > 10;
     }
 
     /**
@@ -243,5 +232,67 @@ public class FileUploadBean {
      */
     public long getTimeStamp() {
         return System.currentTimeMillis();
+    }
+
+    /**
+     * @return the items
+     */
+    public CustomList<UploadedItem> getItems() {
+        return items;
+    }
+
+    /**
+     * 
+     */
+    public static class UploadedItem implements Serializable {
+
+        private String filename;
+        private long length;
+
+        /**
+         * Create a new instance of {@code UploadedItem}
+         */
+        public UploadedItem() {
+            super();
+        }
+
+        /**
+         * Create a new instance of {@code UploadedItem}
+         * 
+         * @param filename
+         * @param length 
+         */
+        public UploadedItem(String filename, long length) {
+            this.filename = filename;
+            this.length = length;
+        }
+
+        /**
+         * @return the filename
+         */
+        public String getFilename() {
+            return filename;
+        }
+
+        /**
+         * @param filename the filename to set
+         */
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
+
+        /**
+         * @return the length
+         */
+        public long getLength() {
+            return length;
+        }
+
+        /**
+         * @param length the length to set
+         */
+        public void setLength(long length) {
+            this.length = length;
+        }
     }
 }

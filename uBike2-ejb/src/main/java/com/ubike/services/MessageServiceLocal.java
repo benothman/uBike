@@ -18,51 +18,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ubike.faces.bean;
+package com.ubike.services;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+import javax.ejb.Local;
+import javax.jms.JMSException;
+import javax.jms.Message;
 
 /**
- * {@code TemplateBean}
- * <p></p>
+ * {@code MessageServiceLocal}
+ * <p/>
  *
- * Created on Jun 10, 2011 at 11:42:02 AM
+ * Created on Jun 19, 2011 at 2:38:58 PM
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name = "templateBean")
-@SessionScoped
-public class TemplateBean extends AbstractBean {
-
-    private String template;
-    public static final String WELCOME_TEMPLATE = "welcome-template.xhtml";
-    public static final String AUTHENTICATED_TEMPLATE = "ubike-template.xhtml";
-    public static final String TRIP_TEMPLATE = "trip-template.xhtml";
-
-    /** 
-     * Creates a new instance of {@code TemplateBean} 
-     */
-    public TemplateBean() {
-    }
-
-    @PostConstruct
-    protected void init() {
-        this.template = WELCOME_TEMPLATE;
-    }
+@Local
+public interface MessageServiceLocal {
 
     /**
-     * @return the template
+     * 
+     * @param message
+     * @throws JMSException 
      */
-    public String getTemplate() {
-        return template;
-    }
+    public void sendMessage(Message message) throws JMSException;
 
     /**
-     * @param template the template to set
+     * 
      */
-    public void setTemplate(String template) {
-        this.template = template;
-    }
+    public void sendObjectMessage(Serializable obj) throws JMSException;
 }

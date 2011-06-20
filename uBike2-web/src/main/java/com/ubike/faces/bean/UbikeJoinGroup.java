@@ -23,12 +23,16 @@ package com.ubike.faces.bean;
 import com.ubike.model.MemberShip;
 import com.ubike.model.UbikeGroup;
 import com.ubike.model.UbikeUser;
-import com.ubike.services.UserManagerLocal;
+import com.ubike.services.GroupServiceLocal;
+import com.ubike.services.MemberShipServiceLocal;
+import com.ubike.util.Role;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -41,49 +45,53 @@ import javax.servlet.http.HttpServletRequest;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @ManagedBean(name = "joinGroup")
-@RequestScoped
-public class UbikeJoinGroup {
+@ViewScoped
+public class UbikeJoinGroup extends AbstractBean {
 
-    private String error;
-    private String success;
     @EJB
-    private UserManagerLocal uml;
+    private MemberShipServiceLocal memberShipService;
+    @EJB
+    private GroupServiceLocal groupService;
 
     /**
      * Permit to current user (i.e logged user) to join a group if he is not
      * already member.
      */
     public void join() {
+        FacesContext fc = FacesContext.getCurrentInstance();
         try {
             UbikeUser current = (UbikeUser) BaseBean.getSessionAttribute("user");
-            ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
+            ExternalContext exctx = fc.getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
             long groupId = Long.parseLong(request.getParameter("groupId"));
+            long userId = current.getId();
+            MemberShip m = memberShipService.getMemberShip(userId, groupId);
 
-            UbikeGroup group = getUml().getGroupById(groupId);
-
-            if (!getUml().addMember(group, current)) {
-                this.error = "You are already member of this group";
-                this.success = "";
+            if (m != null) {
+                fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "You are already member of this group",
+                        "You are already member of this group"));
                 return;
             }
 
-            MemberShip m = getUml().getMemberShip(current.getId(), groupId);
+            UbikeGroup group = groupService.find(groupId);
+            m = new MemberShip(current, group, Role.Member);
+            memberShipService.create(m);
+            fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "You joined the group " + group.getName() + " successfully",
+                    "You joined the group " + group.getName() + " successfully"));
 
             List<MemberShip> members = (List<MemberShip>) BaseBean.getSessionAttribute("tmp_members");
-            if (members != null) {
-                members.add(m);
-            } else {
+            if (members == null) {
                 members = new ArrayList<MemberShip>();
-                members.add(m);
                 BaseBean.setSessionAttribute("tmp_members", members);
             }
-
-            this.error = "";
-            this.success = "You are joined the " + group.getName() + " group successfully!";
+            members.add(m);
         } catch (Exception exp) {
-            this.success = "";
-            this.error = "An Error was occur! Please try again";
+            logger.log(Level.SEVERE, "An error occurs while joinning group", exp);
+            fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "An error occurs while processing your request",
+                    "An error occurs while processing your request"));
         }
     }
 
@@ -92,87 +100,35 @@ public class UbikeJoinGroup {
      * member.
      */
     public void leave() {
+        FacesContext fc = FacesContext.getCurrentInstance();
         try {
             UbikeUser current = (UbikeUser) BaseBean.getSessionAttribute("user");
-            ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
+            ExternalContext exctx = fc.getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
             long groupId = Long.parseLong(request.getParameter("groupId"));
-
-            MemberShip memberShip = getUml().getMemberShip(current.getId(), groupId);
+            long userId = current.getId();
+            MemberShip memberShip = memberShipService.getMemberShip(userId, groupId);
 
             if (memberShip == null) {
-                this.error = "You are not member of this group !";
-                this.success = "";
+                fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "You are not member of this group yet",
+                        "You are not member of this group yet"));
                 return;
             }
 
-            UbikeGroup group = memberShip.getGroup();
-            if (getUml().leaveGroup(memberShip)) {
-                current.getMemberShips().remove(memberShip);
+            memberShipService.remove(memberShip.getId());
+            fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "You leaved the group successfully!",
+                    "You leaved the group successfully!"));
 
-                for (MemberShip o : group.getMemberShips()) {
-                    if (o.getId().equals(memberShip.getId())) {
-                        memberShip = o;
-                        break;
-                    }
-                }
-                group.getMemberShips().remove(memberShip);
-
-                this.error = "";
-                this.success = "You are leaved the " + group.getName() + " group successfully!";
-                BaseBean.setSessionAttribute("tmp_members", group.getMemberShips());
-            } else {
-                this.success = "";
-                this.error = "An Error was occur! Please try again";
-            }
+            List<MemberShip> members = (List<MemberShip>) BaseBean.getSessionAttribute("tmp_members");
+            members.remove(memberShip);
 
         } catch (Exception exp) {
-            this.success = "";
-            this.error = "An Error was occur! Please try again";
-            System.err.println("UbikeJoinGroup error -> " + exp);
+            logger.log(Level.SEVERE, "An error occurs while leaving group", exp);
+            fc.addMessage("join:join_status", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "An error occurs while processing your request",
+                    "An error occurs while processing your request"));
         }
-
-    }
-
-    /**
-     * @return the uml
-     */
-    public UserManagerLocal getUml() {
-        return uml;
-    }
-
-    /**
-     * @param uml the uml to set
-     */
-    public void setUml(UserManagerLocal uml) {
-        this.uml = uml;
-    }
-
-    /**
-     * @return the error
-     */
-    public String getError() {
-        return error;
-    }
-
-    /**
-     * @param error the error to set
-     */
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    /**
-     * @return the success
-     */
-    public String getSuccess() {
-        return success;
-    }
-
-    /**
-     * @param success the success to set
-     */
-    public void setSuccess(String success) {
-        this.success = success;
     }
 }

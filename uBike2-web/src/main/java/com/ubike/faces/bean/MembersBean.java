@@ -22,7 +22,8 @@ package com.ubike.faces.bean;
 
 import com.ubike.model.MemberShip;
 import com.ubike.services.MemberShipServiceLocal;
-import java.util.ArrayList;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -40,9 +41,9 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean(name = "membersBean")
 @RequestScoped
-public class MembersBean {
+public class MembersBean extends AbstractBean {
 
-    private List<MemberShip> members;
+    private CustomList<MemberShip> members;
     @EJB
     private MemberShipServiceLocal memberShipService;
 
@@ -55,8 +56,12 @@ public class MembersBean {
 
     @PostConstruct
     protected void init() {
-        this.members = BaseBean.getSessionAttribute("tmp_members") != null
-                ? (List<MemberShip>) BaseBean.getSessionAttribute("tmp_members") : new ArrayList<MemberShip>();
+        List<MemberShip> tmp = (List<MemberShip>) BaseBean.getSessionAttribute("tmp_members");
+        if (tmp == null) {
+            this.members = new CustomArrayList<MemberShip>();
+        } else {
+            this.members = new CustomArrayList<MemberShip>(tmp);
+        }
     }
 
     @PreDestroy
@@ -64,17 +69,21 @@ public class MembersBean {
         this.members = null;
     }
 
+    public boolean getPaginate() {
+        return this.members.size() > 10;
+    }
+
     /**
      * @return the members
      */
-    public List<MemberShip> getMembers() {
+    public CustomList<MemberShip> getMembers() {
         return members;
     }
 
     /**
      * @param members the members to set
      */
-    public void setMembers(List<MemberShip> members) {
+    public void setMembers(CustomList<MemberShip> members) {
         this.members = members;
     }
 }

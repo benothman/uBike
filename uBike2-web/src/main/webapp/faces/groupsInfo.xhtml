@@ -56,7 +56,7 @@
                         <h:outputText value="#{grp.listSize}" />
                     </rich:column>
                     <f:facet name="footer">
-                        <h:panelGrid columns="3" style="margin: auto;">
+                        <h:panelGrid columns="3" rendered="#{groupsBean.paginate}" style="margin: auto;">
                             <h:graphicImage value="/layouts/images/arr_left.png"
                                             onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
                             <rich:dataScroller id="ds" for="groupList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
@@ -66,6 +66,9 @@
                     </f:facet>
                 </rich:dataTable>
             </h:form>
+            <br/>
+            <br/>
+            <br/>
             <br/>
             <br/>
             <br/>

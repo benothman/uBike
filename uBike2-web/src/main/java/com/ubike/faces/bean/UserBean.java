@@ -43,7 +43,7 @@ import org.springframework.security.providers.UsernamePasswordAuthenticationToke
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-public class UserBean {
+public class UserBean extends AbstractBean {
 
     @NotEmpty
     @Length(min = 5, max = 12)

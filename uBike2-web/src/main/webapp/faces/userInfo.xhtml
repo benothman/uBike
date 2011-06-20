@@ -10,18 +10,38 @@
 
     <ui:define name="content">
         <rich:panel bodyClass="rich-laguna-panel-no-header">
+            <br/>
             <span style="margin: 5px">
                 <span class="quick">Quick</span><span class="look">Look</span>
             </span>
             <br/>
-            <ubike:panel header="Summary">
+            <br/>
+            <rich:collapsiblePanel style="padding: 0px;" styleClass="rf-cp-o" headerClass="rf-cp-hdr-o" header="Speed statistics summary" switchType="client">
                 <ul class="quickLookItems">
-                    <li>I have spend <span style="color:#FF0000;">#{calendarBean.durStat.generalStat.totalDurationAsString} hours</span> on my bike</li>
-                    <li>I am about <span style="color:#FF0000;">#{calendarBean.distStat.generalStat.totalValue} km</span> </li>
-                    <li>My average speed is about <span style="color:#FF0000;">#{calendarBean.speedStat.generalStat.avgValue} km/h</span>,
-                        #{calendarBean.speedStat.generalStat.avgValue > 20 ? 'not bad but I can do better' : 'I have to improve my level to reach 20km/h!'}</li>
+                    <li>My average speed is about <h:outputText value="#{it.userProfile.avgSpeed} km/h" styleClass="red" />,
+                    #{it.userProfile.avgSpeed > 20 ? 'not bad but I can do better' : 'I have to improve my level to reach 20km/h!'}</li>
+                    <li>My maximum speed was about <h:outputText value="#{it.userProfile.maxSpeed} km/h" styleClass="red" /> </li>
+                    <li>My minimum speed was about <h:outputText value="#{it.userProfile.minSpeed} km/h" styleClass="red" /> </li>
                 </ul>
-            </ubike:panel>
+            </rich:collapsiblePanel>
+            <br/>
+            <rich:collapsiblePanel style="padding: 0px;" styleClass="rf-cp-o" headerClass="rf-cp-hdr-o" header="Distance statistics summary" switchType="client">
+                <ul class="quickLookItems">
+                    <li>I am about <h:outputText value="#{it.userProfile.totalDistance} km" styleClass="red" /> in total</li>
+                    <li>My maximum distance was about <h:outputText value="#{it.userProfile.maxDistance} km" styleClass="red" /></li>
+                    <li>My minimum distance was about <h:outputText value="#{it.userProfile.minDistance} km" styleClass="red" /></li>
+                    <li>On average, the rolled distance is about <h:outputText value="#{it.userProfile.avgDistance} km" styleClass="red" /></li>
+                </ul>
+            </rich:collapsiblePanel>
+            <br/>
+            <rich:collapsiblePanel style="padding: 0px;" styleClass="rf-cp-o" headerClass="rf-cp-hdr-o" header="Duration statistics summary" switchType="client">
+                <ul class="quickLookItems">
+                    <li>I have spend in total <h:outputText value="#{it.userProfile.totalDurationAsString}" styleClass="red" /> on my bike</li>
+                    <li>The maximum duration that I spent on my bike was about <h:outputText value="#{it.userProfile.maxDurationAsString}" styleClass="red" /></li>
+                    <li>The minimum duration that I spent on my bike was about <h:outputText value="#{it.userProfile.minDurationAsString}" styleClass="red" /></li>
+                    <li>On average, I spent <h:outputText value="#{it.userProfile.avgDurationAsString}" styleClass="red" /> on my bike</li>
+                </ul>
+            </rich:collapsiblePanel>
         </rich:panel>
 
         <br />
@@ -301,7 +321,7 @@
                         </center>
                     </a4j:outputPanel>
                 </rich:tab>
-                <rich:tab header="Trips">
+                <rich:tab header="My Trips">
                     <rich:dataTable id="tripList" value="#{tripsBean.trips}" var="trip" 
                                     columnClasses="center"
                                     style="margin: auto;"
@@ -312,49 +332,65 @@
                             <h:outputText value="User Trips"/>
                         </f:facet>
 
-                        <rich:column sortBy="#{trip.id}">
-                            <f:facet name="header"><h:outputText value="Trip ID"/></f:facet>
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="Trip number"/>
+                            </f:facet>
                             <a href="#{facesContext.externalContext.requestContextPath}/resources/users/#{trip.owner.id}/trips/#{trip.id}/">
                                 <h:outputText value="#{trip.id}" />
                             </a>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.startDate}">
-                            <f:facet name="header"><h:outputText value="Start date"/></f:facet>
+                        <rich:column sortBy="#{trip.startDate}" sortOrder="#{tripsBean.datesOrder}">
+                            <f:facet name="header">
+                                <a4j:commandLink value="Start date" render="tripList" action="#{tripsBean.sortByDate}" />
+                            </f:facet>
                             <h:outputText value="#{trip.startDateAsString}"/>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.endDate}">
-                            <f:facet name="header"><h:outputText value="End date"/></f:facet>
+                        <rich:column>
+                            <f:facet name="header">
+                                <h:outputText value="End date" />
+                            </f:facet>
                             <h:outputText value="#{trip.endDateAsString}"/>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.distance}">
-                            <f:facet name="header"><h:outputText value="Distance"/></f:facet>
+                        <rich:column sortBy="#{trip.distance}" sortOrder="#{tripsBean.distanceOrder}">
+                            <f:facet name="header">
+                                <a4j:commandLink value="Distance" render="tripList" action="#{tripsBean.sortByDistance}" />
+                            </f:facet>
                             <h:outputText value="#{trip.distance} km"/>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.duration}">
-                            <f:facet name="header"><h:outputText value="Duration"/></f:facet>
+                        <rich:column sortBy="#{trip.duration}" sortOrder="#{tripsBean.durationOrder}">
+                            <f:facet name="header">
+                                <a4j:commandLink value="Duration" render="tripList" action="#{tripsBean.sortByDuration}" />
+                            </f:facet>
                             <h:outputText value="#{trip.durationAsString}"/>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.avgSpeed}">
-                            <f:facet name="header"><h:outputText value="Average speed"/></f:facet>
+                        <rich:column sortBy="#{trip.avgSpeed}" sortOrder="#{tripsBean.avgSpeedOrder}">
+                            <f:facet name="header">
+                                <a4j:commandLink value="Average speed" render="tripList" action="#{tripsBean.sortByAvgSpeed}" />
+                            </f:facet>
                             <h:outputText value="#{trip.avgSpeed} km/h"/>
                         </rich:column>
 
-                        <rich:column sortBy="#{trip.maxSpeed}">
-                            <f:facet name="header"><h:outputText value="Maximum speed"/></f:facet>
+                        <rich:column sortBy="#{trip.maxSpeed}" sortOrder="#{tripsBean.maxSpeedOrder}">
+                            <f:facet name="header">
+                                <a4j:commandLink value="Max speed" render="tripList" action="#{tripsBean.sortByMaxSpeed}" />
+                            </f:facet>
                             <h:outputText value="#{trip.maxSpeed} km/h"/>
                         </rich:column>
 
                         <f:facet name="footer">
-                            <h:graphicImage value="/layouts/images/arr_left.png"
-                                            onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
-                            <rich:dataScroller id="ds" for="tripList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
-                            <h:graphicImage value="/layouts/images/arr_right.png"
-                                            onclick="#{rich:component('ds')}.next()" alt="arr_right"/>                            
+                            <h:panelGrid columns="3" rendered="#{tripsBean.paginate}" style="margin: auto;">
+                                <h:graphicImage value="/layouts/images/arr_left.png"
+                                                onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+                                <rich:dataScroller id="ds" for="tripList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                                <h:graphicImage value="/layouts/images/arr_right.png"
+                                                onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                            </h:panelGrid>
                         </f:facet>
                     </rich:dataTable>
                     <br/>
@@ -373,30 +409,40 @@
                         </f:facet>
 
                         <rich:column sortBy="#{m.group.name}">
-                            <f:facet name="header"><h:outputText value="Group name"/></f:facet>
+                            <f:facet name="header">
+                                <h:outputText value="Group name"/>
+                            </f:facet>
                             <a href="#{facesContext.externalContext.requestContextPath}/resources/groups/#{m.group.id}">
                                 <h:outputText value="#{m.group.name}" />
                             </a>
                         </rich:column>
                         <rich:column sortBy="#{m.role}">
-                            <f:facet name="header"><h:outputText value="My role"/></f:facet>
+                            <f:facet name="header">
+                                <h:outputText value="My role"/>
+                            </f:facet>
                             <h:outputText value="#{m.role}"/>
                         </rich:column>
                         <rich:column sortBy="#{m.date}">
-                            <f:facet name="header"><h:outputText value="Adhesion date"/></f:facet>
+                            <f:facet name="header">
+                                <h:outputText value="Adhesion date"/>
+                            </f:facet>
                             <h:outputText value="#{m.dateAsString}"/>
                         </rich:column>
 
                         <rich:column>
-                            <f:facet name="header"><h:outputText value="Active"/></f:facet>
+                            <f:facet name="header">
+                                <h:outputText value="Active"/>
+                            </f:facet>
                             <h:selectBooleanCheckbox value="#{m.active}" disabled="true" />
                         </rich:column>
                         <f:facet name="footer">
-                            <h:graphicImage value="/layouts/images/arr_left.png"
-                                            onclick="#{rich:component('dsm')}.previous()" alt="arr_left"/>
-                            <rich:dataScroller id="dsm" for="userGroups" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
-                            <h:graphicImage value="/layouts/images/arr_right.png"
-                                            onclick="#{rich:component('dsm')}.next()" alt="arr_right"/>
+                            <h:panelGrid columns="3" rendered="#{membersBean.paginate}" style="margin: auto;">
+                                <h:graphicImage value="/layouts/images/arr_left.png"
+                                                onclick="#{rich:component('dsm')}.previous()" alt="arr_left"/>
+                                <rich:dataScroller id="dsm" for="userGroups" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                                <h:graphicImage value="/layouts/images/arr_right.png"
+                                                onclick="#{rich:component('dsm')}.next()" alt="arr_right"/>
+                            </h:panelGrid>
                         </f:facet>
                     </rich:dataTable>
                     <br/>
@@ -406,4 +452,9 @@
             </rich:tabPanel>
         </h:form>
     </ui:define>
+
+    <ui:insert name="right">
+        <h:outputText value="" />
+    </ui:insert>
+
 </ui:composition>

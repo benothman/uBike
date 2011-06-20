@@ -42,6 +42,8 @@ import com.ubike.rest.converter.UbikeUserConverter;
 import com.ubike.rest.converter.UbikeUsersConverter;
 import com.ubike.services.UserServiceLocal;
 import com.ubike.util.Couple;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -93,9 +95,8 @@ public class UbikeUsersResource {
 
         try {
             List<UbikeUser> entities = getEntities(start, max);
-            
-            Couple<UbikeUser, List<UbikeUser>> couple = new Couple<UbikeUser, List<UbikeUser>>();
-            couple.setSecond(entities);
+            Couple<UbikeUser, CustomList<UbikeUser>> couple = new Couple<UbikeUser, CustomList<UbikeUser>>();
+            couple.setSecond(new CustomArrayList<UbikeUser>(entities));
             couple.setName(getName());
             return new Viewable("/usersInfo.jsp", couple);
         } finally {
@@ -153,7 +154,7 @@ public class UbikeUsersResource {
     public void setName(@DefaultValue("uBike Users List") String name) {
         this.name = name;
     }
-    
+
     /**
      * 
      * @return 
@@ -161,7 +162,7 @@ public class UbikeUsersResource {
     public String getName() {
         return this.name;
     }
-    
+
     /**
      * 
      * @param id
@@ -177,7 +178,7 @@ public class UbikeUsersResource {
      * @return a collection of UbikeUser instances
      */
     protected List<UbikeUser> getEntities(int start, int max) {
-        return userService.findRange(start, max);
+        return new CustomArrayList<UbikeUser>(userService.findRange(start, max));
     }
 
     /**

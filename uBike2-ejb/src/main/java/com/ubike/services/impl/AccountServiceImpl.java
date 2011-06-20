@@ -106,7 +106,7 @@ public class AccountServiceImpl extends AbstractServiceImpl<Account> implements 
         authorities.add(new Authority(account, username, "USER_ACCESS"));
         account.setAuthorities(authorities);
         account.setSalt(username);
-        account.setKeyPass(password);
+        account.setPassword(password);
         create(account);
         return account;
     }

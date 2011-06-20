@@ -23,7 +23,8 @@ package com.ubike.faces.bean;
 import com.ubike.model.UbikeGroup;
 import com.ubike.services.GroupServiceLocal;
 import com.ubike.services.MemberShipServiceLocal;
-import java.util.ArrayList;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -42,9 +43,9 @@ import org.richfaces.component.SortOrder;
  */
 @ManagedBean(name = "groupsBean")
 @ViewScoped
-public class GroupsBean {
+public class GroupsBean extends AbstractBean {
 
-    private List<UbikeGroup> groups;
+    private CustomList<UbikeGroup> groups;
     private SortOrder sortByName = SortOrder.unsorted;
     private SortOrder sortByActiveMembers = SortOrder.unsorted;
     private SortOrder sortByNonActiveMembers = SortOrder.unsorted;
@@ -63,13 +64,25 @@ public class GroupsBean {
 
     @PostConstruct
     protected void init() {
-        this.groups = BaseBean.getSessionAttribute("tmp_groups") != null
-                ? (List<UbikeGroup>) BaseBean.getSessionAttribute("tmp_groups") : new ArrayList<UbikeGroup>();
+        List<UbikeGroup> tmp = (List<UbikeGroup>) BaseBean.getSessionAttribute("tmp_groups");
+        if (tmp == null) {
+            this.groups = new CustomArrayList<UbikeGroup>();
+        } else {
+            this.groups = new CustomArrayList<UbikeGroup>(tmp);
+        }
     }
 
     @PreDestroy
     protected void destroy() {
         this.groups = null;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public boolean getPaginate() {
+        return this.groups.size() > 10;
     }
 
     /**
@@ -146,14 +159,14 @@ public class GroupsBean {
     /**
      * @return the groups
      */
-    public List<UbikeGroup> getGroups() {
+    public CustomList<UbikeGroup> getGroups() {
         return groups;
     }
 
     /**
      * @param groups the groups to set
      */
-    public void setGroups(List<UbikeGroup> groups) {
+    public void setGroups(CustomList<UbikeGroup> groups) {
         this.groups = groups;
     }
 

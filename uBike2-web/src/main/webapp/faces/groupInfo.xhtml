@@ -56,22 +56,6 @@
                             </rich:columnGroup>
                         </f:facet>
                     </rich:dataTable>
-
-                    <rich:panelMenu  itemMode="ajax" groupMode="ajax"
-                                     groupExpandedLeftIcon="triangleUp"
-                                     groupCollapsedLeftIcon="triangleDown"
-                                     topGroupExpandedRightIcon="chevronUp"
-                                     topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
-
-                        <rich:panelMenuGroup label="Group actions" name="my_group" expanded="true">
-                            <rich:panelMenuItem label="Join Group" action="#{joinGroup.join}">
-                                <f:param name="groupId" value="#{it.id}"/>
-                            </rich:panelMenuItem>
-                            <rich:panelMenuItem label="Leave Group" action="#{joinGroup.leave}">
-                                <f:param name="groupId" value="#{it.id}"/>
-                            </rich:panelMenuItem>
-                        </rich:panelMenuGroup>
-                    </rich:panelMenu>
                 </h:panelGrid>
 
 
@@ -83,15 +67,15 @@
                     </a4j:outputPanel>
                 </rich:panel>
 
-                
-                
-                
+
+
+
                 <a4j:outputPanel ajaxRendered="true" id="rankings">
                     <rich:tabPanel switchType="client" style="width:95%">
                         <rich:tab header="Group Rankings">
                             <br />
                             <center>
-                                <rich:dataTable value="#{dataBean.members}" var="m" id="distRank" 
+                                <rich:dataTable value="#{membersBean.members}" var="m" id="distRank" 
                                                 columnClasses="center"
                                                 rowClasses="odd-row, even-row"
                                                 styleClass="stable"
@@ -127,7 +111,7 @@
                                 </rich:dataTable>
 
                                 <br/>
-                                <rich:dataTable value="#{dataBean.members}" var="m" id="speedRank" 
+                                <rich:dataTable value="#{membersBean.members}" var="m" id="speedRank" 
                                                 columnClasses="center"
                                                 rowClasses="odd-row, even-row"
                                                 styleClass="stable"
@@ -163,7 +147,7 @@
                                 </rich:dataTable>
 
                                 <br />
-                                <rich:dataTable value="#{dataBean.members}" var="m" id="durRank" 
+                                <rich:dataTable value="#{membersBean.members}" var="m" id="durRank" 
                                                 columnClasses="center"
                                                 rowClasses="odd-row, even-row"
                                                 styleClass="stable"
@@ -200,7 +184,7 @@
                         </rich:tab>
 
                         <rich:tab header="Group Members">
-                            <rich:dataTable value="#{dataBean.members}" var="m" id="memberList" 
+                            <rich:dataTable value="#{membersBean.members}" var="m" id="memberList" 
                                             columnClasses="center"
                                             rowClasses="odd-row, even-row"
                                             styleClass="stable" rows="10" style="width:90%">
@@ -242,4 +226,23 @@
             </h:form>
         </ubike:panel>
     </ui:define>
+
+    <ui:define name="right">
+        <rich:panelMenu  itemMode="ajax" groupMode="ajax"
+                         groupExpandedLeftIcon="triangleUp"
+                         groupCollapsedLeftIcon="triangleDown"
+                         topGroupExpandedRightIcon="chevronUp"
+                         topGroupCollapsedRightIcon="chevronDown" itemLeftIcon="disc">
+
+            <rich:panelMenuGroup label="Group actions" name="my_group" expanded="true">
+                <rich:panelMenuItem label="Join Group" action="#{joinGroup.join}">
+                    <f:param name="groupId" value="#{it.id}"/>
+                </rich:panelMenuItem>
+                <rich:panelMenuItem label="Leave Group" action="#{joinGroup.leave}">
+                    <f:param name="groupId" value="#{it.id}"/>
+                </rich:panelMenuItem>
+            </rich:panelMenuGroup>
+        </rich:panelMenu>
+    </ui:define>
+
 </ui:composition>

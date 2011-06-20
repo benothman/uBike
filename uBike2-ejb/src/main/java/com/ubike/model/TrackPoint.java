@@ -47,7 +47,7 @@ public class TrackPoint implements Serializable {
      * Create a new instance of {@code TrackPoint}
      */
     public TrackPoint() {
-        this(0, 0, 0);
+        this(0, 0, 0, 0);
     }
 
     /**
@@ -56,21 +56,22 @@ public class TrackPoint implements Serializable {
      * @param longitude
      */
     public TrackPoint(double latitude, double longitude) {
-        this.gpsCoord = new GpsCoordinate(latitude, longitude, 0);
+        this(latitude, longitude, 0, 0);
     }
 
     /**
-     *
-     * @param latitude
-     * @param longitude
-     * @param altitude
+     * Create a new instance of {@code TrackPoint}
+     * 
+     * @param latitude the latitude
+     * @param longitude the longitude
+     * @param altitude the altitude
      */
     public TrackPoint(double latitude, double longitude, double altitude) {
-        this.gpsCoord = new GpsCoordinate(latitude, longitude, altitude);
+        this(latitude, longitude, altitude, 0);
     }
 
     /**
-     * Create a new <code>TrackPoint</code> instance withe the given latitude,
+     * Create a new <code>TrackPoint</code> instance with the given latitude,
      * longitude, altitude and timestamp
      *
      * @param latitude
@@ -79,12 +80,12 @@ public class TrackPoint implements Serializable {
      * @param timestamp
      */
     public TrackPoint(double latitude, double longitude, double altitude, long timestamp) {
-        this(latitude, longitude, altitude);
+        this.gpsCoord = new GpsCoordinate(latitude, longitude, altitude);
         this.timestamp = timestamp;
     }
 
     /**
-     *
+     * Create a new instance of {@code TrackPoint}
      * @param gpsCoord
      * @param tripsegment
      * @param timestamp

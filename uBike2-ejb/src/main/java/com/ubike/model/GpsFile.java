@@ -64,8 +64,8 @@ public class GpsFile implements Serializable {
      */
     public static final long serialVersionUID = 1L;
     @Id
+    @Basic(optional=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
     @Column(name = "FILENAME", nullable = false)

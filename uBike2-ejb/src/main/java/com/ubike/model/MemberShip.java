@@ -22,6 +22,7 @@ package com.ubike.model;
 
 import com.ubike.util.Role;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -70,8 +71,8 @@ public class MemberShip implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     @Id
+    @Basic(optional=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
     @Column(name = "MEMBER_ROLE", nullable = false)
@@ -97,6 +98,7 @@ public class MemberShip implements Serializable {
     public MemberShip() {
         this.active = true;
         this.date = new Date(System.currentTimeMillis());
+        this.rankings = new ArrayList<Ranking>();
     }
 
     /**

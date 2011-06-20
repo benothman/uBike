@@ -20,49 +20,26 @@
  */
 package com.ubike.faces.bean;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
- * {@code TemplateBean}
- * <p></p>
+ * {@code AbstractBean}
+ * <p/>
  *
- * Created on Jun 10, 2011 at 11:42:02 AM
+ * Created on Jun 20, 2011 at 11:13:44 AM
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name = "templateBean")
-@SessionScoped
-public class TemplateBean extends AbstractBean {
+public abstract class AbstractBean implements Serializable {
 
-    private String template;
-    public static final String WELCOME_TEMPLATE = "welcome-template.xhtml";
-    public static final String AUTHENTICATED_TEMPLATE = "ubike-template.xhtml";
-    public static final String TRIP_TEMPLATE = "trip-template.xhtml";
-
-    /** 
-     * Creates a new instance of {@code TemplateBean} 
-     */
-    public TemplateBean() {
-    }
-
-    @PostConstruct
-    protected void init() {
-        this.template = WELCOME_TEMPLATE;
-    }
+    public static final long serialVersionUID = 1L;
+    protected static final Logger logger = Logger.getLogger(AbstractBean.class.getName());
 
     /**
-     * @return the template
+     * Create a new instance of {@code AbstractBean}
      */
-    public String getTemplate() {
-        return template;
-    }
-
-    /**
-     * @param template the template to set
-     */
-    public void setTemplate(String template) {
-        this.template = template;
+    public AbstractBean() {
+        super();
     }
 }

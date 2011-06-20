@@ -21,10 +21,12 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.MemberShip;
+import com.ubike.model.Ranking;
 import com.ubike.model.UbikeGroup;
 import com.ubike.model.UbikeUser;
 import com.ubike.services.GroupServiceLocal;
 import com.ubike.services.UserManagerLocal;
+import com.ubike.util.Metric;
 import com.ubike.util.Role;
 import java.io.IOException;
 import javax.ejb.EJB;
@@ -47,7 +49,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 @ManagedBean(name = "createGroup")
 @RequestScoped
-public class GroupBean {
+public class GroupBean extends AbstractBean {
 
     @NotBlank
     @Length(min = 5, max = 50)
@@ -79,6 +81,11 @@ public class GroupBean {
         UbikeUser user = (UbikeUser) BaseBean.getSessionAttribute("user");
         UbikeGroup group = new UbikeGroup(this.name, this.description);
         MemberShip memberShip = new MemberShip(user, group, Role.Creator);
+        for (Metric m : Metric.values()) {
+            Ranking ranking = new Ranking(1, 0, m);
+            memberShip.getRankings().add(ranking);
+        }
+
         group.getMemberShips().add(memberShip);
 
         try {

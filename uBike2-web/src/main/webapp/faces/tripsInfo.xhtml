@@ -19,13 +19,7 @@
                         <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
                     </f:facet>
                 </a4j:status>
-                <center>
-                    <h:graphicImage value="/layouts/images/arr_left.png"
-                                    onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
 
-                    <h:graphicImage value="/layouts/images/arr_right.png"
-                                    onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
-                </center>
                 <br/>
                 <rich:dataTable value="#{tripsBean.trips}" var="trip" id="tripList" 
                                 columnClasses="center"
@@ -36,72 +30,74 @@
                         <h:outputText value="User Trips"/>
                     </f:facet>
 
-                    <rich:column sortBy="#{trip.id}">
+                    <rich:column>
                         <f:facet name="header">
-                            <h:outputText value="ID"/>
+                            <h:outputText value="Number"/>
                         </f:facet>
                         <a href="#{facesContext.externalContext.requestContextPath}/resources/trips/#{trip.id}/">
                             <h:outputText value="#{trip.id}" />
                         </a>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.owner.account.username}">
+                    <rich:column sortBy="#{trip.owner.account.username}" sortOrder="#{tripsBean.usernameOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Cyclist"/>
+                            <a4j:commandLink value="Cyclist" render="tripList" action="#{tripsBean.sortByUsername}" />
                         </f:facet>
                         <a href="#{facesContext.externalContext.requestContextPath}/resources/trips/#{trip.id}/owner/">
                             <h:outputText value="#{trip.owner.account.username}" />
                         </a>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.startDate}">
+                    <rich:column sortBy="#{trip.startDate}" sortOrder="#{tripsBean.datesOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Start date"/>
+                            <a4j:commandLink value="Start date" render="tripList" action="#{tripsBean.sortByDate}" />
                         </f:facet>
                         <h:outputText value="#{trip.startDateAsString}"/>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.endDate}">
+                    <rich:column sortBy="#{trip.endDate}" sortOrder="#{tripsBean.datesOrder}">
                         <f:facet name="header">
-                            <h:outputText value="End date"/>
+                            <a4j:commandLink value="End date" render="tripList" action="#{tripsBean.sortByDate}" />
                         </f:facet>
                         <h:outputText value="#{trip.endDateAsString}"/>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.distance}">
+                    <rich:column sortBy="#{trip.distance}" sortOrder="#{tripsBean.distanceOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Distance"/>
+                            <a4j:commandLink value="Distance" render="tripList" action="#{tripsBean.sortByDistance}" />
                         </f:facet>
                         <h:outputText value="#{trip.distance} km"/>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.duration}">
+                    <rich:column sortBy="#{trip.duration}" sortOrder="#{tripsBean.durationOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Duration"/>
+                            <a4j:commandLink value="Duration" render="tripList" action="#{tripsBean.sortByDuration}" />
                         </f:facet>
                         <h:outputText value="#{trip.durationAsString}"/>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.avgSpeed}">
+                    <rich:column sortBy="#{trip.avgSpeed}" sortOrder="#{tripsBean.avgSpeedOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Average speed"/>
+                            <a4j:commandLink value="Average speed" render="tripList" action="#{tripsBean.sortByAvgSpeed}" />
                         </f:facet>
                         <h:outputText value="#{trip.avgSpeed} km/h"/>
                     </rich:column>
 
-                    <rich:column sortBy="#{trip.maxSpeed}">
+                    <rich:column sortBy="#{trip.maxSpeed}" sortOrder="#{tripsBean.maxSpeedOrder}">
                         <f:facet name="header">
-                            <h:outputText value="Max speed"/>
+                            <a4j:commandLink value="Max speed" render="tripList" action="#{tripsBean.sortByMaxSpeed}" />
                         </f:facet>
                         <h:outputText value="#{trip.maxSpeed} km/h"/>
                     </rich:column>
 
                     <f:facet name="footer">
-                        <h:graphicImage value="/layouts/images/arr_left.png"
-                                        onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
-                        <rich:dataScroller id="ds" for="tripList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
-                        <h:graphicImage value="/layouts/images/arr_right.png"
-                                        onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        <h:panelGrid columns="3" rendered="#{tripsBean.paginate}" style="margin: auto;">
+                            <h:graphicImage value="/layouts/images/arr_left.png"
+                                            onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+                            <rich:dataScroller id="ds" for="tripList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                            <h:graphicImage value="/layouts/images/arr_right.png"
+                                            onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        </h:panelGrid>
                     </f:facet>
                 </rich:dataTable>
             </h:form>
@@ -122,4 +118,7 @@
         <br/>
         <br/>
     </ui:define>
+    <ui:insert name="right">
+    </ui:insert>
+
 </ui:composition>

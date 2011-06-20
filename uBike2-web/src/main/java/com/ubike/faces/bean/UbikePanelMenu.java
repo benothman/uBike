@@ -21,6 +21,7 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.UbikeUser;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -38,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @ManagedBean(name = "panelMenu")
 @RequestScoped
-public class UbikePanelMenu {
+public class UbikePanelMenu extends AbstractBean {
 
     private UbikeUser current;
 
@@ -61,21 +62,20 @@ public class UbikePanelMenu {
     public String myData() {
 
         String string = "";
-
         try {
             ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
-            String url = exctx.getRequestContextPath();
             string = request.getParameter("action");
-
             if (string.equals("user-profile")) {
-                url += this.current != null ? ("/resources/users/" + this.current.getId() + "/") : "/faces/login.jsf";
+                if (this.current == null) {
+                    return BaseBean.LOGIN_REQUIRED;
+                }
+                String url = exctx.getRequestContextPath() + "/resources/users/" + this.current.getId() + "/";
                 HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
                 response.sendRedirect(url);
             }
-
         } catch (Exception exp) {
-            BaseBean.logError(exp.getMessage());
+            logger.log(Level.SEVERE, "Error while retrieving data", exp);
         }
         return string;
     }
@@ -91,11 +91,13 @@ public class UbikePanelMenu {
         try {
             ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
-            String url = exctx.getRequestContextPath();
             String param = request.getParameter("action");
 
             if (param.equals("user-trips")) {
-                url += this.current != null ? ("/resources/users/" + this.current.getId() + "/trips/") : "/faces/login.jsf";
+                if (this.current == null) {
+                    return BaseBean.LOGIN_REQUIRED;
+                }
+                String url = exctx.getRequestContextPath() + "/resources/users/" + this.current.getId() + "/trips/";
                 HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
                 response.sendRedirect(url);
             }
@@ -115,41 +117,48 @@ public class UbikePanelMenu {
     public String myCommunity() {
 
         try {
-            boolean error = false;
-            ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
-            HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
+            ExternalContext exCtx = FacesContext.getCurrentInstance().getExternalContext();
+            HttpServletRequest request = (HttpServletRequest) exCtx.getRequest();
             String param = request.getParameter("action");
             int action = -1;
             try {
                 action = Integer.parseInt(param);
             } catch (NumberFormatException nfe) {
+                logger.log(Level.SEVERE, "Unknown request parameter : " + param, nfe);
                 return param;
             }
-            String url = exctx.getRequestContextPath();
 
+            String url = exCtx.getRequestContextPath();
+            HttpServletResponse response = (HttpServletResponse) exCtx.getResponse();
+            if (action == 3) {
+                response.sendRedirect(url + "/resources/groups/");
+                return "";
+            }
+
+            if (this.current == null) {
+                return BaseBean.LOGIN_REQUIRED;
+            }
+
+            url += "/resources/users/" + this.current.getId();
+            boolean error = false;
             switch (action) {
                 case 1:
-                    url += this.current != null ? ("/resources/users/" + this.current.getId() + "/memberShips/") : "/faces/login.jsf";
+                    url += "/memberShips/";
                     break;
                 case 2:
-                    url += this.current != null ? ("/resources/users/" + this.current.getId() + "/friends/") : "/faces/login.jsf";
-                    break;
-                case 3:
-                    url += "/resources/groups/";
+                    url += "/friends/";
                     break;
                 default:
                     error = true;
-                    BaseBean.logError("[UbikePanelMenu] myCommunity -> Action not recognized : " + action);
+                    logger.log(Level.SEVERE, "Action not recognized : {0}", action);
                     break;
             }
 
             if (!error) {
-                HttpServletResponse response = (HttpServletResponse) exctx.getResponse();
                 response.sendRedirect(url);
             }
-
         } catch (Exception exp) {
-            BaseBean.logError(exp.getMessage());
+            logger.log(Level.SEVERE, "Error occurs while processing user action", exp);
         }
         return "";
     }
@@ -163,13 +172,11 @@ public class UbikePanelMenu {
             ExternalContext exctx = FacesContext.getCurrentInstance().getExternalContext();
             HttpServletRequest request = (HttpServletRequest) exctx.getRequest();
             String param = request.getParameter("action");
-
             return param;
         } catch (Exception exp) {
-            BaseBean.logError(exp.getMessage());
+            logger.log(Level.SEVERE, "Error while reteiving request parameter", exp);
+            return "";
         }
-
-        return "";
     }
 
     /**

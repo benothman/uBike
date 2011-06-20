@@ -31,7 +31,7 @@ import java.util.Collection;
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-public class CustomArrayList<T> extends ArrayList<T> {
+public class CustomArrayList<T> extends ArrayList<T> implements CustomList<T> {
 
     /**
      * Create a new instance of {@code CustomArrayList}
@@ -60,6 +60,7 @@ public class CustomArrayList<T> extends ArrayList<T> {
     /**
      * @return the first element, if any, in the list 
      */
+    @Override
     public T getFirst() {
         return get(0);
     }
@@ -67,7 +68,13 @@ public class CustomArrayList<T> extends ArrayList<T> {
     /**
      * @return the last element, if any, in the list
      */
+    @Override
     public T getLast() {
         return get(size() - 1);
+    }
+
+    @Override
+    public int getSize() {
+        return this.size();
     }
 }

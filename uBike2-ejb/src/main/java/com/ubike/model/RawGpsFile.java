@@ -40,13 +40,15 @@ import javax.persistence.Table;
 public class RawGpsFile extends GpsFile {
 
     /**
-     *
+     * Create a new instance of {@code RawGpsFile}
      */
     public RawGpsFile() {
         super();
     }
 
     /**
+     * Create a new instance of {@code RawGpsFile}
+     * 
      * @param fileName the file name
      * @param length the length of the file
      * @param d the creation date of the file
@@ -56,13 +58,14 @@ public class RawGpsFile extends GpsFile {
     }
 
     /**
-     *
+     * Create a new instance of {@code RawGpsFile}
+     * 
      * @param fileName the file name
      * @param length the length of the file
      * @param d the creation date of the file
      * @param segments the list of segments of the file
      */
     public RawGpsFile(String fileName, long length, Date d, List<TripSegment> segments) {
-        super(fileName, length, d,segments);
+        super(fileName, length, d, segments);
     }
 }

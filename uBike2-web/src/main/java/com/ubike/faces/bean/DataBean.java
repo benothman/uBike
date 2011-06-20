@@ -28,7 +28,6 @@ import com.ubike.services.MemberShipServiceLocal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
@@ -45,9 +44,8 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean(name = "dataBean")
 @RequestScoped
-public class DataBean {
+public class DataBean extends AbstractBean {
 
-    private static final Logger logger = Logger.getLogger(DataBean.class.getName());
     private List<UbikeUser> users;
     private List<UbikeGroup> groups;
     private List<Trip> trips;

@@ -18,51 +18,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ubike.faces.bean;
+package com.ubike.util;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.util.List;
 
 /**
- * {@code TemplateBean}
- * <p></p>
+ * {@code CustomList}
+ * <p/>
  *
- * Created on Jun 10, 2011 at 11:42:02 AM
+ * Created on Jun 20, 2011 at 2:29:32 PM
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name = "templateBean")
-@SessionScoped
-public class TemplateBean extends AbstractBean {
-
-    private String template;
-    public static final String WELCOME_TEMPLATE = "welcome-template.xhtml";
-    public static final String AUTHENTICATED_TEMPLATE = "ubike-template.xhtml";
-    public static final String TRIP_TEMPLATE = "trip-template.xhtml";
-
-    /** 
-     * Creates a new instance of {@code TemplateBean} 
-     */
-    public TemplateBean() {
-    }
-
-    @PostConstruct
-    protected void init() {
-        this.template = WELCOME_TEMPLATE;
-    }
+public interface CustomList<E> extends List<E> {
 
     /**
-     * @return the template
+     * return the size of the list
+     * @return 
      */
-    public String getTemplate() {
-        return template;
-    }
+    public int getSize();
 
     /**
-     * @param template the template to set
+     * @return the first element, if any, in the list 
      */
-    public void setTemplate(String template) {
-        this.template = template;
-    }
+    public E getFirst();
+
+    /**
+     * @return the last element, if any, in the list
+     */
+    public E getLast();
 }

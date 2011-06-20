@@ -27,8 +27,9 @@ import com.ubike.model.UserStatistic;
 import com.ubike.services.StatisticServiceLocal;
 import com.ubike.services.TripManagerLocal;
 import com.ubike.services.TripServiceLocal;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.List;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class StatisticManager {
      * @param stats a collection of statistic
      * @param trip an instance of a trip.
      */
-    public void updateStatistics(Collection<Statistic> stats, Trip trip) {
+    public void updateStatistics(List<Statistic> stats, Trip trip) {
 
         double avg;
         for (Statistic o : stats) {
@@ -131,7 +132,7 @@ public class StatisticManager {
      * @param date A date of statistics
      * @return a collection of an entity statistics for the given date
      */
-    public Collection<Statistic> getDailyStat(UbikeEntity entity, Date date) {
+    public List<Statistic> getDailyStat(UbikeEntity entity, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -143,7 +144,7 @@ public class StatisticManager {
         cal.set(Calendar.SECOND, 59);
         Date end = cal.getTime();
 
-        Collection<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(), StatisticType.DAILY, start, end);
+        List<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(), StatisticType.DAILY, start, end);
 
         // We have to be sure that the collection contains all statistic metrics
         Map<Metric, Statistic> stats = new EnumMap<Metric, Statistic>(Metric.class);
@@ -168,7 +169,7 @@ public class StatisticManager {
             this.getTml().updateEntity(entity);
         }
 
-        return stats.values();
+        return new ArrayList<Statistic>(stats.values());
     }
 
     /**
@@ -176,7 +177,7 @@ public class StatisticManager {
      * @param user
      * @return
      */
-    public Collection<Statistic> getWeeklyStat(UbikeEntity entity, Date date) {
+    public List<Statistic> getWeeklyStat(UbikeEntity entity, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.setFirstDayOfWeek(Calendar.MONDAY);
@@ -186,7 +187,7 @@ public class StatisticManager {
         Date end = cal.getTime();
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        Collection<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
+        List<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
                 StatisticType.WEEKLY, start, end);
 
         // We have to be sure that the collection contains all statistic metrics
@@ -213,7 +214,7 @@ public class StatisticManager {
             this.getTml().updateEntity(entity);
         }
 
-        return stats.values();
+        return new ArrayList<Statistic>(stats.values());
     }
 
     /**
@@ -221,7 +222,7 @@ public class StatisticManager {
      * @param user
      * @return
      */
-    public Collection<Statistic> getMonthlyStat(UbikeEntity entity, Date date) {
+    public List<Statistic> getMonthlyStat(UbikeEntity entity, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -239,7 +240,7 @@ public class StatisticManager {
         Date end = cal.getTime();
 
         // Getting statistics of the current month.
-        Collection<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
+        List<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
                 StatisticType.MONTHLY, start, end);
 
         // We have to be sure that the collection contains all statistic metrics
@@ -268,7 +269,7 @@ public class StatisticManager {
             this.getTml().updateEntity(entity);
         }
 
-        return stats.values();
+        return new ArrayList<Statistic>(stats.values());
     }
 
     /**
@@ -276,7 +277,7 @@ public class StatisticManager {
      * @param user
      * @return
      */
-    public Collection<Statistic> getYearlyStat(UbikeEntity entity, Date date) {
+    public List<Statistic> getYearlyStat(UbikeEntity entity, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         // configure to 01/01/yyyy 00:00:00
@@ -284,7 +285,7 @@ public class StatisticManager {
         Date start = cal.getTime();
         cal.set(cal.get(Calendar.YEAR), Calendar.DECEMBER, 31);
         Date end = cal.getTime();
-        Collection<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
+        List<Statistic> collection = getTml().getEntityStatByIntervalAndType(entity.getId(),
                 StatisticType.YEARLY, start, end);
 
         // We have to be sure that the collection contains all statistic metrics
@@ -311,7 +312,7 @@ public class StatisticManager {
             this.getTml().updateEntity(entity);
         }
 
-        return stats.values();
+        return new ArrayList<Statistic>(stats.values());
     }
 
     /**
@@ -319,7 +320,7 @@ public class StatisticManager {
      * @param user
      * @return
      */
-    public Collection<Statistic> getGeneralStat(UbikeEntity entity) {
+    public List<Statistic> getGeneralStat(UbikeEntity entity) {
         Calendar cal = Calendar.getInstance();
         // configure to 01/01/yyyy 00:00:00
         cal.set(cal.get(Calendar.YEAR), Calendar.JANUARY, 1);
@@ -327,7 +328,7 @@ public class StatisticManager {
         cal.set(2020, Calendar.DECEMBER, 31);
         Date end = cal.getTime();
 
-        Collection<Statistic> collection = getTml().getEntityStatByType(entity.getId(), StatisticType.GENERAL);
+        List<Statistic> collection = getTml().getEntityStatByType(entity.getId(), StatisticType.GENERAL);
         Map<Metric, Statistic> stats = new EnumMap<Metric, Statistic>(Metric.class);
 
         for (Statistic o : collection) {
@@ -351,7 +352,7 @@ public class StatisticManager {
             this.getTml().updateEntity(entity);
         }
 
-        return stats.values();
+        return new ArrayList<Statistic>(stats.values());
     }
 
     /**

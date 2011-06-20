@@ -11,8 +11,15 @@
     <ui:define name="content">
 
         <h:form>
-            <ubike:panel header="uBike users list">
+            <br/>
+            <a4j:status>
+                <f:facet name="start">
+                    <h:graphicImage value="/layouts/images/ai.gif" alt="ai"/>
+                </f:facet>
+            </a4j:status>
+            <br />
 
+            <ubike:panel header="uBike users list">
                 <rich:extendedDataTable value="#{usersBean.users}"
                                         var="usr" id="usersList" 
                                         frozenColumns="3"
@@ -76,11 +83,13 @@
                         <h:outputText value="#{usr.email}" />
                     </rich:column>
                     <f:facet name="footer">
-                        <h:graphicImage value="/layouts/images/arr_left.png"
-                                        onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
-                        <rich:dataScroller id="ds" for="usersList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
-                        <h:graphicImage value="/layouts/images/arr_right.png"
-                                        onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        <h:panelGrid columns="3" rendered="#{usersBean.paginate}" style="margin: auto;">
+                            <h:graphicImage value="/layouts/images/arr_left.png"
+                                            onclick="#{rich:component('ds')}.previous()" alt="arr_left"/>
+                            <rich:dataScroller id="ds" for="usersList" stepControls="hide" boundaryControls="hide" fastControls="hide"/>
+                            <h:graphicImage value="/layouts/images/arr_right.png"
+                                            onclick="#{rich:component('ds')}.next()" alt="arr_right"/>
+                        </h:panelGrid>
                     </f:facet>
                 </rich:extendedDataTable>
             </ubike:panel>
@@ -97,4 +106,7 @@
         <br/>
         <br/>
     </ui:define>
+    <ui:insert name="right">
+    </ui:insert>
+
 </ui:composition>

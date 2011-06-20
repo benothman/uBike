@@ -21,11 +21,11 @@
 package com.ubike.faces.bean;
 
 import com.ubike.model.Statistic;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import com.ubike.util.Metric;
 import com.ubike.util.StatisticType;
-import java.util.Collection;
-import java.util.LinkedList;
-import javax.inject.Named;
+import java.util.List;
 
 /**
  * {@code StatisticBean}
@@ -34,16 +34,16 @@ import javax.inject.Named;
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-public abstract class StatisticBean {
+public abstract class StatisticBean extends AbstractBean {
 
-    private Collection<Statistic> stats;
+    private CustomList<Statistic> stats;
     private Statistic generalStat;
 
     /**
      * 
      */
     public StatisticBean() {
-        this.stats = new LinkedList<Statistic>();
+        this.stats = new CustomArrayList<Statistic>();
     }
 
     /**
@@ -53,32 +53,32 @@ public abstract class StatisticBean {
     public StatisticBean(Metric metric) {
         this();
         // Asserting today statistics
-        Collection<Statistic> daily = (Collection<Statistic>) BaseBean.getSessionAttribute("today");
+        List<Statistic> daily = (List<Statistic>) BaseBean.getSessionAttribute("today");
         extractStat(daily, metric);
 
         // Asserting this week statistics
-        Collection<Statistic> weekly = (Collection<Statistic>) BaseBean.getSessionAttribute("thisWeek");
+        List<Statistic> weekly = (List<Statistic>) BaseBean.getSessionAttribute("thisWeek");
         extractStat(weekly, metric);
         // Asserting last week statistics
-        Collection<Statistic> lastWeekly = (Collection<Statistic>) BaseBean.getSessionAttribute("lastWeek");
+        List<Statistic> lastWeekly = (List<Statistic>) BaseBean.getSessionAttribute("lastWeek");
         extractStat(lastWeekly, metric);
         // Asserting this month statistics
-        Collection<Statistic> monthly = (Collection<Statistic>) BaseBean.getSessionAttribute("thisMonth");
+        List<Statistic> monthly = (List<Statistic>) BaseBean.getSessionAttribute("thisMonth");
         extractStat(monthly, metric);
         // Asserting last month statistics
-        Collection<Statistic> lastMonthly = (Collection<Statistic>) BaseBean.getSessionAttribute("lastMonth");
+        List<Statistic> lastMonthly = (List<Statistic>) BaseBean.getSessionAttribute("lastMonth");
         extractStat(lastMonthly, metric);
 
         // Asserting this year statistics
-        Collection<Statistic> yearly = (Collection<Statistic>) BaseBean.getSessionAttribute("thisYear");
+        List<Statistic> yearly = (List<Statistic>) BaseBean.getSessionAttribute("thisYear");
         extractStat(yearly, metric);
         
         // Asserting last year statistics
-        Collection<Statistic> lastYearly = (Collection<Statistic>) BaseBean.getSessionAttribute("lastYear");
+        List<Statistic> lastYearly = (List<Statistic>) BaseBean.getSessionAttribute("lastYear");
         extractStat(lastYearly, metric);
 
         // Asserting global statistics
-        Collection<Statistic> generaly = (Collection<Statistic>) BaseBean.getSessionAttribute("general");
+        List<Statistic> generaly = (List<Statistic>) BaseBean.getSessionAttribute("general");
         assertGeneralStat(generaly, metric);
     }
 
@@ -87,7 +87,7 @@ public abstract class StatisticBean {
      * @param statistics The list of statistics
      * @param metric The metric of statistics to be extracted
      */
-    private void extractStat(Collection<Statistic> statistics, Metric metric) {
+    private void extractStat(List<Statistic> statistics, Metric metric) {
         for (Statistic o : statistics) {
             if (o.getMetric() == metric) {
                 if (o.getType() == StatisticType.GENERAL) {
@@ -105,7 +105,7 @@ public abstract class StatisticBean {
      * @param statistics
      * @param metric
      */
-    private void assertGeneralStat(Collection<Statistic> statistics, Metric metric) {
+    private void assertGeneralStat(List<Statistic> statistics, Metric metric) {
         for (Statistic o : statistics) {
             if (o.getMetric() == metric) {
                 if (o.getType() == StatisticType.GENERAL) {
@@ -122,14 +122,14 @@ public abstract class StatisticBean {
     /**
      * @return the stats
      */
-    public Collection<Statistic> getStats() {
+    public CustomList<Statistic> getStats() {
         return stats;
     }
 
     /**
      * @param stats the stats to set
      */
-    public void setStats(Collection<Statistic> stats) {
+    public void setStats(CustomList<Statistic> stats) {
         this.stats = stats;
     }
 

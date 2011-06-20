@@ -47,9 +47,7 @@ import javax.persistence.UniqueConstraint;
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
 @Entity
-@Table(name = "UBIKE_GROUPS", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"NAME"})
-})
+@Table(name = "UBIKE_GROUPS")
 @NamedQueries({
     @NamedQuery(name = "Group.getAll", query = "SELECT o FROM UbikeGroup o ORDER BY o.name"),
     @NamedQuery(name = "Group.getByName", query = "SELECT o FROM UbikeGroup o WHERE o.name=:groupName")
@@ -61,7 +59,7 @@ public class UbikeGroup implements com.ubike.util.UbikeEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @Basic(optional=false)
     @Column(name = "ID")
     private Long id;
     public static final long serialVersionUID = 1L;

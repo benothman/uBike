@@ -69,7 +69,7 @@ public class Trip implements Serializable {
     public static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @Basic(optional=false)
     @Column(name = "ID")
     private Long id;
     @Column(name = "START_DATE", nullable = false)

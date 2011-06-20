@@ -61,7 +61,7 @@ public class UbikeUser implements com.ubike.util.UbikeEntity {
     public static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
+    @Basic(optional=false)
     @Column(name = "ID")
     private Long id;
     @Column(name = "FIRSTNAME", length = 50, nullable = false)

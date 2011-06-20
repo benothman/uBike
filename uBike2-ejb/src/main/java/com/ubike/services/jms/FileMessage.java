@@ -18,51 +18,70 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package com.ubike.faces.bean;
+package com.ubike.services.jms;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
 
 /**
- * {@code TemplateBean}
- * <p></p>
+ * {@code FileMessage}
+ * <p/>
  *
- * Created on Jun 10, 2011 at 11:42:02 AM
+ * Created on Jun 18, 2011 at 8:47:01 PM
  *
  * @author <a href="mailto:nabil.benothman@gmail.com">Nabil Benothman</a>
  */
-@ManagedBean(name = "templateBean")
-@SessionScoped
-public class TemplateBean extends AbstractBean {
+public class FileMessage implements Serializable {
 
-    private String template;
-    public static final String WELCOME_TEMPLATE = "welcome-template.xhtml";
-    public static final String AUTHENTICATED_TEMPLATE = "ubike-template.xhtml";
-    public static final String TRIP_TEMPLATE = "trip-template.xhtml";
+    private String filename;
+    private String absolutePath;
+    private long userId;
 
-    /** 
-     * Creates a new instance of {@code TemplateBean} 
+    /**
+     * Create a new instance of {@code FileMessage}
      */
-    public TemplateBean() {
-    }
-
-    @PostConstruct
-    protected void init() {
-        this.template = WELCOME_TEMPLATE;
+    public FileMessage() {
+        super();
     }
 
     /**
-     * @return the template
+     * @return the filename
      */
-    public String getTemplate() {
-        return template;
+    public String getFilename() {
+        return filename;
     }
 
     /**
-     * @param template the template to set
+     * @param filename the filename to set
      */
-    public void setTemplate(String template) {
-        this.template = template;
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    /**
+     * @return the absolutePath
+     */
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+
+    /**
+     * @param absolutePath the absolutePath to set
+     */
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
+    }
+
+    /**
+     * @return the userId
+     */
+    public long getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 }

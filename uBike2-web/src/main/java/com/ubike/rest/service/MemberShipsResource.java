@@ -35,7 +35,6 @@ import javax.ws.rs.core.UriInfo;
 import com.sun.jersey.api.core.ResourceContext;
 import com.sun.jersey.api.view.Viewable;
 import com.ubike.faces.bean.BaseBean;
-import javax.persistence.EntityManager;
 import com.ubike.model.UbikeUser;
 import com.ubike.model.UbikeGroup;
 import com.ubike.rest.converter.MemberShipsConverter;
@@ -81,20 +80,30 @@ public class MemberShipsResource {
      *
      * @return an instance of MemberShipsConverter
      */
-    @Secured({"ROLE_USER", "USER_ACCESS"})
     @GET
-    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Viewable get(
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.TEXT_HTML})
+    public Viewable getHTML(
             @QueryParam("start") @DefaultValue("0") int start,
             @QueryParam("max") @DefaultValue("100") int max,
-            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel,
-            @QueryParam("query") @DefaultValue("SELECT e FROM MemberShip e") String query) {
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
 
-        MemberShipsConverter converter = new MemberShipsConverter(getEntities(start, max, query),
+        List<MemberShip> entities = getEntities(start, max);
+        BaseBean.setSessionAttribute("tmp_members", entities);
+
+        return new Viewable("/memberShips.jsp", entities);
+    }
+
+    @GET
+    @Secured({"ROLE_USER", "USER_ACCESS"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public MemberShipsConverter getXML(
+            @QueryParam("start") @DefaultValue("0") int start,
+            @QueryParam("max") @DefaultValue("100") int max,
+            @QueryParam("expandLevel") @DefaultValue("1") int expandLevel) {
+        MemberShipsConverter converter = new MemberShipsConverter(getEntities(start, max),
                 uriInfo.getAbsolutePath(), expandLevel);
-        BaseBean.setSessionAttribute("tmp_members", converter.getEntities());
-
-        return new Viewable("/memberShips.jsp", converter.getEntities());
+        return converter;
     }
 
     /**
@@ -139,7 +148,7 @@ public class MemberShipsResource {
      *
      * @return a collection of MemberShip instances
      */
-    protected List<MemberShip> getEntities(int start, int max, String query) {
+    protected List<MemberShip> getEntities(int start, int max) {
         return this.memberShipService.findRange(start, max);
     }
 

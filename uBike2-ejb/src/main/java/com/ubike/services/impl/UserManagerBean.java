@@ -119,7 +119,7 @@ public class UserManagerBean implements UserManagerLocal {
                 authorities.add(new Authority(account, username, "USER_ACCESS"));
                 account.setAuthorities(authorities);
                 account.setSalt(username);
-                account.setKeyPass(password);
+                account.setPassword(password);
                 persist(account);
                 return true;
             } catch (Exception exp) {
@@ -138,7 +138,7 @@ public class UserManagerBean implements UserManagerLocal {
     public UbikeUser login(String username, String password) {
         try {
             Account account = getByUserName(username);
-            if (account != null && account.getKeyPass().equals(Util.encrypt(password + "{" + username + "}", Util.SHA_512))) {
+            if (account != null && account.getPassword().equals(Util.encrypt(password + "{" + username + "}", Util.SHA_512))) {
                 account.setLoggedIn(true);
                 return account.getOwner();
             }
@@ -184,10 +184,10 @@ public class UserManagerBean implements UserManagerLocal {
     public boolean changePassword(long id, String oldPass, String newPass, String confirm) {
         Account account = (Account) this.getAccountById(id);
         if (account != null) {
-            if (account.getKeyPass().equals(Util.encrypt(
+            if (account.getPassword().equals(Util.encrypt(
                     account.getSalt() + oldPass)) && newPass.equals(confirm)) {
 
-                account.setKeyPass(newPass);
+                account.setPassword(newPass);
                 em.flush();
                 return true;
             }

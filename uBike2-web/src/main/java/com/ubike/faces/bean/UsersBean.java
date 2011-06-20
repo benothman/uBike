@@ -22,7 +22,8 @@ package com.ubike.faces.bean;
 
 import com.ubike.model.UbikeUser;
 import com.ubike.services.UserServiceLocal;
-import java.util.ArrayList;
+import com.ubike.util.CustomArrayList;
+import com.ubike.util.CustomList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -40,9 +41,9 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean(name = "usersBean")
 @RequestScoped
-public class UsersBean {
+public class UsersBean extends AbstractBean {
 
-    private List<UbikeUser> users;
+    private CustomList<UbikeUser> users;
     @EJB
     private UserServiceLocal userService;
 
@@ -55,8 +56,12 @@ public class UsersBean {
 
     @PostConstruct
     protected void init() {
-        this.users = BaseBean.getSessionAttribute("tmp_users") != null
-                ? (List<UbikeUser>) BaseBean.getSessionAttribute("tmp_users") : new ArrayList<UbikeUser>();
+        List<UbikeUser> tmp = (List<UbikeUser>) BaseBean.getSessionAttribute("tmp_users");
+        if (tmp == null) {
+            this.users = new CustomArrayList<UbikeUser>();
+        } else {
+            this.users = new CustomArrayList<UbikeUser>(tmp);
+        }
     }
 
     @PreDestroy
@@ -65,16 +70,24 @@ public class UsersBean {
     }
 
     /**
+     * 
+     * @return 
+     */
+    public boolean getPaginate() {
+        return this.users.size() > 10;
+    }
+
+    /**
      * @return the users
      */
-    public List<UbikeUser> getUsers() {
+    public CustomList<UbikeUser> getUsers() {
         return users;
     }
 
     /**
      * @param users the users to set
      */
-    public void setUsers(List<UbikeUser> users) {
+    public void setUsers(CustomList<UbikeUser> users) {
         this.users = users;
     }
 }

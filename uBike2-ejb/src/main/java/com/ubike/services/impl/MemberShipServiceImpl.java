@@ -137,4 +137,39 @@ public class MemberShipServiceImpl extends AbstractServiceImpl<MemberShip> imple
 
         return 0;
     }
+
+    @Override
+    public List<MemberShip> getUserMemberShips(Long userId) {
+        try {
+            return getEntityManager().createNamedQuery("MemberShip.getByUser").
+                    setParameter("userId", userId).getResultList();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "Error while retreiving the user memberships", exp);
+        }
+
+        return new ArrayList<MemberShip>();
+    }
+
+    @Override
+    public List<MemberShip> getGroupMemberShips(Long groupId) {
+        try {
+            return getEntityManager().createNamedQuery("MemberShip.getByGroup").
+                    setParameter("groupId", groupId).getResultList();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "Error while retreiving the group memberships", exp);
+        }
+
+        return new ArrayList<MemberShip>();
+    }
+
+    @Override
+    public MemberShip getMemberShip(Long userId, Long groupId) {
+        try {
+            return getEntityManager().createNamedQuery("MemberShip.getByGroupUser", MemberShip.class).
+                    setParameter("groupId", groupId).setParameter("userId", userId).getSingleResult();
+        } catch (Exception exp) {
+            logger.log(Level.SEVERE, "Error while retreiving the group memberships", exp);
+        }
+        return null;
+    }
 }

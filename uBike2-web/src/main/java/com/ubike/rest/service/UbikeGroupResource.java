@@ -265,8 +265,7 @@ public class UbikeGroupResource {
         }
 
         @Override
-        protected List<MemberShip> getEntities(int start, int max,
-                String query) {
+        protected List<MemberShip> getEntities(int start, int max) {
             List<MemberShip> result = new java.util.ArrayList<MemberShip>();
             int index = 0;
             for (MemberShip e : parent.getMemberShips()) {

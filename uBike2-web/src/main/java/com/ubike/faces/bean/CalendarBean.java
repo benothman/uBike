@@ -42,7 +42,7 @@ import javax.faces.event.ValueChangeEvent;
  */
 @ManagedBean(name = "calendarBean")
 @ViewScoped
-public class CalendarBean {
+public class CalendarBean extends AbstractBean {
 
     private boolean popup;
     private boolean showApply;

@@ -121,8 +121,8 @@ public class AccountConverter {
      * @return value for keyPass
      */
     @XmlElement
-    public String getKeyPass() {
-        return (expandLevel > 0) ? entity.getKeyPass() : null;
+    public String getPassword() {
+        return (expandLevel > 0) ? entity.getPassword() : null;
     }
 
     /**
@@ -130,8 +130,8 @@ public class AccountConverter {
      *
      * @param value the value to set
      */
-    public void setKeyPass(String value) {
-        entity.setKeyPass(value);
+    public void setPassword(String value) {
+        entity.setPassword(value);
     }
 
     /**
